@@ -1,0 +1,51 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Eigenaar\\source\\URBAN MOBILITY\\UrbanMobility\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{D0BB6C2D-D5B6-447D-B582-A62E518DB0A3}|UrbanMobility.pyproj|C:\\Users\\Eigenaar\\source\\URBAN MOBILITY\\UrbanMobility\\UrbanMobility.py||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{D0BB6C2D-D5B6-447D-B582-A62E518DB0A3}|UrbanMobility.pyproj|solutionrelative:UrbanMobility.py||{8B382828-6202-11D1-8870-0000F87579D2}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{57d563b6-44a5-47df-85be-f4199ad6b651}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "UrbanMobility.py",
+              "DocumentMoniker": "C:\\Users\\Eigenaar\\source\\URBAN MOBILITY\\UrbanMobility\\UrbanMobility.py",
+              "RelativeDocumentMoniker": "UrbanMobility.py",
+              "ToolTip": "C:\\Users\\Eigenaar\\source\\URBAN MOBILITY\\UrbanMobility\\UrbanMobility.py",
+              "RelativeToolTip": "UrbanMobility.py",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002457|",
+              "WhenOpened": "2025-05-27T07:44:23.006Z",
+              "EditorCaption": ""
+            }
+          ]
+        },
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": -1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{e1b7d1f8-9b3c-49b1-8f4f-bfc63a88835d}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
