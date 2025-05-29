@@ -1,5 +1,9 @@
 import sqlite3
 import os
+
+import Hasher
+
+
 script_dir = os.path.dirname(os.path.abspath(__file__))
 db_path = os.path.join(script_dir, "Database.db")
 def Databasesetupstart():
@@ -11,6 +15,8 @@ def Databasesetupstart():
         print("De database is leeg heeft geen tabellen.")
         createdatabase();
         print("Er zijn nieuwe tabellen aangemaakt.")
+        filldatabase();
+        print("Er is data toegevoegd.")
     else:
         print("De database bevat al tabellen, er worden geen nieuwe aangemaakt.")
 
@@ -30,16 +36,15 @@ def is_database_empty():
      return len(tables) == 0
 
 
-
+ # cities = ["Rotterdam", "Delf", "Den haag", "Schiedam", "Dordrecht", "Gouda", "Zoetermeer", "Barendrecht", "Spijkernisse", "Vlaardingen"]
 # Creates the Database
 def createdatabase():
     conn = sqlite3.connect(db_path)
 
     cursor = conn.cursor()
     cursor.execute('''CREATE TABLE Users (ID INTEGER PRIMARY KEY AUTOINCREMENT,
-    rank INTEGER NOT NULL, 
+    Rank INTEGER NOT NULL, 
     Username TEXT NOT NULL,
-    Email TEXT NOT NULL,
     Password TEXT NOT NULL
     )''')
 
@@ -77,3 +82,52 @@ def createdatabase():
     conn.close()
 
 
+def filldatabase():
+
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    scooters = [
+    ("Segway", "E110S", "SEGWAY00123", "45 km/h", "2.5 kWh", "90%", "80%", 4.89943, 52.37919, False, 1200, "2024-04-01"),
+    ("NIU", "MQi+", "NIU0004567", "45 km/h", "2.0 kWh", "75%", "60%", 4.89756, 52.37315, False, 840, "2024-03-15"),
+    ("SuperSoco", "CUx", "SSCUX00001", "45 km/h", "1.8 kWh", "88%", "70%", 4.90567, 52.37022, True, 1620, "2024-02-25"),
+    ("Yadea", "G5", "YADEAG5002", "45 km/h", "2.2 kWh", "92%", "85%", 4.91111, 52.37789, False, 760, "2024-01-30"),
+    ("Horwin", "EK3", "HORWIN0034", "45 km/h", "3.0 kWh", "81%", "72%", 4.88654, 52.36802, False, 500, "2024-05-10"),
+    ]
+
+    cursor.executemany('''
+    INSERT INTO Scooter (
+        Brand, Model, Serialnumber, TopSpeed, BatteryCapacity, 
+        Soc, TargetRangeSoC, longitude, latitude, 
+        OutOfServiceStatus, Mileage, LastMaintainanceDate
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ''', scooters)
+
+    travellers = [
+    ("Anna", "Jansen", "1990-05-12", "F", "Lindelaan", 23, "Rotterdam", "anna.jansen@example.com", "0612345678", "NL123456789"),
+    ("Tom", "de Boer", "1985-11-03", "M", "Beukenstraat", 57, "Rotterdam", "tom.boer@example.com", "0687654321", "NL987654321"),
+    ("Fatima", "El Amrani", "1998-07-25", "F", "Kastanjelaan", 11, "Rotterdam", "fatima.amrani@example.com", "0699988776", "NL112233445"),
+    ]
+
+    cursor.executemany('''
+    INSERT INTO Traveller (
+        Firstname, Lastname, Birthday, Gender, Streetname, Housenumber, 
+        City, EmailAdress, MobilePhone, DrivingLiscenceNumber
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ''', travellers)
+
+
+
+    users = [
+    (0, "super_admin", "Admin_123?"),
+    (1, "Dirk", "Dirk123" ),
+    (2, "Test",  "Service")
+    ]
+
+    for rank, username, plain_password in users:
+        hashed_pw = Hasher.hash_password(plain_password)
+        cursor.execute('INSERT INTO Users (Rank, Username, Password) VALUES (?, ?, ?)', (rank, username, hashed_pw))
+
+    conn.commit()
+
+    conn.commit()
+    conn.close()

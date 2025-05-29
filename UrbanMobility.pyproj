@@ -22,6 +22,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="DatabaseSetup.py" />
+    <Compile Include="Hasher.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="UrbanMobility.py" />
     <Compile Include="Validator.py" />
   </ItemGroup>
