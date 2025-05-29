@@ -26,6 +26,7 @@
     <Compile Include="Hasher.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Menus.py" />
     <Compile Include="UrbanMobility.py" />
     <Compile Include="Validator.py" />
   </ItemGroup>
