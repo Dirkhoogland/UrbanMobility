@@ -21,6 +21,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Databasefunctions.py" />
     <Compile Include="DatabaseSetup.py" />
     <Compile Include="Hasher.py">
       <SubType>Code</SubType>
