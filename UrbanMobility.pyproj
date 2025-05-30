@@ -27,6 +27,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Menus.py" />
+    <Compile Include="Servicemedewerker.py" />
     <Compile Include="UrbanMobility.py" />
     <Compile Include="Validator.py" />
   </ItemGroup>

@@ -1,6 +1,6 @@
 ﻿import DatabaseSetup
 import Databasefunctions
-import Menus
+import Menus , Servicemedewerker
 # programming debug for editing db
 # DatabaseSetup.Databasesetupstart()
 
@@ -13,6 +13,7 @@ def getuserrank(rank):
         return "System Administrator"
     if rank == 2:
         return "Service Engineer"
+
 
 
 
@@ -42,9 +43,8 @@ def start():
         if user == 1:
             opties = Menus.system()
         if user[0] == 2:
-            opties = Menus.service()
-        menu = Menus.toon_dynamisch_menu(opties)
-        optie = input("Wat wil je openen")
+            Servicemedewerker.ServiceMenu(user)
+
         
 
 
