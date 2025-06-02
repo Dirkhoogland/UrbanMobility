@@ -59,22 +59,13 @@ def Scooterupdate(Scooter):
     if capacitycheck == False:
         print(f"Invalid Battery Capacity: {Scooter[4]}")
 
+    chargecheck = Validator.is_valid_soc(Scooter[5])
+    if chargecheck == False:
+        print(f"Invalid Battery Capacity: {Scooter[5]}")
 
+    maintcheck = Validator.is_valid_maintenance_date(Scooter[10])
+    if maintcheck == False:
+        print(f"Invalid maintainance date: {Scooter[10]}")
 
-
-    if speed != " ":
-        Scooter[3] = speed
-    if capacity != " ":
-        Scooter[4] = capacity
-    if charge != " ":
-        Scooter[5] = charge
-    if Trs != " ":
-        Scooter[6] = Trs
-    if location != " ":
-        Scooter[7] = location
-    if outofservice != " ":
-        Scooter[8] = outofservice
-    if milage != " ":
-        Scooter[9] = milage
-    if lastmain != " ":
-        Scooter[10] = lastmain
+    if speedcheck and capacitycheck and chargecheck and maintcheck:
+        print("Waarden zijn gelid database wordt geupdate")
