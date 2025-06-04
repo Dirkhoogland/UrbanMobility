@@ -23,6 +23,7 @@
   <ItemGroup>
     <Compile Include="Databasefunctions.py" />
     <Compile Include="DatabaseSetup.py" />
+    <Compile Include="Gebruiker.py" />
     <Compile Include="Hasher.py">
       <SubType>Code</SubType>
     </Compile>

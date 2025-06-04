@@ -51,21 +51,63 @@ def GetScooterService(Serialnumber):
 
 def Scooterupdate(Scooter):
 
-    speedcheck = Validator.is_valid_top_speed(Scooter[3])
+    speedcheck = Validator.is_valid_top_speed(Scooter[4])
     if speedcheck == False:
-        print(f"Invalid speed: {Scooter[3]}")
+        print(f"Invalid speed: {Scooter[4]}")
 
-    capacitycheck = Validator.is_valid_battery_capacity(Scooter[4])
+    capacitycheck = Validator.is_valid_battery_capacity(Scooter[5])
     if capacitycheck == False:
-        print(f"Invalid Battery Capacity: {Scooter[4]}")
-
-    chargecheck = Validator.is_valid_soc(Scooter[5])
-    if chargecheck == False:
         print(f"Invalid Battery Capacity: {Scooter[5]}")
 
-    maintcheck = Validator.is_valid_maintenance_date(Scooter[10])
+    chargecheck = Validator.is_valid_soc(Scooter[6])
+    if chargecheck == False:
+        print(f"Invalid Battery Capacity: {Scooter[6]}")
+
+    maintcheck = Validator.is_valid_maintenance_date(Scooter[12])
     if maintcheck == False:
-        print(f"Invalid maintainance date: {Scooter[10]}")
+        print(f"Invalid maintainance date: {Scooter[12]}")
 
     if speedcheck and capacitycheck and chargecheck and maintcheck:
-        print("Waarden zijn gelid database wordt geupdate")
+        print("Waarden zijn gelidig database wordt geupdate")
+
+
+
+        query = """
+        UPDATE Scooters SET
+            TopSpeed = ?,
+            BatteryCapacity = ?,
+            Soc = ?,
+            TargetRangeSoC = ?,
+            OutOfServiceStatus = ?,
+            Mileage = ?,
+            LastMaintainanceDate = ?
+        WHERE ID = ?
+        """
+
+        values = (
+        Scooter[4],
+        Scooter[5],
+        Scooter[6],
+        Scooter[7],
+        Scooter[10],
+        Scooter[11],
+        Scooter[12],
+        Scooter[0]
+        )
+
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+        cursor.execute(query, values)
+        conn.commit()                 
+        conn.close()  
+
+# general functions
+def FetchallScooter():
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM Scooters")
+    Scooter = cursor.fetchall()
+    conn.close()
+    return Scooter
+
+def passwordchange(user, pw):

@@ -1,5 +1,5 @@
 import re
-from datetime import date
+from datetime import datetime, date
 # checks if emails are valid
 def is_valid_email(email):
     pattern = r'^[\w\.-]+@[\w\.-]+\.\w+$'
@@ -27,6 +27,7 @@ def is_valid_serialnumber(s):
 # strips de datum van andere tekens en kijkt of het y-m-d is en ook of het niet in de toekomst is
 def is_valid_maintenance_date(datum_str):
     try:
+        datum_str = str(datum_str)
         onderhoudsdatum = datetime.strptime(datum_str, "%Y-%m-%d").date()
         return onderhoudsdatum <= date.today()
     except ValueError:

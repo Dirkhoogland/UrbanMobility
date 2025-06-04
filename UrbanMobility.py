@@ -2,7 +2,7 @@
 import Databasefunctions
 import Menus , Servicemedewerker
 # programming debug for editing db
-# DatabaseSetup.Databasesetupstart()
+DatabaseSetup.Databasesetupstart()
 
 startup = True;
 

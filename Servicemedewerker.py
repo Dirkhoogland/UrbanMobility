@@ -1,21 +1,21 @@
-import Databasefunctions
-import Menus
-import Scooter
+import Scooter, Gebruiker , Menus , Databasefunctions
 
 def ServiceMenu(user):
+    menu = True
+    while menu == True:
         opties = Menus.service()
         Menus.toon_dynamisch_menu(opties)
 
-        optie = input("Wat wil je openen")
-        lengte = opties.__len__()
-        print(lengte)
-        if optie == 1:
+        optie = input("Wat wil je openen: ")
+
+        if optie == '1':
             Scooter.UpdateScooter(user)
-        if optie == 2:
+        if optie == '2':
             Scooter.Getattributes(user)
-        if optie == 3:
+        if optie == '3':
             gebruiker.UpdatePassword(user)
-        if optie == 4:
+        if optie == '4':
+            menu == False
             return
 
 

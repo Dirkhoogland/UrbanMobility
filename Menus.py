@@ -1,4 +1,6 @@
-﻿def toon_dynamisch_menu(opties, titel="Hoofdmenu"):
+﻿import Databasefunctions
+
+def toon_dynamisch_menu(opties, titel="Hoofdmenu"):
     langste_optie = max([len(f"{i+1}. {optie}") for i, optie in enumerate(opties)])
     breedte = max(len(titel), langste_optie) + 4  # 4 extra voor ruimte
 
@@ -34,3 +36,19 @@ def scooterinfo(rank):
         return ["1. Update Scooter", "2. Get Scooter attributes", "3. Add new Scooter", "4. Delete Scooter", "5. Update information Scooter"]
 
 
+def scooterattributes():
+
+    scooters = Databasefunctions.FetchallScooter()
+    opties = []
+
+    for index, scooter in enumerate(scooters, start=1):
+        # Maak een korte samenvatting, zoals merk en model
+        optie = f"Merk: {scooter[1]} Model: {scooter[2]} Serialnumber: {scooter[3]} Top speed: {scooter[4]} BatteryCapacity: {scooter[5]} Soc: {scooter[6]} Target range: {scooter[7]} coords: {scooter[8]} {scooter[9]} Outofservice: {scooter[10]} Milage: {scooter[11]} Lastmaint: {scooter[12]}" 
+        opties.append(optie)
+
+    return opties
+
+    
+
+
+    

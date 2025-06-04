@@ -63,7 +63,7 @@ def createdatabase():
     DrivingLiscenceNumber TEXT NOT NULL
     )''')
 
-    cursor.execute('''CREATE TABLE Scooter( 
+    cursor.execute('''CREATE TABLE Scooters( 
     ID INTEGER PRIMARY KEY AUTOINCREMENT,
     Brand TEXT NOT NULL,
     Model TEXT NOT NULL,
@@ -95,7 +95,7 @@ def filldatabase():
     ]
 
     cursor.executemany('''
-    INSERT INTO Scooter (
+    INSERT INTO Scooters (
         Brand, Model, Serialnumber, TopSpeed, BatteryCapacity, 
         Soc, TargetRangeSoC, longitude, latitude, 
         OutOfServiceStatus, Mileage, LastMaintainanceDate
