@@ -15,8 +15,6 @@ def getuserrank(rank):
         return "Service Engineer"
 
 
-
-
 def start():
     login = True;
     while login == True:

@@ -13,8 +13,8 @@ def ServiceMenu(user):
             Scooter.UpdateScooter(user)
         if optie == 2:
             Scooter.Getattributes(user)
-        if optie == 3:
-            gebruiker.UpdatePassword(user)
+        # if optie == 3:
+        #     gebruiker.UpdatePassword(user)
         if optie == 4:
             return
 
