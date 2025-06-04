@@ -8,8 +8,6 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 db_path = os.path.join(script_dir, "Database.db")
 def Databasesetupstart():
 
-
-
     # functie die kijkt of de DB geen tabellen heb voor set up
     if is_database_empty():
         print("De database is leeg heeft geen tabellen.")
