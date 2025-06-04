@@ -15,7 +15,7 @@ def getuserrank(rank):
         return "Service Engineer"
 
 
-def start():
+def Start():
     login = True;
     while login == True:
         username = input("Vul je username in: ")
@@ -34,17 +34,15 @@ def start():
     mainmenu = True
     while mainmenu == True:
         print(f"Hallo {ranking} {user[1]} ")
+        print()
 
-        opties = " "
         if user[0] == 0:
-            opties = Menus.super()
+            print(Menus.super())
         if user == 1:
-            opties = Menus.system()
+            print(Menus.system())
         if user[0] == 2:
-            Servicemedewerker.ServiceMenu(user)
+            print(Servicemedewerker.ServiceMenu(user))
 
-        
-
-
-
-start();
+        print()
+        print("select your option: ")
+        opties = input()
