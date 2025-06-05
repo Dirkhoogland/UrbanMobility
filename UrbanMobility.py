@@ -59,7 +59,7 @@ def Start():
         # if user[0] == 0:
         #     AdminOptions()
 
-        # if user == 1 or user[0] == 2:
+        # if user[0] == 1 or user[0] == 2:
 
 
         # User?
