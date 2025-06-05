@@ -30,19 +30,19 @@ def start():
     # gets rank number and name
     user = Databasefunctions.getuserdetails(username)
     # plaatst het in een naam die gebruikelijk is voor de user
-    ranking = getuserrank(user[0]);
-    print(f"Welkom bij het UrbanMobility project {user[1]} rank {ranking}")
+    ranking = getuserrank(user[1]);
+    print(f"Welkom bij het UrbanMobility project {user[2]} rank {ranking}")
 
     mainmenu = True
     while mainmenu == True:
-        print(f"Hallo {ranking} {user[1]} ")
+        print(f"Hallo {ranking} {user[2]} ")
 
         opties = " "
-        if user[0] == 0:
+        if user[1] == 0:
             opties = Menus.super()
-        if user == 1:
+        if user[1] == 1:
             opties = Menus.system()
-        if user[0] == 2:
+        if user[1] == 2:
             Servicemedewerker.ServiceMenu(user)
 
         

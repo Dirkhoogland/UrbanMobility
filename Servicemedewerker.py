@@ -13,7 +13,7 @@ def ServiceMenu(user):
         if optie == '2':
             Scooter.Getattributes(user)
         if optie == '3':
-            gebruiker.UpdatePassword(user)
+            Gebruiker.changepassword(user)
         if optie == '4':
             menu == False
             return

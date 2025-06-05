@@ -31,7 +31,7 @@ def login(Username, Password):
 def getuserdetails(Username):
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
-    cursor.execute("SELECT Rank, Username FROM Users WHERE Username = ?", (Username,))
+    cursor.execute("SELECT ID, Rank, Username FROM Users WHERE Username = ?", (Username,))
     user = cursor.fetchone()
     conn.close()
     return user
@@ -110,4 +110,29 @@ def FetchallScooter():
     conn.close()
     return Scooter
 
-def passwordchange(user, pw):
+def passwordchange(user, pw, oldpw):
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    cursor.execute("Select Password FROM Users WHERE ID = ?", (user[0],))
+    dbuser = cursor.fetchone()
+    conn.close()
+
+    stored_hash = dbuser[0]
+    if Hasher.check_password(pw, stored_hash):
+        print("Nieuw wachtwoord mag niet hetzelfde zijn als het oude.")
+        return False
+
+
+    if Hasher.check_password(oldpw, stored_hash):
+        hashed_pw = Hasher.hash_password(pw)
+
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+        cursor.execute("UPDATE Users SET Password = ? WHERE ID = ?", (hashed_pw, user[0]))
+        conn.commit()                 
+        conn.close()  
+        print("Password updated.")
+
+    else:
+        print("Ongeldig wachtwoord.")
+        return False
