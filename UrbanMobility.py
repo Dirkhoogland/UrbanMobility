@@ -40,7 +40,7 @@ def Start():
         if user[1] == 0:
             toon_dynamisch_menu(Menus.super(), "Super Administrator Menu")
             
-        if user == 1 or user[1] == 2:
+        if user[1] == 1 or user[1] == 2:
             toon_dynamisch_menu(Menus.service())
             
 
