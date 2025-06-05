@@ -30,17 +30,17 @@ def Start():
     user = Databasefunctions.getuserdetails(username)
     # plaatst het in een naam die gebruikelijk is voor de user
     ranking = getuserrank(user[0]);
-    print(f"Welkom bij het UrbanMobility project {user[1]} rank {ranking}")
+    print(f"Welkom bij het UrbanMobility project {user[2]} rank {ranking}")
 
     mainmenu = True
     while mainmenu == True:
-        print(f"Hallo {ranking} {user[1]} ")
+        print(f"Hallo {ranking} {user[2]} ")
         print()
 
-        if user[0] == 0:
+        if user[1] == 0:
             toon_dynamisch_menu(Menus.super(), "Super Administrator Menu")
             
-        if user == 1 or user[0] == 2:
+        if user == 1 or user[1] == 2:
             toon_dynamisch_menu(Menus.service())
             
 
