@@ -34,7 +34,9 @@ def scooterinfo(rank):
         return ["Update Scooter", "Get Scooter attributes"]
     if rank <= 1:
         return ["Update Scooter", "Get Scooter attributes", "Add new Scooter", "Delete Scooter", "Update information Scooter"]
-
+    
+def TravelerUpdateOptions():
+    return ["Firstname", "Lastname", "Birthday", "Gender", "Streetname", "Housenumber", "City", "Quit Update Menu" ]
 
 def scooterattributes():
 
