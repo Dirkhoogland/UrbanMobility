@@ -13,10 +13,10 @@
     print("╚" + "═" * breedte + "╝")
 
 def service():
-    return ["1. Update Scooter","2. Get Scooter attributes", "3. Update Password", "4. Logout"]
+    return ["Update Scooter","Get Scooter attributes", "Update Password", "Logout"]
 
 def system():
-    return ["1. Add/modify Service Engineer","2. Add/modify travellers", "3. Check Users", "4. Scooter info/update", "5. Update Password", "6. Update Profile","7. Delete account","8. Back up system","9. Restore back up","10. View logs", "11. Logout"]
+    return ["Add/modify Service Engineer","Add/modify travellers", "Check Users", "Scooter info/update", "Update Password", "Update Profile","Delete account","Back up system","Restore back up","View logs", "Logout"]
 
 def super():
     return ["Add/modify Service Engineer", "Check Users", "Update Scooter","Get Scooter attributes", "Update Password", "Logout"]
@@ -25,7 +25,7 @@ def addmodifyengineermenu():
     return ["Add new Service Engineer", "Modifty Service Engineer", "Remove Service Engineer", "Reset Service Engineer Password",]
 
 def addmodifytravellers():
-    return ["1. Add new Traveller", "2. Update Traveller in system", "3. Delete a traveller", "4. Search Traveller"]
+    return ["Add new Traveller", "Update Traveller in system", "Delete a traveller", "Search Traveller"]
 
 def scooterinfo(rank):
     if rank == 2:

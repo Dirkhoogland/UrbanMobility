@@ -3,8 +3,8 @@ import Databasefunctions
 
 
 def UpdateScooter(user):
-    Serialnumber = input("Wat is het Serialnumber van de scooter, vul in q om terug te gaan.")
-    if Serialnumber == q:
+    Serialnumber = input("Wat is het Serialnumber van de scooter, vul in q om terug te gaan.")[0]
+    if Serialnumber == 'q':
        return
     else:
         Scooter = Databasefunctions.GetScooterService(Serialnumber)
@@ -81,9 +81,9 @@ def UpdateScooter(user):
     print(f"Scooter Milage: {Scooter[9]}")
     
     print(f"Scooter Last service date: {Scooter[10]}")
-    check = input("Wil je deze updaten? Y/N")
+    check = input("Wil je deze updaten? Y/N")[0]
 
-    if check == "Y":
+    if check == 'Y':
         Databasefunctions.Scooterupdate(Scooter)
     else:
         print("Update afgelast")

@@ -1,6 +1,7 @@
 ﻿import DatabaseSetup
 import Databasefunctions
 import Menus , Servicemedewerker
+from Menus import toon_dynamisch_menu
 # programming debug for editing db
 # DatabaseSetup.Databasesetupstart()
 
@@ -37,12 +38,65 @@ def Start():
         print()
 
         if user[0] == 0:
-            print(Menus.super())
-        if user == 1:
-            print(Menus.system())
-        if user[0] == 2:
-            print(Servicemedewerker.ServiceMenu(user))
+            toon_dynamisch_menu(Menus.super(), "Super Administrator Menu")
+            
+        if user == 1 or user[0] == 2:
+            toon_dynamisch_menu(Menus.service())
+            
 
         print()
         print("select your option: ")
-        opties = input()
+        choice = input()[0]
+
+        # Admin:
+        # 1. Add/modify Service Engineer
+        # 2. Check Users
+        # 3. Update Scooter
+        # 4. Get Scooter attributes
+        # 5. Update Password
+        # 6. Logout
+        
+        # Admin
+        # if user[0] == 0:
+        #     AdminOptions()
+
+        # if user == 1 or user[0] == 2:
+
+
+        # User?
+        # if user == 1:
+        #     if opties == 1:
+
+        #     if opties == 2:
+
+        #     if opties == 3:
+
+        # ServiceMedewerker
+        # if user[2] == 2:
+        #     if opties == 1:
+
+        #     if opties == 2:
+
+        #     if opties == 3:
+
+    # def AdminOptions(choice):
+        # if choice == 1:
+            
+        # if choice == 2:
+        
+        # if choice == 3:
+
+        # if choice == 4:
+
+        # if choice == 5:
+
+        # if choice == 6:
+
+    # def ServiceOptions(choice):
+        # if choice == 1:
+
+        # if choice == 2:
+
+        # if choice == 3:
+
+        # if choice == 4:
