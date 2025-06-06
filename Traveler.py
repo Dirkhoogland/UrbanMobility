@@ -18,6 +18,7 @@ def View(Email):
     print(target)
     
     conn.close()
+    
 
 def Add(Firstname, Lastname, Birthday, Gender, Streetname, 
         Housenumber, City, EmailAdress, MobilePhone, DrivingLiscenceNumber):
@@ -181,8 +182,16 @@ def Update(Email):
 
             conn.commit()
             print("Update on Streetname succesfull")
-            
+
         if option == 8:
+            # phonenumber
+            pass
+            
+        if option == 9:
+            # drivings licence
+            pass
+        
+        if option == 10:
             conn.close()
             break
     
