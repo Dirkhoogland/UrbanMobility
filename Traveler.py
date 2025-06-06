@@ -1,8 +1,9 @@
 import sqlite3
 import os
 import Hasher
-import Validator
+import Validator 
 import datetime
+from Validator import is_valid_email, is_valid_phone, is_valid_DLN
 from Menus import toon_dynamisch_menu, TravelerUpdateOptions, genderOption
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -18,6 +19,9 @@ def View(Email):
     print(target)
     
     conn.close()
+
+def abortAdd(string):
+    return string == "*"
 
 def BirthdayManager():
     while True:
@@ -73,29 +77,116 @@ def GenderManager():
 
     return gender
 
-def newTravler():
+def AddTraveller():
     print("press * and enter at any point abort adding process")
     quit = False
     while True:
-        Newfirstname = ""
-        while Newfirstname == "":
-            Newfirstname = str(input("New Firstname: ")).strip()
+        firstname = ""
+        while firstname == "":
+            firstname = str(input("Firstname: ")).strip()
         
-        if(Newfirstname == "*"):
+        if(firstname == "*"):
             quit = True
             break
 
-        Newlastname = ""
-        while Newlastname == "":
-            Newlastname = str(input("New Lastname: ")).strip()
+        lastname = ""
+        while lastname == "":
+            lastname = str(input("Lastname: ")).strip()
 
-        if(Newlastname == "*"):
+        if(lastname == "*"):
             quit = True
             break
 
-        Newbirthday = BirthdayManager()
+        birthday = BirthdayManager()
+        
+        if(birthday == "*"):
+            quit = True
+            break
 
+        gender = GenderManager()
 
+        if(gender == "*"):
+            quit = True
+            break
+
+        streetname = ""
+        while streetname == "":
+            streetname = str(input("Streetname: ")).strip()
+
+        if(streetname == "*"):
+            quit = True
+            break
+
+        housenumber = ""
+        while housenumber == "":
+            housenumber = str(input("Housenumber: ")).strip()
+
+        if(housenumber == "*"):
+            quit = True
+            break
+        
+        while housenumber < 0:
+            try:
+                housenumber = int(input("Streetnumber: "))
+            except ValueError:
+                print("Only numbers allowed")
+                continue
+            if(housenumber < 0): 
+                print("No negative housenumbers allowed")
+
+        city = ""
+        while city == "":
+            city = str(input("City: ")).strip()
+
+        email = ""
+        while is_valid_email(email) == False:
+            email = str(input("Email: ")).strip()
+            if(email == "*"):
+                quit = True
+                break
+            if is_valid_email(email) == False:
+                print("Email must have the fellowing pattern")
+                print("Example:")
+                print("example@gmail.com")
+
+        if(email == "*"):
+            quit = True
+            break
+
+        phonenumber = ""
+        while is_valid_phone(phone) == False:
+            phone = str(input("Phone: ")).strip()
+            if(phone == "*"):
+                quit = True
+                break
+            if is_valid_phone(phone) == False:
+                print("phonenumber must have the lenght of 7 - 15")
+                print("Example:")
+                print("0612345678")
+
+        if(phone == "*"):
+            quit = True
+            break
+
+        DLN = ""
+        while is_valid_DLN(DLN) == False:
+            DLN = str(input("DrivingsLicenceNumber: ")).upper().strip()
+            if(DLN == "*"):
+                quit = True
+                break
+            if is_valid_DLN(DLN) == False:
+                print("DrivingsLicenceNumber must have the fellowing pattern: r'^[A-Z]{1}\d{8}$' or r'^[A-Z]{2}\d{7}$'")
+                print("Example:")
+                print("AB1234567")
+                print("A12345678")
+
+        if(DLN == "*"):
+            quit = True
+            break
+        
+    if quit == False:
+        Add(firstname, lastname, birthday, gender, streetname, housenumber, city, email, phonenumber, DLN)
+ 
 
 def Add(Firstname, Lastname, Birthday, Gender, Streetname, 
         Housenumber, City, EmailAdress, MobilePhone, DrivingLiscenceNumber):
@@ -113,6 +204,7 @@ def Add(Firstname, Lastname, Birthday, Gender, Streetname,
 
     conn.commit()
     conn.close()
+
 
 def Update(Email):
     conn = sqlite3.connect(db_path)
