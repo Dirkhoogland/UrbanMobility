@@ -40,8 +40,11 @@ def Start():
         if user[1] == 0:
             toon_dynamisch_menu(Menus.super(), "Super Administrator Menu")
             
-        if user[1] == 1 or user[1] == 2:
-            toon_dynamisch_menu(Menus.service())
+        if user[1] == 1:
+            toon_dynamisch_menu(Menus.system(), "Systeem Menu")
+
+        if user[1] == 2:
+            toon_dynamisch_menu(Menus.service(), "Service Administrator Menu")
             
 
         print()
@@ -56,10 +59,12 @@ def Start():
         # 6. Logout
         
         # Admin
-        # if user[0] == 0:
+        # if user[1] == 0:
         #     AdminOptions()
 
-        # if user[0] == 1 or user[0] == 2:
+        # if user[1] == 1 
+        # 
+        # if user[1] == 2:
 
 
         # User?

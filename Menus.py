@@ -50,6 +50,9 @@ def scooterattributes():
 
     return opties
 
+def genderOption():
+    return ["♀ Female", "♂ Male"]
+
     
 
 
