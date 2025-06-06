@@ -55,6 +55,7 @@ def BirthdayManager():
             print("wrong format used, use fellowing format: (2025-01-01)")
 
 def GenderManager():
+    toon_dynamisch_menu(genderOption(), "Select Gender")
     while True:
         try:
             choice = int(input("select option: "))
@@ -116,15 +117,8 @@ def AddTraveller():
         if(streetname == "*"):
             quit = True
             break
-
-        housenumber = ""
-        while housenumber == "":
-            housenumber = str(input("Housenumber: ")).strip()
-
-        if(housenumber == "*"):
-            quit = True
-            break
         
+        housenumber = -1
         while housenumber < 0:
             try:
                 housenumber = int(input("Streetnumber: "))
@@ -137,6 +131,10 @@ def AddTraveller():
         city = ""
         while city == "":
             city = str(input("City: ")).strip()
+
+        if(city == "*"):
+            quit = True
+            break
 
         email = ""
         while is_valid_email(email) == False:
@@ -154,17 +152,17 @@ def AddTraveller():
             break
 
         phonenumber = ""
-        while is_valid_phone(phone) == False:
-            phone = str(input("Phone: ")).strip()
-            if(phone == "*"):
+        while is_valid_phone(phonenumber) == False:
+            phonenumber = str(input("Phone: ")).strip()
+            if(phonenumber == "*"):
                 quit = True
                 break
-            if is_valid_phone(phone) == False:
+            if is_valid_phone(phonenumber) == False:
                 print("phonenumber must have the lenght of 7 - 15")
                 print("Example:")
                 print("0612345678")
 
-        if(phone == "*"):
+        if(phonenumber == "*"):
             quit = True
             break
 
@@ -183,9 +181,13 @@ def AddTraveller():
         if(DLN == "*"):
             quit = True
             break
+
+        break
         
     if quit == False:
         Add(firstname, lastname, birthday, gender, streetname, housenumber, city, email, phonenumber, DLN)
+    else:
+        print("aborted adding traveller process")
  
 
 def Add(Firstname, Lastname, Birthday, Gender, Streetname, 
@@ -203,6 +205,7 @@ def Add(Firstname, Lastname, Birthday, Gender, Streetname,
     ''', traveller)
 
     conn.commit()
+    print("New travler succesfully added")
     conn.close()
 
 
@@ -257,7 +260,6 @@ def Update(Email):
                 
         if option == 4:
             # Gender update
-            toon_dynamisch_menu(genderOption(), "Select Gender")
             gender = GenderManager()
 
             if gender == "F" or gender == "M":
