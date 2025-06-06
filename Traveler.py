@@ -37,15 +37,19 @@ def Add(Firstname, Lastname, Birthday, Gender, Streetname,
     conn.close()
 
 def Update(Email):
-    View(Email)
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
 
-    print("what do you want to update?")
-    print()
-    toon_dynamisch_menu(TravelerUpdateOptions(), "Traveller Update Menu")
     while True:
-        option = int(input("Select option: "))
+        View(Email)
+        print()
+        print("what do you want to update?")
+        toon_dynamisch_menu(TravelerUpdateOptions(), "Traveller Update Menu")
+        try:
+            option = int(input("Select option: "))
+        except ValueError:
+            print("invalid input, choose a number.")
+            continue
         if option == 1:
             Newfirstname = ""
             while Newfirstname == "":
@@ -72,17 +76,28 @@ def Update(Email):
         if option == 3:
             while True:
                 try:
-                    Newbirthday = str(input("New Birthday (yyyy-mm-dd): "))
+                    Newbirthday = str(input("New Birthday (yyyy-mm-dd): ")).strip()
                     frag = Newbirthday.split('-')
 
                     if len(frag) != 3:
                         print("Wrong format used, use the following format: (2025-01-01)")
                         continue
+                    
+                    # year = int(frag[0]) 
+                    # month = int(frag[1])
+                    # day = int(frag[2])
 
-                    year = int(frag[0]) 
-                    month = int(frag[1])
-                    day = int(frag[2])
-                    parsed_date = datetime.datetime.strptime(year, month, day, "%Y-%m-%d").date() # used to check if date is valid
+                    # 1 => 01 (month)
+                    if len(frag[1]) == 1: 
+                        frag[1] = "0" + frag[1]
+
+                    # 1 => 01 (day)
+                    if len(frag[2]) == 1: 
+                        frag[2] = "0" + frag[2]
+
+                    Newbirthday = frag[0] + "-" + frag[1] + "-" + frag[2]
+                    
+                    parsed_date = datetime.datetime.strptime(Newbirthday, "%Y-%m-%d").date() # used to check if date is valid
 
                     cursor.execute('''
                     UPDATE traveller SET Birthday = ? WHERE EmailAdress = ?
@@ -90,6 +105,7 @@ def Update(Email):
 
                     conn.commit()
                     print("Update on Birthday succesfull")
+                    break
                     
                 except:
                     print("wrong format used, use fellowing format: (2025-01-01)")
@@ -97,9 +113,13 @@ def Update(Email):
         if option == 4:
             # Gender update
             toon_dynamisch_menu(genderOption(), "Select Gender")
-            gender
             while True:
-                choice = int(input("select option: "))
+                try:
+                    choice = int(input("select option: "))
+                except ValueError:
+                    print("invalid input, choose between number: ")
+                    continue
+                
                 if choice == 1:
                     gender = "F"
                     break
@@ -140,6 +160,7 @@ def Update(Email):
                     Newhousenumber = int(input("New Streetnumber: "))
                 except ValueError:
                     print("Only numbers allowed")
+                    continue
                 if(Newhousenumber < 0): 
                     print("No negative housenumbers allowed")
 
@@ -164,5 +185,4 @@ def Update(Email):
         if option == 8:
             conn.close()
             break
-    
     
