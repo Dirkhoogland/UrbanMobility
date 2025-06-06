@@ -313,13 +313,38 @@ def Update(Email):
 
         if option == 8:
             # phonenumber
+            phonenumber = ""
+            while is_valid_phone(phonenumber) == False:
+                phonenumber = str(input("PhoneNumber: ")).strip()
+                if is_valid_phone(phonenumber) == False:
+                    print("phonenumber must have the lenght of 7 - 15")
+                    print("Example:")
+                    print("0612345678")
 
-            pass
+            cursor.execute('''
+                UPDATE traveller SET MobilePhone = ? WHERE EmailAdress = ?
+            ''', (phonenumber, Email))
+            
+            conn.commit()
+            print("Update on DrivingLiscenceNumber succesfull")
             
         if option == 9:
             # drivings licence
+            DLN = ""
+            while is_valid_DLN(DLN) == False:
+                DLN = str(input("DrivingsLicenceNumber: ")).upper().strip()
+                if is_valid_DLN(DLN) == False:
+                    print("DrivingsLicenceNumber must have the fellowing pattern: r'^[A-Z]{1}\d{8}$' or r'^[A-Z]{2}\d{7}$'")
+                    print("Example:")
+                    print("AB1234567")
+                    print("A12345678")
+            
+            cursor.execute('''
+                UPDATE traveller SET DrivingLiscenceNumber = ? WHERE EmailAdress = ?
+            ''', (DLN, Email))
 
-            pass
+            conn.commit()
+            print("Update on DrivingLiscenceNumber succesfull")
         
         if option == 10:
             conn.close()
