@@ -119,7 +119,7 @@ def Update(Email):
                 except ValueError:
                     print("invalid input, choose between number: ")
                     continue
-                
+
                 if choice == 1:
                     gender = "F"
                     break
