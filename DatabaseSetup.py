@@ -1,6 +1,7 @@
 import sqlite3
 import os
 
+import Databasefunctions
 import Hasher
 
 
@@ -40,12 +41,22 @@ def is_database_empty():
 # Creates the Database
 def createdatabase():
     conn = sqlite3.connect(db_path)
-
+    conn.execute("PRAGMA foreign_keys = ON")
     cursor = conn.cursor()
     cursor.execute('''CREATE TABLE Users (ID INTEGER PRIMARY KEY AUTOINCREMENT,
     Rank INTEGER NOT NULL, 
     Username TEXT NOT NULL,
     Password TEXT NOT NULL
+    )''')
+
+    cursor.execute('''
+    CREATE TABLE Profiles (
+        ID INTEGER PRIMARY KEY AUTOINCREMENT,
+        UserID INTEGER NOT NULL,
+        Firstname TEXT NOT NULL,
+        Lastname TEXT NOT NULL,
+        RegistrationDate TEXT NOT NULL,  -- Gebruik ISO 8601: YYYY-MM-DD
+        FOREIGN KEY (UserID) REFERENCES Users(ID) ON DELETE CASCADE
     )''')
 
     cursor.execute('''CREATE TABLE Traveller(
@@ -79,12 +90,15 @@ def createdatabase():
     LastMaintainanceDate TEXT NOT NULL -- ISO 8601 format: YYYY-MM-DD
     )''')
 
+
+
     conn.close()
 
 
 def filldatabase():
 
     conn = sqlite3.connect(db_path)
+    conn.execute("PRAGMA foreign_keys = ON")
     cursor = conn.cursor()
     scooters = [
     ("Segway", "E110S", "SEGWAY00123", "45 km/h", "2.5 kWh", "90%", "80%", 4.89943, 52.37919, False, 1200, "2024-04-01"),
@@ -119,15 +133,21 @@ def filldatabase():
 
     users = [
     (0, "super_admin", "Admin_123?"),
-    (1, "Dirk", "Dirk123" ),
-    (2, "Test",  "Service")
+    (1, '_jan.01', 'S3cure#Pass!12'),
+    (2, 'Mark_007', 'Strong!Pass123$')
     ]
+    profiles = [
+    (2, "Jan", "Jansen"),
+    (3, "Mark", "Pieters")
+    ]   
+
 
     for rank, username, plain_password in users:
         hashed_pw = Hasher.hash_password(plain_password)
         cursor.execute('INSERT INTO Users (Rank, Username, Password) VALUES (?, ?, ?)', (rank, username, hashed_pw))
-
-    conn.commit()
-
+    
     conn.commit()
     conn.close()
+    for userid,firstname, lastname in profiles:
+        Databasefunctions.add_profile_for_user(userid,firstname, lastname)
+
