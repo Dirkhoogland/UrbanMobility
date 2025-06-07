@@ -1,4 +1,5 @@
-﻿import sqlite3
+﻿from datetime import date
+import sqlite3
 import os
 import Hasher
 import Validator
@@ -136,3 +137,43 @@ def passwordchange(user, pw, oldpw):
     else:
         print("Ongeldig wachtwoord.")
         return False
+
+def add_profile_for_user(user_id, firstname, lastname):
+    # Formaat: YYYY-MM-DD
+    registration_date = date.today().isoformat()  
+
+    conn = sqlite3.connect(db_path)
+    conn.execute("PRAGMA foreign_keys = ON") 
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute('''
+            INSERT INTO Profiles (UserID, Firstname, Lastname, RegistrationDate)
+            VALUES (?, ?, ?, ?)
+        ''', (user_id, firstname, lastname, registration_date))
+
+        conn.commit()
+        print("Profiel succesvol aangemaakt.")
+    except sqlite3.Error as e:
+        print(f"Fout bij aanmaken profiel: {e}")
+    finally:
+        conn.close()
+
+def searchprofile(user_id):
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM Profiles WHERE UserID = ?", (user_id,))
+    profiel = cursor.fetchone()
+
+    conn.close()
+
+    if profiel:
+        print("Profiel gevonden:")
+        print(f"Voornaam: {profiel[2]}")
+        print(f"Achternaam: {profiel[3]}")
+        print(f"Registratiedatum: {profiel[4]}")
+        return profiel
+    else:
+        print("Geen profiel gevonden voor deze gebruiker.")
+        return None

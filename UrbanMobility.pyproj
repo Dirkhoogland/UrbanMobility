@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>d0bb6c2d-d5b6-447d-b582-a62e518db0a3</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>UrbanMobility.py</StartupFile>
+    <StartupFile>um_Dirk_1077619_Bora_1066706.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -21,6 +21,9 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Profiles.py" />
+    <Compile Include="SysAdmin.py" />
+    <Compile Include="um_Dirk_1077619_Bora_1066706.py" />
     <Compile Include="Databasefunctions.py" />
     <Compile Include="DatabaseSetup.py" />
     <Compile Include="Gebruiker.py" />
@@ -32,6 +35,7 @@
     <Compile Include="Servicemedewerker.py" />
     <Compile Include="UrbanMobility.py" />
     <Compile Include="Validator.py" />
+    <Compile Include="Traveler.py" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
