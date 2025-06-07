@@ -20,6 +20,12 @@ def is_valid_iso_date(date_str):
     except ValueError:
         return False
 
+# checks if driving licence number is valid
+def is_valid_DLN(DLN):
+    pattern_1 = r'^[A-Z]{1}\d{8}$'
+    pattern_2 = r'^[A-Z]{2}\d{7}$'
+    return re.match(pattern_1, DLN) is not None or re.match(pattern_2, DLN) is not None
+
 
 def is_valid_serialnumber(s):
     return isinstance(s, str) and 10 <= len(s) <= 17
