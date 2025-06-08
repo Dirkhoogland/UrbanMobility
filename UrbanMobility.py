@@ -1,6 +1,6 @@
 ﻿import DatabaseSetup
 import Databasefunctions
-import Menus , Servicemedewerker, SysAdmin
+import Menus , Servicemedewerker, SysAdmin, Superadmin
 from Menus import toon_dynamisch_menu
 # programming debug for editing db
 # DatabaseSetup.Databasesetupstart()
@@ -20,9 +20,9 @@ def Start():
     login = True;
     while login == True:
         # username = input("Vul je username in: ")
-        username = "_jan.01"
+        username = "super_admin"
         # password = input("Vul je password in: ")
-        password = "S3cure#Pass!12"
+        password = "Admin_123?"
         check = Databasefunctions.login(username, password)
         if check == True: 
             login = False
@@ -38,7 +38,7 @@ def Start():
         print()
 
         if user[1] == 0:
-            toon_dynamisch_menu(Menus.super(), "Super Administrator Menu")
+            Superadmin.SuperMenu(user)
             
         if user[1] == 1:
             SysAdmin.SysMenu(user)
