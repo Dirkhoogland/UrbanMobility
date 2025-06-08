@@ -1,6 +1,6 @@
 ﻿import DatabaseSetup
 import Databasefunctions
-import Menus , Servicemedewerker, SysAdmin, Superadmin
+import Menus , Servicemedewerker, SysAdmin, Superadmin, Validator
 from Menus import toon_dynamisch_menu
 # programming debug for editing db
 # DatabaseSetup.Databasesetupstart()
@@ -19,10 +19,10 @@ def getuserrank(rank):
 def Start():
     login = True;
     while login == True:
-        # username = input("Vul je username in: ")
-        username = "super_admin"
-        # password = input("Vul je password in: ")
-        password = "Admin_123?"
+        username = input("Vul je username in: ")
+        username = Validator.sanitize_input(username)
+        password = input("Vul je password in: ")
+        password = Validator.sanitize_input(password)
         check = Databasefunctions.login(username, password)
         if check == True: 
             login = False
