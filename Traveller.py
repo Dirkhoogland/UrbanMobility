@@ -28,7 +28,7 @@ def AddTraveller():
     while True:
         firstname = ""
         while firstname == "":
-            firstname = str(input("Firstname: ")).strip()
+            firstname = str(input("Firstname: ")).capitalize().strip()
         
         if(firstname == "*"):
             quit = True
@@ -36,7 +36,7 @@ def AddTraveller():
 
         lastname = ""
         while lastname == "":
-            lastname = str(input("Lastname: ")).strip()
+            lastname = str(input("Lastname: ")).capitalize().strip()
 
         if(lastname == "*"):
             quit = True
@@ -78,18 +78,18 @@ def AddTraveller():
             quit = True
             break
 
-        NewzipCode = "-1"  # place holder
-        while is_valid_zipCode(NewzipCode):
-            NewzipCode = str(input("Zipcode: ")).upper().strip()
-            if(NewzipCode == "*"):
+        zipCode = "-1"  # place holder
+        while is_valid_zipCode(zipCode) == False:
+            zipCode = str(input("Zipcode: ")).upper().strip()
+            if(zipCode == "*"):
                 quit = True
                 break
-            if is_valid_phone(NewzipCode) == False:
+            if is_valid_zipCode(zipCode) == False:
                 print("Zipcode must start with 2 letters and end with 4 numbers")
                 print("Example:")
                 print("AB1234")
     
-        if(NewzipCode == "*"):
+        if(zipCode == "*"):
             quit = True
             break
 
@@ -142,24 +142,24 @@ def AddTraveller():
         break
         
     if quit == False:
-        Add(firstname, lastname, birthday, gender, streetname, housenumber, city, email, phonenumber, DLN)
+        Add(firstname, lastname, birthday, gender, streetname, housenumber, zipCode, city, email, phonenumber, DLN)
     else:
         print("aborted adding traveller process")
  
 
 def Add(Firstname, Lastname, Birthday, Gender, Streetname, 
-        Housenumber, City, EmailAdress, MobilePhone, DrivingLiscenceNumber):
+        Housenumber, zipCode, City, EmailAdress, MobilePhone, DrivingLiscenceNumber):
     try:
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
         traveller = [
-            (Firstname, Lastname, Birthday, Gender, Streetname, Housenumber, City, EmailAdress, MobilePhone, DrivingLiscenceNumber)
+            (Firstname, Lastname, Birthday, Gender, Streetname, Housenumber, zipCode, City, EmailAdress, MobilePhone, DrivingLiscenceNumber)
         ]
         cursor.executemany('''
         INSERT INTO Traveller (
             Firstname, Lastname, Birthday, Gender, Streetname, Housenumber, 
-            City, EmailAdress, MobilePhone, DrivingLiscenceNumber
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            zipCode, City, EmailAdress, MobilePhone, DrivingLiscenceNumber
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', traveller)
 
         conn.commit()
@@ -195,7 +195,7 @@ def Update(Email):
                 if option == 1:
                     Newfirstname = ""
                     while Newfirstname == "":
-                        Newfirstname = str(input("New Firstname: ")).strip()
+                        Newfirstname = str(input("New Firstname: ")).capitalize().strip()
 
                     cursor.execute('''
                         UPDATE traveller SET Firstname = ? WHERE EmailAdress = ?
@@ -207,7 +207,7 @@ def Update(Email):
                 if option == 2:
                     Newlastname = ""
                     while Newlastname == "":
-                        Newlastname = str(input("New Lastname: ")).strip()
+                        Newlastname = str(input("New Lastname: ")).capitalize().strip()
                     cursor.execute('''
                         UPDATE traveller SET Lastname = ? WHERE EmailAdress = ?
                     ''', (Newlastname, Email))
