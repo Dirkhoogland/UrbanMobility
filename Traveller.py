@@ -1,8 +1,5 @@
 import sqlite3
 import os
-import Hasher
-import Validator 
-import datetime
 from Validator import is_valid_email, is_valid_phone, is_valid_DLN
 from Menus import toon_dynamisch_menu, TravelerUpdateOptions, genderOption, cityOption
 from Manager import BirthdayManager, GenderManager, cityManager
