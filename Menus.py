@@ -36,7 +36,7 @@ def scooterinfo(rank):
         return ["Update Scooter", "Get Scooter attributes", "Add new Scooter", "Delete Scooter", "Update information Scooter"]
     
 def TravelerUpdateOptions():
-    return ["Firstname", "Lastname", "Birthday", "Gender", "Streetname", "Housenumber", "City", "Phonenumber", "DrivingsLicenceNumber", "Quit Update Menu" ]
+    return ["Firstname", "Lastname", "Birthday", "Gender", "Streetname", "Housenumber", "Zipcode", "City", "Phonenumber", "DrivingsLicenceNumber", "Quit Update Menu" ]
 
 def scooterattributes():
 

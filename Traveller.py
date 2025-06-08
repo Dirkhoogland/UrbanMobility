@@ -1,6 +1,6 @@
 import sqlite3
 import os
-from Validator import is_valid_email, is_valid_phone, is_valid_DLN
+from Validator import is_valid_email, is_valid_phone, is_valid_DLN, is_valid_zipCode
 from Menus import toon_dynamisch_menu, TravelerUpdateOptions, genderOption, cityOption
 from Manager import BirthdayManager, GenderManager, cityManager
 
@@ -157,144 +157,164 @@ def Update(Email):
     cursor = conn.cursor()
 
     while True:
-        travller = View(Email)
-        if travller == None:
-            print("user not found")
-            break
-
-        print(travller)
-        
-        print()
-        print("what do you want to update?")
-        toon_dynamisch_menu(TravelerUpdateOptions(), "Traveller Update Menu")
         try:
-            option = int(input("Select option: "))
-        except ValueError:
-            print("invalid input, choose a number.")
-            continue
-        if option == 1:
-            Newfirstname = ""
-            while Newfirstname == "":
-                Newfirstname = str(input("New Firstname: ")).strip()
-
-            cursor.execute('''
-                UPDATE traveller SET Firstname = ? WHERE EmailAdress = ?
-            ''', (Newfirstname, Email,))
-           
-            conn.commit()
-            print("Update on Firstname succesfull")
-
-        if option == 2:
-            Newlastname = ""
-            while Newlastname == "":
-                Newlastname = str(input("New Lastname: ")).strip()
-            cursor.execute('''
-                UPDATE traveller SET Lastname = ? WHERE EmailAdress = ?
-            ''', (Newlastname, Email))
-
-            conn.commit()
-            print("Update on Lastname succesfull")
-
-        if option == 3:
-            while True:
-                Newbirthday = BirthdayManager()
-
-                cursor.execute('''
-                UPDATE traveller SET Birthday = ? WHERE EmailAdress = ?
-                ''', (Newbirthday, Email))
-
-                conn.commit()
-                print("Update on Birthday succesfull")
+            traveller = View(Email)
+            if traveller == None:
+                print("user not found")
                 break
-                
-        if option == 4:
-            # Gender update
-            gender = GenderManager()
 
-            if gender == "F" or gender == "M":
+            print(traveller)
+            
+            print()
+            print("what do you want to update?")
+            toon_dynamisch_menu(TravelerUpdateOptions(), "Traveller Update Menu")
+            try:
+                option = int(input("Select option: "))
+            except ValueError:
+                print("invalid input, choose a number.")
+                continue
+            if option == 1:
+                Newfirstname = ""
+                while Newfirstname == "":
+                    Newfirstname = str(input("New Firstname: ")).strip()
 
                 cursor.execute('''
-                UPDATE traveller SET Gender = ? WHERE EmailAdress = ?
-                ''', (gender, Email))
+                    UPDATE traveller SET Firstname = ? WHERE EmailAdress = ?
+                ''', (Newfirstname, Email,))
+            
+                conn.commit()
+                print("Update on Firstname succesfull")
+
+            if option == 2:
+                Newlastname = ""
+                while Newlastname == "":
+                    Newlastname = str(input("New Lastname: ")).strip()
+                cursor.execute('''
+                    UPDATE traveller SET Lastname = ? WHERE EmailAdress = ?
+                ''', (Newlastname, Email))
 
                 conn.commit()
-                print("Update on Gender succesfull")
+                print("Update on Lastname succesfull")
 
-        if option == 5:
-            Newstreetname = ""
-            while Newstreetname == "":
-                Newstreetname = str(input("New Streetname: ")).strip()
-            conn.execute('''
-                UPDATE traveller SET Streetname = ? WHERE EmailAdress = ?
-            ''', (Newstreetname, Email))
+            if option == 3:
+                while True:
+                    Newbirthday = BirthdayManager()
 
-            conn.commit()
-            print("Update on Streetname succesfull")
+                    cursor.execute('''
+                    UPDATE traveller SET Birthday = ? WHERE EmailAdress = ?
+                    ''', (Newbirthday, Email))
 
-        if option == 6:
-            Newhousenumber = -1
-            while Newhousenumber < 0:
-                try:
-                    Newhousenumber = int(input("New Streetnumber: "))
-                except ValueError:
-                    print("Only numbers allowed")
-                    continue
-                if(Newhousenumber < 0): 
-                    print("No negative housenumbers allowed")
+                    conn.commit()
+                    print("Update on Birthday succesfull")
+                    break
+                    
+            if option == 4:
+                # Gender update
+                gender = GenderManager()
 
-            cursor.execute('''
-                UPDATE traveller SET HouseNumber = ? WHERE EmailAdress = ?
-            ''', (Newhousenumber, Email))
+                if gender == "F" or gender == "M":
 
-            conn.commit()
-            print("Update on Housenumber succesfull")
+                    cursor.execute('''
+                    UPDATE traveller SET Gender = ? WHERE EmailAdress = ?
+                    ''', (gender, Email))
 
-        if option == 7:
-            Newcity = "UNKNOWN" # place holder
-            Newcity = cityManager()
-            cursor.execute('''
-                UPDATE traveller SET City = ? WHERE EmailAdress = ?
-            ''', (Newcity, Email))
+                    conn.commit()
+                    print("Update on Gender succesfull")
 
-            conn.commit()
-            print("Update on City succesfull")
+            if option == 5:
+                Newstreetname = ""
+                while Newstreetname == "":
+                    Newstreetname = str(input("New Streetname: ")).strip()
+                conn.execute('''
+                    UPDATE traveller SET Streetname = ? WHERE EmailAdress = ?
+                ''', (Newstreetname, Email))
 
-        if option == 8:
-            # phonenumber
-            phonenumber = ""
-            while is_valid_phone(phonenumber) == False:
-                phonenumber = str(input("PhoneNumber: ")).strip()
-                if is_valid_phone(phonenumber) == False:
-                    print("phonenumber must have the lenght of 7 - 15")
-                    print("Example:")
-                    print("0612345678")
+                conn.commit()
+                print("Update on Streetname succesfull")
 
-            cursor.execute('''
-                UPDATE traveller SET MobilePhone = ? WHERE EmailAdress = ?
-            ''', (phonenumber, Email))
+            if option == 6:
+                Newhousenumber = -1
+                while Newhousenumber < 0:
+                    try:
+                        Newhousenumber = int(input("New Streetnumber: "))
+                    except ValueError:
+                        print("Only numbers allowed")
+                        continue
+                    if(Newhousenumber < 0): 
+                        print("No negative housenumbers allowed")
+
+                cursor.execute('''
+                    UPDATE traveller SET HouseNumber = ? WHERE EmailAdress = ?
+                ''', (Newhousenumber, Email))
+
+                conn.commit()
+                print("Update on Housenumber succesfull")
+
+            if option == 7:
+                NewzipCode = "-1"  # place holder
+                while is_valid_zipCode(NewzipCode):
+                    NewzipCode = str(input("Zipcode: ")).upper().strip()
+                    if is_valid_phone(NewzipCode) == False:
+                        print("Zipcode must start with 2 letters and end ith 4 numbers")
+                        print("Example:")
+                        print("AB1234")
+
+                cursor.execute('''
+                    UPDATE traveller SET Zipcode = ? WHERE EmailAdress = ?
+                ''', (NewzipCode, Email))
+
+                conn.commit()
+                print("Update on Zipcode succesfull")
+
+            if option == 8:
+                Newcity = "UNKNOWN" # place holder
+                Newcity = cityManager()
+                cursor.execute('''
+                    UPDATE traveller SET City = ? WHERE EmailAdress = ?
+                ''', (Newcity, Email))
+
+                conn.commit()
+                print("Update on City succesfull")
+                
+
+            if option == 9:
+                # phonenumber
+                phonenumber = "-1" # place holder
+                while is_valid_phone(phonenumber) == False:
+                    phonenumber = str(input("PhoneNumber: ")).strip()
+                    if is_valid_phone(phonenumber) == False:
+                        print("phonenumber must have the lenght of 7 - 15")
+                        print("Example:")
+                        print("0612345678")
+
+                cursor.execute('''
+                    UPDATE traveller SET MobilePhone = ? WHERE EmailAdress = ?
+                ''', (phonenumber, Email))
+                
+                conn.commit()
+                print("Update on MobilePhone succesfull")
+                
+            if option == 10:
+                DLN = "-1" # place holder
+                while is_valid_DLN(DLN) == False:
+                    DLN = str(input("DrivingsLicenceNumber: ")).upper().strip()
+                    if is_valid_DLN(DLN) == False:
+                        print("DrivingsLicenceNumber must have the fellowing pattern: r'^[A-Z]{1}\d{8}$' or r'^[A-Z]{2}\d{7}$'")
+                        print("Example:")
+                        print("AB1234567")
+                        print("A12345678")
+                
+                cursor.execute('''
+                    UPDATE traveller SET DrivingLiscenceNumber = ? WHERE EmailAdress = ?
+                ''', (DLN, Email))
+
+                conn.commit()
+                print("Update on DrivingLiscenceNumber succesfull")
             
-            conn.commit()
-            print("Update on MobilePhone succesfull")
+            if option == 11:
+                conn.close()
+                break
             
-        if option == 9:
-            # drivings licence
-            DLN = ""
-            while is_valid_DLN(DLN) == False:
-                DLN = str(input("DrivingsLicenceNumber: ")).upper().strip()
-                if is_valid_DLN(DLN) == False:
-                    print("DrivingsLicenceNumber must have the fellowing pattern: r'^[A-Z]{1}\d{8}$' or r'^[A-Z]{2}\d{7}$'")
-                    print("Example:")
-                    print("AB1234567")
-                    print("A12345678")
-            
-            cursor.execute('''
-                UPDATE traveller SET DrivingLiscenceNumber = ? WHERE EmailAdress = ?
-            ''', (DLN, Email))
-
-            conn.commit()
-            print("Update on DrivingLiscenceNumber succesfull")
-        
-        if option == 10:
-            conn.close()
-            break
+        except sqlite3.OperationalError:
+            print("An error accured rebooting...")
     

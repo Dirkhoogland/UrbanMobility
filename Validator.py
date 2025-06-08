@@ -10,7 +10,9 @@ def is_valid_phone(phone):
     pattern = r'^\+?\d{7,15}$'  
     return re.match(pattern, phone) is not None
 
-
+def is_valid_zipCode(zipCode):
+    pattern = r'^[A-Z]{2}\d{4}$'
+    return re.match(pattern, zipCode) is not None
 
 # checks if dates are valid and not in the future
 def is_valid_iso_date(date_str):
