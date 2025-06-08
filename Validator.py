@@ -11,7 +11,7 @@ def is_valid_phone(phone):
     return re.match(pattern, phone) is not None
 
 def is_valid_zipCode(zipCode):
-    pattern = r'^[A-Z]{2}\d{4}$'
+    pattern = r'^\d{4}[A-Z]{2}$'
     return re.match(pattern, zipCode) is not None
 
 # checks if dates are valid and not in the future

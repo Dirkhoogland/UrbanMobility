@@ -87,7 +87,7 @@ def AddTraveller():
             if is_valid_zipCode(zipCode) == False:
                 print("Zipcode must start with 2 letters and end with 4 numbers")
                 print("Example:")
-                print("AB1234")
+                print("1234AB")
     
         if(zipCode == "*"):
             quit = True

@@ -118,9 +118,9 @@ def filldatabase():
     ''', scooters)
 
     travellers = [
-    ("Anna", "Jansen", "1990-05-12", "F", "Lindelaan", 23, "AB1234", "Rotterdam", "anna.jansen@example.com", "0612345678", "NL123456789"),
-    ("Tom", "de Boer", "1985-11-03", "M", "Beukenstraat", 57, "CD5678", "Rotterdam", "tom.boer@example.com", "0687654321", "NL987654321"),
-    ("Fatima", "El Amrani", "1998-07-25", "F", "Kastanjelaan", 11, "EF2025", "Rotterdam", "fatima.amrani@example.com", "0699988776", "NL112233445"),
+    ("Anna", "Jansen", "1990-05-12", "F", "Lindelaan", 23, "1234AB", "Rotterdam", "anna.jansen@example.com", "0612345678", "NL123456789"),
+    ("Tom", "de Boer", "1985-11-03", "M", "Beukenstraat", 57, "5678CD", "Rotterdam", "tom.boer@example.com", "0687654321", "NL987654321"),
+    ("Fatima", "El Amrani", "1998-07-25", "F", "Kastanjelaan", 11, "2025EF", "Rotterdam", "fatima.amrani@example.com", "0699988776", "NL112233445"),
     ]
 
     cursor.executemany('''
