@@ -18,8 +18,6 @@ def View(Email):
     
     return target
     
-    
-
 def abortAdd(string):
     return string == "*"
 
@@ -78,6 +76,21 @@ def AddTraveller():
         if(city == "*"):
             quit = True
             break
+
+        # NewzipCode = "-1"  # place holder
+        # while is_valid_zipCode(NewzipCode):
+        #     NewzipCode = str(input("Zipcode: ")).upper().strip()
+        #     if(NewzipCode == "*"):
+        #         quit = True
+        #         break
+        #     if is_valid_phone(NewzipCode) == False:
+        #         print("Zipcode must start with 2 letters and end ith 4 numbers")
+        #         print("Example:")
+        #         print("AB1234")
+    
+        # if(NewzipCode == "*"):
+        #     quit = True
+        #     break
 
         email = ""
         while is_valid_email(email) == False:
@@ -314,7 +327,7 @@ def Update(Email):
             if option == 11:
                 conn.close()
                 break
-            
+
         except sqlite3.OperationalError:
             print("An error accured rebooting...")
     
