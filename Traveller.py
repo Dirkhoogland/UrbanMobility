@@ -94,7 +94,7 @@ def AddTraveller():
             break
 
         email = ""
-        while is_valid_email(email) == False:
+        while True:
             email = str(input("Email: ")).strip()
             if(email == "*"):
                 quit = True
@@ -103,6 +103,12 @@ def AddTraveller():
                 print("Email must have the fellowing pattern")
                 print("Example:")
                 print("example@gmail.com")
+                continue
+            if View(email) != None:
+                print(f"A user with email of '{email}' already exists,\nyou can update existing user data by ussing the update menu if it requires changes")
+                email = ""
+                continue
+
 
         if(email == "*"):
             quit = True
@@ -275,7 +281,7 @@ def Update(Email):
                 NewzipCode = "-1"  # place holder
                 while is_valid_zipCode(NewzipCode) == False:
                     NewzipCode = str(input("Zipcode: ")).upper().strip()
-                    if is_valid_phone(NewzipCode) == False:
+                    if is_valid_zipCode(NewzipCode) == False:
                         print("Zipcode must start with 2 letters and end with 4 numbers")
                         print("Example:")
                         print("AB1234")
