@@ -7,7 +7,7 @@ def is_valid_email(email):
 
 # checks if phone numbers are valid
 def is_valid_phone(phone):
-    pattern = r'^\+?\d{7,15}$'  
+    pattern = r'^31-6-\d{8}$'  
     return re.match(pattern, phone) is not None
 
 def is_valid_zipCode(zipCode):
