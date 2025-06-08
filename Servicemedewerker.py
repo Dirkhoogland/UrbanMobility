@@ -1,4 +1,4 @@
-import Scooter, Gebruiker , Menus , Databasefunctions , Profiles
+import Scooter, Gebruiker , Menus , Databasefunctions , Profiles , Validator
 
 def ServiceMenu(user):
     menu = True
@@ -7,7 +7,7 @@ def ServiceMenu(user):
         Menus.toon_dynamisch_menu(opties, "Service medewerker")
 
         optie = input("Wat wil je openen: ")
-
+        optie = Validator.sanitize_input(optie)
         if optie == '1':
             Scooter.UpdateScooter(user)
         if optie == '2':
@@ -19,6 +19,8 @@ def ServiceMenu(user):
         if optie == '5':
             menu == False
             return
+
+
 
 
 

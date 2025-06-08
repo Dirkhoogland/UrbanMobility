@@ -21,7 +21,7 @@ def system():
     return ["Add/modify Service Engineer","Add/modify travellers", "Check Users", "Scooter info/update", "Update Password", "Update Profile","Delete account","Back up system","Restore back up","View logs", "Logout"]
 
 def super():
-    return ["Add/modify Service Engineer", "Check Users", "Update Scooter","Get Scooter attributes", "Update Password", "Logout"]
+    return ["Add/modify Service Engineer", "Add/modify systeem Admin", "Update Scooter","Get Scooter attributes", "Update Password", "Logout"]
 
 def addmodifyengineermenu():
     return ["Add new Service Engineer", "Modifty Service Engineer", "Remove Service Engineer", "Reset Service Engineer Password",]
