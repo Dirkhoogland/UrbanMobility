@@ -4,7 +4,8 @@ import Hasher
 import Validator 
 import datetime
 from Validator import is_valid_email, is_valid_phone, is_valid_DLN
-from Menus import toon_dynamisch_menu, TravelerUpdateOptions, genderOption
+from Menus import toon_dynamisch_menu, TravelerUpdateOptions, genderOption, cityOption
+from Manager import BirthdayManager, GenderManager, cityManager
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 db_path = os.path.join(script_dir, "Database.db")
@@ -22,61 +23,6 @@ def View(Email):
 
 def abortAdd(string):
     return string == "*"
-
-def BirthdayManager():
-    while True:
-        try:
-            Newbirthday = str(input("New Birthday (yyyy-mm-dd): ")).strip()
-            frag = Newbirthday.split('-')
-
-            if len(frag) != 3:
-                print("Wrong format used, use the following format: (2025-01-01)")
-                continue
-            
-            # year = int(frag[0]) 
-            # month = int(frag[1])
-            # day = int(frag[2])
-
-            # 1 => 01 (month)
-            if len(frag[1]) == 1: 
-                frag[1] = "0" + frag[1]
-
-            # 1 => 01 (day)
-            if len(frag[2]) == 1: 
-                frag[2] = "0" + frag[2]
-
-            Newbirthday = frag[0] + "-" + frag[1] + "-" + frag[2]
-            
-            parsed_date = datetime.datetime.strptime(Newbirthday, "%Y-%m-%d").date() # used to check if date is valid
-
-            return Newbirthday
-        
-        except:
-            print("wrong format used, use fellowing format: (2025-01-01)")
-
-def GenderManager():
-    toon_dynamisch_menu(genderOption(), "Select Gender")
-    while True:
-        try:
-            choice = int(input("select option: "))
-        except ValueError:
-            print("invalid input, choose between number: ")
-            continue
-
-        if choice == 1:
-            gender = "F"
-            break
-        
-        if choice == 2:
-            gender = "M"
-            break
-
-        print("invalid input, choose between number: ")
-        print("[1] ♀ Female")
-        print("[2] ♂ Male")
-        continue
-
-    return gender
 
 def AddTraveller():
     print("press * and enter at any point abort adding process")
@@ -128,9 +74,7 @@ def AddTraveller():
             if(housenumber < 0): 
                 print("No negative housenumbers allowed")
 
-        city = ""
-        while city == "":
-            city = str(input("City: ")).strip()
+        city = cityManager()
 
         if(city == "*"):
             quit = True
@@ -301,15 +245,15 @@ def Update(Email):
             print("Update on Housenumber succesfull")
 
         if option == 7:
-            Newcity = ""
+            Newcity = "UNKNOWN" # place holder
             while Newcity == "":
-                Newcity = str(input("New City: ")).strip()
+                Newcity = cityManager()
             cursor.execute('''
                 UPDATE traveller SET City = ? WHERE EmailAdress = ?
             ''', (Newcity, Email))
 
             conn.commit()
-            print("Update on Streetname succesfull")
+            print("Update on City succesfull")
 
         if option == 8:
             # phonenumber
@@ -326,7 +270,7 @@ def Update(Email):
             ''', (phonenumber, Email))
             
             conn.commit()
-            print("Update on DrivingLiscenceNumber succesfull")
+            print("Update on MobilePhone succesfull")
             
         if option == 9:
             # drivings licence

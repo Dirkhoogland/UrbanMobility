@@ -53,6 +53,12 @@ def scooterattributes():
 def genderOption():
     return ["♀ Female", "♂ Male"]
 
+def cityOption():
+    options = ["Rotterdam", "The Hague", "Amsterdam", "Barendrecht", "Ridderkerk", "Capelle aan den IJssel", "Krimpen aan den IJssel", "Rhoon", "Schiedam", "Zoetemeer"] 
+    options.sort() # op alphabetische volgorde
+    return options
+
+
     
 
 
