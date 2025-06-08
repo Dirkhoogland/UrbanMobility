@@ -90,13 +90,13 @@ def cityManager():
             return "Rhoon" 
 
         if choice == 6:
-            return "Ridderker"
+            return "Ridderkerk"
         
         if choice == 7:
             return "Rotterdam"
         
         if choice == 8:
-            return "Schiendame"
+            return "Schiendam"
         
         if choice == 9:
             return "The Hague"

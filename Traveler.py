@@ -17,9 +17,11 @@ def View(Email):
         SELECT * FROM Traveller WHERE EmailAdress = ?
     ''', (Email,))
     target = cursor.fetchone()
-    print(target)
-    
     conn.close()
+    
+    return target
+    
+    
 
 def abortAdd(string):
     return string == "*"
@@ -158,7 +160,13 @@ def Update(Email):
     cursor = conn.cursor()
 
     while True:
-        View(Email)
+        travller = View(Email)
+        if travller == None:
+            print("user not found")
+            break
+
+        print(travller)
+        
         print()
         print("what do you want to update?")
         toon_dynamisch_menu(TravelerUpdateOptions(), "Traveller Update Menu")
@@ -246,8 +254,7 @@ def Update(Email):
 
         if option == 7:
             Newcity = "UNKNOWN" # place holder
-            while Newcity == "":
-                Newcity = cityManager()
+            Newcity = cityManager()
             cursor.execute('''
                 UPDATE traveller SET City = ? WHERE EmailAdress = ?
             ''', (Newcity, Email))
