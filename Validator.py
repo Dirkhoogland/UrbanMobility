@@ -1,5 +1,16 @@
 import re
 from datetime import datetime, date
+
+def sanitize_input(user_input: str) -> str:
+
+    # Verwijder SQL-injectiegevoelige tekens
+    dangerous_patterns = r"['\";]|--|(/\*.*?\*/)|(\b(SELECT|INSERT|DELETE|DROP|UPDATE|UNION|OR|AND)\b)"
+    safe_input = re.sub(dangerous_patterns, "", user_input, flags=re.IGNORECASE)
+
+    # Optioneel: trim spaties
+    return safe_input.strip()
+
+
 # checks if emails are valid
 def is_valid_email(email):
     pattern = r'^[\w\.-]+@[\w\.-]+\.\w+$'
@@ -10,10 +21,33 @@ def is_valid_phone(phone):
     pattern = r'^31-6-\d{8}$'  
     return re.match(pattern, phone) is not None
 
+
 def is_valid_zipCode(zipCode):
     pattern = r'^\d{4}[A-Z]{2}$'
     return re.match(pattern, zipCode) is not None
 
+
+def is_valid_username(username):
+    pattern = r"^[a-z_][a-z0-9_.']{7,9}$"  # 1e char letter/_ + 7-9 rest = totaal 8-10
+    return bool(re.fullmatch(pattern, username, re.IGNORECASE))
+
+def is_valid_password(password):
+ 
+    if not 12 <= len(password) <= 30:
+        return False
+
+    # Vereiste tekens, kleine letter, hooftletters, cijfers en tekens.
+    if not re.search(r"[a-z]", password):  
+        return False
+    if not re.search(r"[A-Z]", password):
+        return False
+    if not re.search(r"[0-9]", password):  
+        return False
+    if not re.search(r"[~!@#$%&_\-+=`|\\(){}\[\]:;\"'<>,.?/]", password):
+        return False
+
+
+    return True
 # checks if dates are valid and not in the future
 def is_valid_iso_date(date_str):
     try:

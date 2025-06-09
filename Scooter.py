@@ -1,6 +1,6 @@
 from time import sleep
 import Databasefunctions
-import Menus 
+import Menus , Validator
 
 def UpdateScooter(user):
     print("Wat is het Serialnumber van de scooter, vul in q om terug te gaan.")
@@ -39,12 +39,25 @@ def UpdateScooter(user):
     # Invoer vragen (Enter = ongewijzigd)
     print("Laat leeg om huidige waarde te behouden:")
     speed = input(f"Nieuwe Top Speed (huidig: {scooter[4]}): ").strip()
+    speed = Validator.sanitize_input(speed)
+
     capacity = input(f"Nieuwe Battery Capacity (huidig: {scooter[5]}): ").strip()
+    capacity = Validator.sanitize_input(capacity)
+
     charge = input(f"Nieuwe State of Charge (huidig: {scooter[6]}): ").strip()
+    charge = Validator.sanitize_input(charge)
+
     Trs = input(f"Nieuwe Target range SoC (huidig: {scooter[7]}): ").strip()
+    Trs = Validator.sanitize_input(Trs)
+
     outofservice = input(f"Out of Service (0 of 1) (huidig: {scooter[10]}): ").strip()
+    outofservice = Validator.sanitize_input(outofservice)
+
     milage = input(f"Nieuwe Mileage (huidig: {scooter[11]}): ").strip()
+    milage = Validator.sanitize_input(milage)
+
     lastmain = input(f"Last Service Date (YYYY-MM-DD) (huidig: {scooter[12]}): ").strip()
+    lastmain = Validator.sanitize_input(lastmain)
 
     # Alleen wijzigen als input niet leeg is
     if speed:
@@ -64,6 +77,7 @@ def UpdateScooter(user):
 
     check = input("Wil je deze updaten? Y/N")
     check.upper();
+    check = Validator.sanitize_input(check)
     Scooter = scooter
     if check == "Y":
         Databasefunctions.Scooterupdate(Scooter)

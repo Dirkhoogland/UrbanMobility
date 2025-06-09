@@ -1,6 +1,7 @@
 ﻿from datetime import date
 import sqlite3
 import os
+from tabnanny import check
 import Hasher
 import Validator
 
@@ -177,3 +178,82 @@ def searchprofile(user_id):
     else:
         print("Geen profiel gevonden voor deze gebruiker.")
         return None
+
+def add_user(username, password, rank):
+
+    check = check_user(username)
+    if check == False:
+        conn = sqlite3.connect(db_path)
+        conn.execute("PRAGMA foreign_keys = ON") 
+        cursor = conn.cursor()
+        hashed_pw = Hasher.hash_password(password)
+        try:
+            cursor.execute('''
+               INSERT INTO Users (Rank, Username, Password )
+                VALUES (?, ?, ?)
+            ''', (rank, username, hashed_pw))
+
+            conn.commit()
+            print("User succesvol aangemaakt.")
+        except sqlite3.Error as e:
+            print(f"Fout bij aanmaken User: {e}")
+            conn.close()
+            return False
+
+        conn.close()
+        return True
+    else:
+        print("Username bestaat al")
+        return False
+
+def check_user(username):
+    conn = sqlite3.connect(db_path)
+    conn.execute("PRAGMA foreign_keys = ON") 
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM Users WHERE Username = ?", (username,))
+    user = cursor.fetchone()
+    conn.close()
+
+    if user:
+
+        return True
+    else:
+
+        return False
+def get_user(username):
+    conn = sqlite3.connect(db_path)
+    conn.execute("PRAGMA foreign_keys = ON") 
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM Users WHERE Username = ?", (username,))
+    user = cursor.fetchone()
+    conn.close()
+
+    if user:
+
+        return user
+    else:
+
+        return
+# Systeem admin
+
+def CreateServiceMedewerker(username, password, firstname, lastname):
+   check = add_user(username, password, 2)
+   if check:
+       user = get_user(username)
+       if user:
+            add_profile_for_user(user[0], firstname, lastname)
+       else:
+           print("Error creating profile, could not find user")
+   return
+
+# super admin 
+
+def CreateSysteemAdmin(username, password, firstname, lastname):
+   check = add_user(username, password, 1)
+   if check:
+       user = get_user(username)
+       if user:
+            add_profile_for_user(user[0], firstname, lastname)
+       else:
+           print("Error creating profile, could not find user")
+   return
