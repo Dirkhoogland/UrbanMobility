@@ -18,8 +18,13 @@ def is_valid_email(email):
 
 # checks if phone numbers are valid
 def is_valid_phone(phone):
-    pattern = r'^\+?\d{7,15}$'  
+    pattern = r'^31-6-\d{8}$'  
     return re.match(pattern, phone) is not None
+
+
+def is_valid_zipCode(zipCode):
+    pattern = r'^\d{4}[A-Z]{2}$'
+    return re.match(pattern, zipCode) is not None
 
 
 def is_valid_username(username):
@@ -40,6 +45,7 @@ def is_valid_password(password):
         return False
     if not re.search(r"[~!@#$%&_\-+=`|\\(){}\[\]:;\"'<>,.?/]", password):
         return False
+
 
     return True
 # checks if dates are valid and not in the future

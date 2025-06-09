@@ -68,6 +68,7 @@ def createdatabase():
     Gender TEXT NOT NULL,
     Streetname TEXT NOT NULL,
     Housenumber INTEGER NOT NULL,
+    Zipcode TEXT NOT NULL,
     City TEXT NOT NULL, 
     EmailAdress TEXT NOT NULL,
     MobilePhone TEXT NOT NULL,
@@ -117,16 +118,16 @@ def filldatabase():
     ''', scooters)
 
     travellers = [
-    ("Anna", "Jansen", "1990-05-12", "F", "Lindelaan", 23, "Rotterdam", "anna.jansen@example.com", "0612345678", "NL123456789"),
-    ("Tom", "de Boer", "1985-11-03", "M", "Beukenstraat", 57, "Rotterdam", "tom.boer@example.com", "0687654321", "NL987654321"),
-    ("Fatima", "El Amrani", "1998-07-25", "F", "Kastanjelaan", 11, "Rotterdam", "fatima.amrani@example.com", "0699988776", "NL112233445"),
+    ("Anna", "Jansen", "1990-05-12", "F", "Lindelaan", 23, "1234AB", "Rotterdam", "anna.jansen@example.com", "+31-6-06123456", "NL1234567"),
+    ("Tom", "de Boer", "1985-11-03", "M", "Beukenstraat", 57, "5678CD", "Rotterdam", "tom.boer@example.com", "+31-6-06876543", "NL9876543"),
+    ("Fatima", "El Amrani", "1998-07-25", "F", "Kastanjelaan", 11, "2025EF", "Rotterdam", "fatima.amrani@example.com", "+31-6-06999887", "NL1122334"),
     ]
 
     cursor.executemany('''
     INSERT INTO Traveller (
         Firstname, Lastname, Birthday, Gender, Streetname, Housenumber, 
-        City, EmailAdress, MobilePhone, DrivingLiscenceNumber
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ZipCode, City, EmailAdress, MobilePhone, DrivingLiscenceNumber
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ''', travellers)
 
 

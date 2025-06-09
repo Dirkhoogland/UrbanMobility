@@ -36,7 +36,7 @@ def scooterinfo(rank):
         return ["Update Scooter", "Get Scooter attributes", "Add new Scooter", "Delete Scooter", "Update information Scooter"]
     
 def TravelerUpdateOptions():
-    return ["Firstname", "Lastname", "Birthday", "Gender", "Streetname", "Housenumber", "City", "Phonenumber", "DrivingsLicenceNumber", "Quit Update Menu" ]
+    return ["Firstname", "Lastname", "Birthday", "Gender", "Streetname", "Housenumber", "Zipcode", "City", "Phonenumber", "DrivingsLicenceNumber", "Quit Update Menu" ]
 
 def scooterattributes():
 
@@ -52,6 +52,12 @@ def scooterattributes():
 
 def genderOption():
     return ["♀ Female", "♂ Male"]
+
+def cityOption():
+    options = ["Rotterdam", "The Hague", "Amsterdam", "Barendrecht", "Ridderkerk", "Capelle aan den IJssel", "Krimpen aan den IJssel", "Rhoon", "Schiedam", "Zoetemeer"] 
+    options.sort() # op alphabetische volgorde
+    return options
+
 
     
 
