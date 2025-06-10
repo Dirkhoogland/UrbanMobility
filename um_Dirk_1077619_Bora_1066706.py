@@ -6,5 +6,5 @@ from Menus import toon_dynamisch_menu, cityOption
 if __name__ == "__main__":
     print("versie 1.16") # om build te checken
     Databasesetupstart()
-    Update("anna.jansen@example.com")
+    # Update("anna.jansen@example.com")
     Start()

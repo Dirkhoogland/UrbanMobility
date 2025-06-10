@@ -32,11 +32,12 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Menus.py" />
+     <Compile Include="Manager.py" />   
     <Compile Include="Scooter.py" />
     <Compile Include="Servicemedewerker.py" />
     <Compile Include="UrbanMobility.py" />
     <Compile Include="Validator.py" />
-    <Compile Include="Traveler.py" />
+    <Compile Include="Traveller.py" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in

@@ -162,6 +162,7 @@ def add_profile_for_user(user_id, firstname, lastname):
 
 def searchprofile(user_id):
     conn = sqlite3.connect(db_path)
+    conn.execute("PRAGMA foreign_keys = ON") 
     cursor = conn.cursor()
 
     cursor.execute("SELECT * FROM Profiles WHERE UserID = ?", (user_id,))
@@ -170,10 +171,10 @@ def searchprofile(user_id):
     conn.close()
 
     if profiel:
-        print("Profiel gevonden:")
-        print(f"Voornaam: {profiel[2]}")
-        print(f"Achternaam: {profiel[3]}")
-        print(f"Registratiedatum: {profiel[4]}")
+        # print("Profiel gevonden:")
+        # print(f"Voornaam: {profiel[2]}")
+        # print(f"Achternaam: {profiel[3]}")
+        # print(f"Registratiedatum: {profiel[4]}")
         return profiel
     else:
         print("Geen profiel gevonden voor deze gebruiker.")
@@ -234,6 +235,25 @@ def get_user(username):
     else:
 
         return
+
+def updateprofile(id ,firstname, lastname):
+    conn = sqlite3.connect(db_path)
+    conn.execute("PRAGMA foreign_keys = ON") 
+    cursor = conn.cursor()
+    try:
+        cursor.execute('''
+            UPDATE Profiles
+            SET Firstname = ?,
+            Lastname = ? 
+            WHERE ID = ?
+        ''', (firstname,lastname, id))
+
+        conn.commit()
+        print("Profile succesfully edited.")
+    except sqlite3.Error as e:
+        print("Error while editing:", e)
+    finally:
+        conn.close()
 # Systeem admin
 
 def CreateServiceMedewerker(username, password, firstname, lastname):
@@ -245,6 +265,23 @@ def CreateServiceMedewerker(username, password, firstname, lastname):
        else:
            print("Error creating profile, could not find user")
    return
+def updateServiceEngineername(Engineer, username):
+    conn = sqlite3.connect(db_path)
+    conn.execute("PRAGMA foreign_keys = ON") 
+    cursor = conn.cursor()
+    try:
+        cursor.execute('''
+            UPDATE Users
+            SET Username = ?
+            WHERE ID = ?
+        ''', (username, Engineer[0]))
+
+        conn.commit()
+        print("User succesfully edited.")
+    except sqlite3.Error as e:
+        print("Error while editing:", e)
+    finally:
+        conn.close()
 
 # super admin 
 
