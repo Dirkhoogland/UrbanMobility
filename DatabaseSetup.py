@@ -1,5 +1,6 @@
 import sqlite3
 import os
+from datetime import date
 
 import Databasefunctions
 import Hasher
@@ -23,24 +24,100 @@ def Databasesetupstart():
 
 
 # functie om Db te checken
-def is_database_empty():
-     conn = sqlite3.connect(db_path)
-     cursor = conn.cursor()
+def is_database_empty(path = db_path):
+    if os.path.exists(path) == False:
+        os.makedirs(path, exist_ok=True)
+    
+    conn = sqlite3.connect(path)
+    cursor = conn.cursor()
 
-      # Query om te kijken of er tabellen zijn in de database
-     cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
-     tables = cursor.fetchall()
+    # Query om te kijken of er tabellen zijn in de database
+    cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+    tables = cursor.fetchall()
 
-     conn.close()
+    conn.close()
 
-     # Als er geen tabellen zijn, is de database leeg.
-     return len(tables) == 0
+    # Als er geen tabellen zijn, is de database leeg.
+    return len(tables) == 0
+
+def is_backup_empty(path = db_path):
+    conn = sqlite3.connect(path)
+    cursor = conn.cursor()
+
+    # Query om te kijken of er tabellen zijn in de database
+    cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+    tables = cursor.fetchall()
+
+    conn.close()
+
+    # Als er geen tabellen zijn, is de database leeg.
+    return len(tables) == 0
+    
+
+def CreateBackup():
+    today = date.today() # ussing dates to save backups should save on performance and will searching for backups easier for the user.
+    kopie = 0 # increament kopie until a emptyfile is found 
+    db_backup = f"Backups\{today}\{db_path}({kopie})"
+    if is_database_empty(db_backup):
+        return # create no backup in empty db
+    
+    while True:
+        db_backup = f"Backups\{today}\{db_path}({kopie})"
+        if(is_database_empty(db_backup)):
+            break
+        else:
+            kopie = kopie + 1
+
+    
+    conn = sqlite3.connect(db_backup)
+    cursor = conn.cursor()
+
+    profiles = cursor.execute("SELECT * FROM profiles").fetchall()
+    travellers = cursor.execute("SELECT * FROM traveller").fetchall()
+    scooters = cursor.execute("SELECT * FROM scooters").fetchall()
+    users = cursor.execute("SELECT * FROM users").fetchall()
+
+    conn.close()
+
+    createdatabase(db_backup)
+    conn = sqlite3.connect(db_backup)
+    cursor = conn.cursor()
+
+    cursor.executemany('''
+    INSERT INTO Scooters (
+        Brand, Model, Serialnumber, TopSpeed, BatteryCapacity, 
+        Soc, TargetRangeSoC, longitude, latitude, 
+        OutOfServiceStatus, Mileage, LastMaintainanceDate
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ''', scooters)
+
+    cursor.executemany('''
+    INSERT INTO Traveller (
+        Firstname, Lastname, Birthday, Gender, Streetname, Housenumber, 
+        ZipCode, City, EmailAdress, MobilePhone, DrivingLiscenceNumber
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ''', travellers)
+
+    cursor.executemany('''
+    INSERT INTO Users
+        (Rank, Username, Password) 
+        VALUES (?, ?, ?)
+    ''', users)
+
+    cursor.executemany('''
+    INSERT INTO Profiles
+        (ID, UserID, Firstname, Lastname, Registerdate)
+        VALUES (?, ?, ?)
+    ''', profiles)
+
+    print("Backup created")
 
 
- # cities = ["Rotterdam", "Delf", "Den haag", "Schiedam", "Dordrecht", "Gouda", "Zoetermeer", "Barendrecht", "Spijkernisse", "Vlaardingen"]
+
+# cities = ["Rotterdam", "Delf", "Den haag", "Schiedam", "Dordrecht", "Gouda", "Zoetermeer", "Barendrecht", "Spijkernisse", "Vlaardingen"]
 # Creates the Database
-def createdatabase():
-    conn = sqlite3.connect(db_path)
+def createdatabase(path = db_path):
+    conn = sqlite3.connect(path)
     conn.execute("PRAGMA foreign_keys = ON")
     cursor = conn.cursor()
     cursor.execute('''CREATE TABLE Users (ID INTEGER PRIMARY KEY AUTOINCREMENT,
