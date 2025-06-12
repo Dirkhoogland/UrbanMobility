@@ -69,55 +69,17 @@ def CreateBackup():
             kopie = kopie + 1
 
     try:
-        conn = sqlite3.connect(db_path)
-        cursor = conn.cursor()
+        # clone db
+        with sqlite3.connect(db_path) as source, sqlite3.connect(db_backup) as dest:
+            source.backup(dest)
 
-        profiles = tuple(cursor.execute("SELECT * FROM Profiles").fetchall())
-        travellers = tuple(cursor.execute("SELECT * FROM Traveller").fetchall())
-        scooters = tuple(cursor.execute("SELECT * FROM Scooters").fetchall())
-        users = tuple(cursor.execute("SELECT * FROM Users").fetchall())
-
-        conn.close()
-
-        createdatabase(db_backup)
-        conn = sqlite3.connect(db_backup)
-        cursor = conn.cursor()
-
-        cursor.executemany('''
-        INSERT INTO Scooters (
-            ID, Brand, Model, Serialnumber, TopSpeed, BatteryCapacity, 
-            Soc, TargetRangeSoC, longitude, latitude, 
-            OutOfServiceStatus, Mileage, LastMaintainanceDate
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ''', scooters)
-
-        cursor.executemany('''
-        INSERT INTO Traveller (
-            ID, Firstname, Lastname, Birthday, Gender, Streetname, Housenumber, 
-            ZipCode, City, EmailAdress, MobilePhone, DrivingLiscenceNumber
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ''', travellers)
-
-        cursor.executemany('''
-        INSERT INTO Users
-            (ID, Rank, Username, Password) 
-            VALUES (?, ?, ?, ?)
-        ''', users)
-
-        cursor.executemany('''
-        INSERT INTO Profiles
-            (ID, UserID, Firstname, Lastname, RegistrationDate)
-            VALUES (? ,? ,?, ?, ?)
-        ''', profiles)
-
-        conn.commit()
 
         print("Backup created")
     except Exception as e:
         print(f"Failed to make backup: {e}")
-    finally:
-        if conn:
-            conn.close()
+    # finally:
+    #     if conn:
+    #         conn.close()
 
 
 
