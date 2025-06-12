@@ -25,8 +25,8 @@ def Databasesetupstart():
 
 # functie om Db te checken
 def is_database_empty(path = db_path):
-    if os.path.exists(path) == False:
-        os.makedirs(path, exist_ok=True)
+    if not os.path.exists(path):
+        os.makedirs(os.path.dirname(path), exist_ok=True)
     
     conn = sqlite3.connect(path)
     cursor = conn.cursor()
@@ -57,60 +57,67 @@ def is_backup_empty(path = db_path):
 def CreateBackup():
     today = date.today() # ussing dates to save backups should save on performance and will searching for backups easier for the user.
     kopie = 0 # increament kopie until a emptyfile is found 
-    db_backup = f"Backups\{today}\{db_path}({kopie})"
-    if is_database_empty(db_backup):
+    if is_database_empty(db_path):
         return # create no backup in empty db
     
     while True:
-        db_backup = f"Backups\{today}\{db_path}({kopie})"
+        db_backup = f"Backups\{today}\Database({kopie}).db"
+        db_backup = os.path.join(script_dir, db_backup) # creates path to this project
         if(is_database_empty(db_backup)):
             break
         else:
             kopie = kopie + 1
 
-    
-    conn = sqlite3.connect(db_backup)
-    cursor = conn.cursor()
+    try:
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
 
-    profiles = cursor.execute("SELECT * FROM profiles").fetchall()
-    travellers = cursor.execute("SELECT * FROM traveller").fetchall()
-    scooters = cursor.execute("SELECT * FROM scooters").fetchall()
-    users = cursor.execute("SELECT * FROM users").fetchall()
+        profiles = tuple(cursor.execute("SELECT * FROM Profiles").fetchall())
+        travellers = tuple(cursor.execute("SELECT * FROM Traveller").fetchall())
+        scooters = tuple(cursor.execute("SELECT * FROM Scooters").fetchall())
+        users = tuple(cursor.execute("SELECT * FROM Users").fetchall())
 
-    conn.close()
+        conn.close()
 
-    createdatabase(db_backup)
-    conn = sqlite3.connect(db_backup)
-    cursor = conn.cursor()
+        createdatabase(db_backup)
+        conn = sqlite3.connect(db_backup)
+        cursor = conn.cursor()
 
-    cursor.executemany('''
-    INSERT INTO Scooters (
-        Brand, Model, Serialnumber, TopSpeed, BatteryCapacity, 
-        Soc, TargetRangeSoC, longitude, latitude, 
-        OutOfServiceStatus, Mileage, LastMaintainanceDate
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    ''', scooters)
+        cursor.executemany('''
+        INSERT INTO Scooters (
+            ID, Brand, Model, Serialnumber, TopSpeed, BatteryCapacity, 
+            Soc, TargetRangeSoC, longitude, latitude, 
+            OutOfServiceStatus, Mileage, LastMaintainanceDate
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', scooters)
 
-    cursor.executemany('''
-    INSERT INTO Traveller (
-        Firstname, Lastname, Birthday, Gender, Streetname, Housenumber, 
-        ZipCode, City, EmailAdress, MobilePhone, DrivingLiscenceNumber
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    ''', travellers)
+        cursor.executemany('''
+        INSERT INTO Traveller (
+            ID, Firstname, Lastname, Birthday, Gender, Streetname, Housenumber, 
+            ZipCode, City, EmailAdress, MobilePhone, DrivingLiscenceNumber
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', travellers)
 
-    cursor.executemany('''
-    INSERT INTO Users
-        (Rank, Username, Password) 
-        VALUES (?, ?, ?)
-    ''', users)
+        cursor.executemany('''
+        INSERT INTO Users
+            (ID, Rank, Username, Password) 
+            VALUES (?, ?, ?, ?)
+        ''', users)
 
-    cursor.executemany('''
-    INSERT INTO Profiles
-        (ID, UserID, Firstname, Lastname, Registerdate)
-        VALUES (?, ?, ?)
-    ''', profiles)
+        cursor.executemany('''
+        INSERT INTO Profiles
+            (ID, UserID, Firstname, Lastname, RegistrationDate)
+            VALUES (? ,? ,?, ?, ?)
+        ''', profiles)
 
-    print("Backup created")
+        conn.commit()
+
+        print("Backup created")
+    except Exception as e:
+        print(f"Failed to make backup: {e}")
+    finally:
+        if conn:
+            conn.close()
 
 
 
@@ -167,8 +174,6 @@ def createdatabase(path = db_path):
     Mileage INTEGER,
     LastMaintainanceDate TEXT NOT NULL -- ISO 8601 format: YYYY-MM-DD
     )''')
-
-
 
     conn.close()
 
