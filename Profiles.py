@@ -1,4 +1,4 @@
-import Databasefunctions, Validator
+import Databasefunctions, Validator, Menus , Gebruiker
 
 def ViewProfile(user):
 
@@ -8,8 +8,22 @@ def ViewProfile(user):
     print(f"Lastname: {profiel[3]}")
     print(f"Registrationdate: {profiel[4]}")
 
-    input("Druk op Enter om door te gaan...")
-    return profiel
+    menu = True
+    while menu == True:
+        opties = Menus.profiles()
+        Menus.toon_dynamisch_menu(opties, "Profile menu")
+
+        optie = input("What do you want to open: ")
+        optie = Validator.sanitize_input(optie)
+        if optie == '1':
+            Updateprofile(user, user[0])
+        if optie == '2':
+            Gebruiker.changepassword(user)      
+        if optie == '3':
+           Gebruiker.Deleteuser(user)
+
+    #input("Druk op Enter om door te gaan...")
+    # return profiel
 
 
 def Updateprofile(user, id):

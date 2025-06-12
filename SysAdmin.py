@@ -1,6 +1,8 @@
+from email.policy import default
+from pickle import FALSE
 import Scooter, Gebruiker , Menus , Databasefunctions , Profiles, Servicemedewerker, Validator
 import Validator 
-def Addservicemedewerker(user):
+def Addservice(user):
     print("New service Engineer.")
     check = input("Do you want to continue Y/N: ")    
     check = Validator.sanitize_input(check)
@@ -34,41 +36,6 @@ def Addservicemedewerker(user):
         print("Cancelled creation")
 
         return
-def UpdateEngineer(user):
-    print("Edit service Engineer.")
-    check = input("Do you want to continue Y/N: ")    
-    check = Validator.sanitize_input(check)
-    check.upper();
-    #
-    if check == "Y":
-        engineer = input("Which engineer: (username)")
-        engineer = Validator.sanitize_input(engineer)
-        data = Databasefunctions.get_user(engineer)
-        if data[1] == 2:
-  
-
-            print(f" You want to edit user info: {data[2]} with Id {data[0]} and Rank {data[1]}")
-            checkuser = input("Do you want to continue Y/N: ")    
-            checkuser = Validator.sanitize_input(checkuser)
-            checkuser.upper();
-
-
-            if checkuser == "Y":
-               print("You can only edit the username.")
-               newusername = input("New Username: ")
-               newusername = Validator.sanitize_input(newusername)
-               Databasefunctions.updateServiceEngineername(engineer, newusername)
-
-               checkforprofile = input("Do you want to update their profile? Y/N")
-               checkforprofile = Validator.sanitize_input(checkforprofile)
-               checkforprofile.upper();
-               if checkforprofile == "Y":
-                   Profiles.Updateprofile(engineer)
-               else:
-                    return
-        else:
-            print("User is not a service engineer.")
-            return
 def ServiceEngineeredit(user):
     menu = True
     while menu == True:
@@ -77,15 +44,18 @@ def ServiceEngineeredit(user):
         optie = input("What do you want to open: ")
         optie = Validator.sanitize_input(optie)
         if optie == '1':
-            Addservicemedewerker(user)
+            Addservice(user)
         if optie == '2':
-            UpdateEngineer(user)
+            Gebruiker.UpdateEngineer(user)
         if optie == '3':
-           Scooter.Getattributes(user)
+            Gebruiker.Deleteother(user)
         if optie == '4':
-            Gebruiker.changepassword(user)
+            Gebruiker.changepasswordengineer(user)
         if optie == '5':
             Profiles.ViewProfile(user)
+        else:
+            menu = False
+            SysMenu(user)
 
 
 
@@ -98,30 +68,24 @@ def SysMenu(user):
         optie = input("What do you want to open: ")
         optie = Validator.sanitize_input(optie)
         if optie == '1':
-            return
+            Gebruiker.ViewUserlist(user)
         if optie == '2':
-            ServiceEngineeredit(user)         
+            ServiceEngineeredit(user)  
         if optie == '3':
-           Scooter.Getattributes(user)
+            ServiceEngineeredit(user)   
         if optie == '4':
-            Gebruiker.changepassword(user)
+           Scooter.Getattributes(user)
         if optie == '5':
-            Profiles.ViewProfile(user)
+            Profiles.ViewProfile(user) #             Gebruiker.Updatepassword(user) profiles.updateprofile()             Gebruiker.deleteaccount
         if optie == '6':
-            return 
+            Databasefunctions.backup(user)
         if optie == '7':
-            return 
+            Databasefunctions.logs()
         if optie == '8':
-            return 
-        if optie == '9':
-            return 
-        if optie == '10':
-            return 
-        if optie == '11':
-            return 
-        if optie == '12':
             menu == False
             return
+        else:
+            SysMenu(user)
 
 
 

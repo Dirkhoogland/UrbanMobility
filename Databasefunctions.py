@@ -221,6 +221,7 @@ def check_user(username):
     else:
 
         return False
+
 def get_user(username):
     conn = sqlite3.connect(db_path)
     conn.execute("PRAGMA foreign_keys = ON") 
@@ -235,6 +236,29 @@ def get_user(username):
     else:
 
         return
+
+def get_users(user):
+   conn = sqlite3.connect(db_path)
+   conn.execute("PRAGMA foreign_keys = ON") 
+   cursor = conn.cursor()
+   try:
+    cursor.execute('''
+        SELECT Users.ID, Users.Rank, Users.Username, Profiles.Firstname, Profiles.Lastname
+        FROM Users
+        JOIN Profiles ON Users.ID = Profiles.UserID
+    ''')
+
+    rows = cursor.fetchall()
+    conn.close()
+
+    gebruikers_lijst = []
+    for row in rows:
+        gebruiker_str = f"ID: {row[0]} | Rank: {row[1]} | Username: {row[2]} | Firstname: {row[3]} | Lastname: {row[4]}"
+        gebruikers_lijst.append(gebruiker_str)
+   except sqlite3.Error as e:
+        print("Error at:", e)
+        return False
+   return gebruikers_lijst
 
 def updateprofile(id ,firstname, lastname):
     conn = sqlite3.connect(db_path)
@@ -257,15 +281,20 @@ def updateprofile(id ,firstname, lastname):
 # Systeem admin
 
 def CreateServiceMedewerker(username, password, firstname, lastname):
-   check = add_user(username, password, 2)
+  check = add_user(username, password, 2)
+  try:
    if check:
        user = get_user(username)
        if user:
             add_profile_for_user(user[0], firstname, lastname)
        else:
            print("Error creating profile, could not find user")
-   return
-def updateServiceEngineername(Engineer, username):
+  except sqlite3.Error as e:
+        print("Error at:", e)
+        return False
+  return
+
+def updateServiceEngineername(Engineer, username, user):
     conn = sqlite3.connect(db_path)
     conn.execute("PRAGMA foreign_keys = ON") 
     cursor = conn.cursor()
@@ -282,6 +311,57 @@ def updateServiceEngineername(Engineer, username):
         print("Error while editing:", e)
     finally:
         conn.close()
+
+def Deleteaccount(user):
+    conn = sqlite3.connect(db_path)
+    conn.execute("PRAGMA foreign_keys = ON") 
+    try:
+
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM Profiles WHERE UserID = ?", (user[0],))
+
+
+        cursor.execute("DELETE FROM Users WHERE ID = ?", (user[0],))
+
+        conn.commit()
+        conn.close()
+
+        print(f"User successfully deleted returning to login.")
+        return True
+
+    except sqlite3.Error as e:
+        print("Error at:", e)
+        return False
+
+def Deleteaccount(engineer, user):
+    conn = sqlite3.connect(db_path)
+    conn.execute("PRAGMA foreign_keys = ON") 
+    try:
+
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM Profiles WHERE UserID = ?", (engineer[0],))
+
+
+        cursor.execute("DELETE FROM Users WHERE ID = ?", (engineer[0],))
+
+        conn.commit()
+        conn.close()
+
+        print(f"User successfully deleted.")
+        return True
+
+    except sqlite3.Error as e:
+        print("Error at:", e)
+        return False
+
+def passwordchangeengineer(user, pw ):
+        hashed_pw = Hasher.hash_password(pw)
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+        cursor.execute("UPDATE Users SET Password = ? WHERE ID = ?", (hashed_pw, user[0]))
+        conn.commit()                 
+        conn.close()  
+        print("Password updated.")
 
 # super admin 
 

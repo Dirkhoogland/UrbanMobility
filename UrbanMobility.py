@@ -15,13 +15,17 @@ def getuserrank(rank):
     if rank == 2:
         return "Service Engineer"
 
-
+    #     (1, '_jan.01', 'S3cure#Pass!12'),
 def Start():
     login = True;
     while login == True:
-        username = input("Vul je username in: ")
+       # username = input("Vul je username in: ")
+       # username = '_jan.01'
+        username = 'Mark_007'
         username = Validator.sanitize_input(username)
-        password = input("Vul je password in: ")
+    #    password = input("Vul je password in: ")
+       # password = 'S3cure#Pass!12'
+        password = 'Strong!Pass123$'
         password = Validator.sanitize_input(password)
         check = Databasefunctions.login(username, password)
         if check == True: 
