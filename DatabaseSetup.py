@@ -91,6 +91,19 @@ def createdatabase():
     LastMaintainanceDate TEXT NOT NULL -- ISO 8601 format: YYYY-MM-DD
     )''')
 
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS ActionLog (
+            ID INTEGER PRIMARY KEY AUTOINCREMENT,
+            Action TEXT NOT NULL,
+            UserID INTEGER,
+            Username TEXT NOT NULL,
+            Timestamp TEXT NOT NULL,
+            Result TEXT,
+            Severity TEXT,
+            FOREIGN KEY(UserID) REFERENCES Users(ID)
+        )
+    ''')
+    conn.commit()
 
 
     conn.close()

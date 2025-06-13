@@ -40,7 +40,7 @@ def changepasswordengineer(user):
 
             check = Validator.sanitize_input(check)
             if check == 'CONFIRM':
-             Databasefunctions.passwordchangeengineer(user, nieuwpassword)
+             Databasefunctions.passwordchangeengineer(data, nieuwpassword, user)
 
 
         else:

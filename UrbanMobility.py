@@ -20,12 +20,12 @@ def Start():
     login = True;
     while login == True:
        # username = input("Vul je username in: ")
-       # username = '_jan.01'
-        username = 'Mark_007'
+        username = '_jan.01'
+       # username = 'Mark_007'
         username = Validator.sanitize_input(username)
     #    password = input("Vul je password in: ")
-       # password = 'S3cure#Pass!12'
-        password = 'Strong!Pass123$'
+        password = 'S3cure#Pass!12'
+      #  password = 'Strong!Pass123$'
         password = Validator.sanitize_input(password)
         check = Databasefunctions.login(username, password)
         if check == True: 
@@ -49,62 +49,3 @@ def Start():
 
         if user[1] == 2:
             Servicemedewerker.ServiceMenu(user)
-
-            
-
-
-
-        # Admin:
-        # 1. Add/modify Service Engineer
-        # 2. Check Users
-        # 3. Update Scooter
-        # 4. Get Scooter attributes
-        # 5. Update Password
-        # 6. Logout
-        
-        # Admin
-        # if user[1] == 0:
-        #     AdminOptions()
-
-        # if user[1] == 1 
-        # 
-        # if user[1] == 2:
-
-
-        # User?
-        # if user == 1:
-        #     if opties == 1:
-
-        #     if opties == 2:
-
-        #     if opties == 3:
-
-        # ServiceMedewerker
-        # if user[2] == 2:
-        #     if opties == 1:
-
-        #     if opties == 2:
-
-        #     if opties == 3:
-
-    # def AdminOptions(choice):
-        # if choice == 1:
-            
-        # if choice == 2:
-        
-        # if choice == 3:
-
-        # if choice == 4:
-
-        # if choice == 5:
-
-        # if choice == 6:
-
-    # def ServiceOptions(choice):
-        # if choice == 1:
-
-        # if choice == 2:
-
-        # if choice == 3:
-
-        # if choice == 4:

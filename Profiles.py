@@ -46,7 +46,7 @@ def Updateprofile(user, id):
         if Newlastname:
             lastname = Newlastname
 
-        Databasefunctions.updateprofile(username, lastname, profile[0])
+        Databasefunctions.updateprofile(username, lastname, profile[0], user)
 
 
 
