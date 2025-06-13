@@ -63,16 +63,25 @@ def CreateBackup():
     while True:
         db_backup = f"Backups\{today}\Database({kopie}).db"
         db_backup = os.path.join(script_dir, db_backup) # creates path to this project
+        system_backup = f"D:\Backups\{today}\Database({kopie}).db" # ussing external drive as backup
+        system_backup = os.path.abspath(f"D:\UrbanMobility\Backups\{today}\Database({kopie}).db")
         if(is_database_empty(db_backup)):
             break
         else:
             kopie = kopie + 1
 
     try:
+        is_database_empty(system_backup) # creates os file
+        with sqlite3.connect(db_path) as source, sqlite3.connect(system_backup) as dest:
+            source.backup(dest) # Saves in external drive if present
+    except:
+        print("No external drive detected, to save the backups in a secured location")
+
+
+    try:
         # clone db
         with sqlite3.connect(db_path) as source, sqlite3.connect(db_backup) as dest:
-            source.backup(dest)
-
+            source.backup(dest) 
 
         print("Backup created")
     except Exception as e:
