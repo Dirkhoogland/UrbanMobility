@@ -1,5 +1,6 @@
 import sqlite3
 import os
+from datetime import date
 
 import Databasefunctions
 import Hasher
@@ -23,24 +24,69 @@ def Databasesetupstart():
 
 
 # functie om Db te checken
-def is_database_empty():
-     conn = sqlite3.connect(db_path)
-     cursor = conn.cursor()
+def is_database_empty(path = db_path):
+    if not os.path.exists(path):
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+    
+    conn = sqlite3.connect(path)
+    cursor = conn.cursor()
 
-      # Query om te kijken of er tabellen zijn in de database
-     cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
-     tables = cursor.fetchall()
+    # Query om te kijken of er tabellen zijn in de database
+    cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+    tables = cursor.fetchall()
 
-     conn.close()
+    conn.close()
 
-     # Als er geen tabellen zijn, is de database leeg.
-     return len(tables) == 0
+    # Als er geen tabellen zijn, is de database leeg.
+    return len(tables) == 0
+
+def is_backup_empty(path = db_path):
+    conn = sqlite3.connect(path)
+    cursor = conn.cursor()
+
+    # Query om te kijken of er tabellen zijn in de database
+    cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+    tables = cursor.fetchall()
+
+    conn.close()
+
+    # Als er geen tabellen zijn, is de database leeg.
+    return len(tables) == 0
+    
+
+def CreateBackup():
+    today = date.today() # ussing dates to save backups should save on performance and will searching for backups easier for the user.
+    kopie = 0 # increament kopie until a emptyfile is found 
+    if is_database_empty(db_path):
+        return # create no backup in empty db
+    
+    while True:
+        db_backup = f"Backups\{today}\Database({kopie}).db"
+        db_backup = os.path.join(script_dir, db_backup) # creates path to this project
+        if(is_database_empty(db_backup)):
+            break
+        else:
+            kopie = kopie + 1
+
+    try:
+        # clone db
+        with sqlite3.connect(db_path) as source, sqlite3.connect(db_backup) as dest:
+            source.backup(dest)
 
 
- # cities = ["Rotterdam", "Delf", "Den haag", "Schiedam", "Dordrecht", "Gouda", "Zoetermeer", "Barendrecht", "Spijkernisse", "Vlaardingen"]
+        print("Backup created")
+    except Exception as e:
+        print(f"Failed to make backup: {e}")
+    # finally:
+    #     if conn:
+    #         conn.close()
+
+
+
+# cities = ["Rotterdam", "Delf", "Den haag", "Schiedam", "Dordrecht", "Gouda", "Zoetermeer", "Barendrecht", "Spijkernisse", "Vlaardingen"]
 # Creates the Database
-def createdatabase():
-    conn = sqlite3.connect(db_path)
+def createdatabase(path = db_path):
+    conn = sqlite3.connect(path)
     conn.execute("PRAGMA foreign_keys = ON")
     cursor = conn.cursor()
     cursor.execute('''CREATE TABLE Users (ID INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -90,8 +136,6 @@ def createdatabase():
     Mileage INTEGER,
     LastMaintainanceDate TEXT NOT NULL -- ISO 8601 format: YYYY-MM-DD
     )''')
-
-
 
     conn.close()
 
