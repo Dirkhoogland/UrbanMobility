@@ -2,9 +2,12 @@ import re
 from datetime import datetime, date
 
 def sanitize_input(user_input: str) -> str:
-
+    string = input(user_input)
     # Verwijder SQL-injectiegevoelige tekens
+    
     dangerous_patterns = r"['\";]|--|(/\*.*?\*/)|(\b(SELECT|INSERT|DELETE|DROP|UPDATE|UNION|OR|AND)\b)"
+    white_list = r"[^a-zA-Z0-9 _\-.@]"
+    safe_input = re.sub(white_list, "", user_input)
     safe_input = re.sub(dangerous_patterns, "", user_input, flags=re.IGNORECASE)
 
     # Optioneel: trim spaties

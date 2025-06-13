@@ -1,6 +1,6 @@
 import sqlite3
 import os
-from Validator import is_valid_email, is_valid_phone, is_valid_DLN, is_valid_zipCode
+from Validator import is_valid_email, is_valid_phone, is_valid_DLN, is_valid_zipCode, sanitize_input
 from Menus import toon_dynamisch_menu, TravelerUpdateOptions, genderOption, cityOption
 from Manager import BirthdayManager, GenderManager, cityManager
 from DatabaseSetup import CreateBackup
@@ -29,7 +29,7 @@ def AddTraveller():
     while True:
         firstname = ""
         while firstname == "":
-            firstname = str(input("Firstname: ")).capitalize().strip()
+            firstname = str(sanitize_input("Firstname: ")).capitalize().strip()
         
         if(firstname == "*"):
             quit = True
@@ -37,7 +37,7 @@ def AddTraveller():
 
         lastname = ""
         while lastname == "":
-            lastname = str(input("Lastname: ")).capitalize().strip()
+            lastname = str(sanitize_input("Lastname: ")).capitalize().strip()
 
         if(lastname == "*"):
             quit = True
@@ -57,7 +57,7 @@ def AddTraveller():
 
         streetname = ""
         while streetname == "":
-            streetname = str(input("Streetname: ")).strip()
+            streetname = str(sanitize_input("Streetname: ")).strip()
 
         if(streetname == "*"):
             quit = True
@@ -66,7 +66,7 @@ def AddTraveller():
         housenumber = -1
         while housenumber < 0:
             try:
-                housenumber = int(input("Streetnumber: "))
+                housenumber = int(sanitize_input("Streetnumber: "))
             except ValueError:
                 print("Only numbers allowed")
                 continue
@@ -81,7 +81,7 @@ def AddTraveller():
 
         zipCode = "-1"  # place holder
         while is_valid_zipCode(zipCode) == False:
-            zipCode = str(input("Zipcode: ")).upper().strip()
+            zipCode = str(sanitize_input("Zipcode: ")).upper().strip()
             if(zipCode == "*"):
                 quit = True
                 break
@@ -96,7 +96,7 @@ def AddTraveller():
 
         email = ""
         while True:
-            email = str(input("Email: ")).strip()
+            email = str(sanitize_input("Email: ")).strip()
             if(email == "*"):
                 quit = True
                 break
@@ -134,7 +134,7 @@ def AddTraveller():
 
         DLN = ""
         while is_valid_DLN(DLN) == False:
-            DLN = str(input("DrivingsLicenceNumber in [AB1234567] or [A12345678] format: ")).upper().strip()
+            DLN = str(sanitize_input("DrivingsLicenceNumber in [AB1234567] or [A12345678] format: ")).upper().strip()
             if(DLN == "*"):
                 quit = True
                 break
@@ -205,7 +205,7 @@ def Update(Email):
             if option == 1:
                 Newfirstname = ""
                 while Newfirstname == "":
-                    Newfirstname = str(input("New Firstname: ")).capitalize().strip()
+                    Newfirstname = str(sanitize_input("New Firstname: ")).capitalize().strip()
 
                 cursor.execute('''
                     UPDATE traveller SET Firstname = ? WHERE EmailAdress = ?
@@ -217,7 +217,7 @@ def Update(Email):
             if option == 2:
                 Newlastname = ""
                 while Newlastname == "":
-                    Newlastname = str(input("New Lastname: ")).capitalize().strip()
+                    Newlastname = str(("New Lastname: ")).capitalize().strip()
                 cursor.execute('''
                     UPDATE traveller SET Lastname = ? WHERE EmailAdress = ?
                 ''', (Newlastname, Email))
@@ -253,7 +253,7 @@ def Update(Email):
             if option == 5:
                 Newstreetname = ""
                 while Newstreetname == "":
-                    Newstreetname = str(input("New Streetname: ")).strip()
+                    Newstreetname = str(sanitize_input("New Streetname: ")).strip()
                 conn.execute('''
                     UPDATE traveller SET Streetname = ? WHERE EmailAdress = ?
                 ''', (Newstreetname, Email))
@@ -282,7 +282,7 @@ def Update(Email):
             if option == 7:
                 NewzipCode = "-1"  # place holder
                 while is_valid_zipCode(NewzipCode) == False:
-                    NewzipCode = str(input("Zipcode: ")).upper().strip()
+                    NewzipCode = str(sanitize_input("Zipcode: ")).upper().strip()
                     if is_valid_zipCode(NewzipCode) == False:
                         print("Zipcode must start with 2 letters and end with 4 numbers")
                         print("Example:")
@@ -310,7 +310,7 @@ def Update(Email):
                 # phonenumber
                 Newphonenumber = "-1" # place holder
                 while is_valid_phone(Newphonenumber) == False:
-                    Newphonenumber = "31-6-" + str(input("PhoneNumber in format +31-6-DDDDDDDD: +31-6-")).strip()
+                    Newphonenumber = "31-6-" + str(sanitize_input("PhoneNumber in format +31-6-DDDDDDDD: +31-6-")).strip()
                     if is_valid_phone(Newphonenumber) == False:
                         print("phonenumber must have the lenght of 8")
                         print("Example:")
@@ -328,7 +328,7 @@ def Update(Email):
             if option == 10:
                 DLN = "-1" # place holder
                 while is_valid_DLN(DLN) == False:
-                    DLN = str(input("DrivingsLicenceNumber in [AB1234567] or [A12345678] format: ")).upper().strip()
+                    DLN = str(sanitize_input("DrivingsLicenceNumber in [AB1234567] or [A12345678] format: ")).upper().strip()
                     if is_valid_DLN(DLN) == False:
                         print("send an invalid DrivingsLicenceNumber format, use a valid format")
                         print("Example:")
