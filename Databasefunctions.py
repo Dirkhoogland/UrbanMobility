@@ -1,34 +1,77 @@
-﻿from datetime import date, datetime
+﻿from asyncio.windows_events import NULL
+from datetime import date, datetime, timedelta
 import sqlite3
 import os
 from tabnanny import check
 import Hasher
 import Validator
-
+   # cursor.execute('''
+   #      CREATE TABLE IF NOT EXISTS ActionLog (
+   #          ID INTEGER PRIMARY KEY AUTOINCREMENT,
+   #          Action TEXT NOT NULL,
+   #          UserID INTEGER,
+   #          Username TEXT NOT NULL,
+   #          Timestamp TEXT NOT NULL,
+   #          Result TEXT,
+   #          Severity TEXT,
+   #          Suspiscious TEXT,
+   #          FOREIGN KEY(UserID) REFERENCES Users(ID)
+   #      )
+   #  ''')
 script_dir = os.path.dirname(os.path.abspath(__file__))
 db_path = os.path.join(script_dir, "Database.db")
+
+def aantal_gefaalde_logins(user_id, minuten=10):
+    tijd_grens = datetime.now() - timedelta(minutes=minuten)
+    tijd_grens_str = tijd_grens.isoformat(timespec='seconds')
+
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    cursor.execute('''
+        SELECT COUNT(*) FROM ActionLog
+        WHERE UserID = ?
+        AND Action = 'Login poging'
+        AND Result = 'Ongeldig wachtwoord'
+        AND Timestamp >= ?
+    ''', (user_id, tijd_grens_str))
+    
+    aantal = cursor.fetchone()[0]
+    conn.close()
+    return aantal
 
 def login(Username, Password):
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM Users WHERE Username = ?", (Username,))
     user = cursor.fetchone()
+    max_pogingen = 5
+    pogingen = aantal_gefaalde_logins(user[0])
+
+    if pogingen >= max_pogingen:
+        print("Too many attempts try again later.")
+        log_actie("Login geblokkeerd", user, result="Te veel pogingen", "High", "Yes")
+        return False
     
     conn.close()
 
     if user is None:
-        print("Gebruiker niet gevonden.")
+        log_actie("Login poging", result="Gebruiker niet gevonden")
+        print("user not found.")
         return False
 
-    stored_hash = user[3]  
+    stored_hash = user[3]
 
     if Hasher.check_password(Password, stored_hash):
-        print("Inloggen gelukt!")
+        log_actie("Login poging", user, result="Succesvol")
+        print("Login successful!")
         return True
     else:
-        print("Ongeldig wachtwoord.")
+        log_actie("Login poging", user, result="Ongeldig wachtwoord")
+        print("invalid password.")
         return False
     
+
+
 # krijgt de user gegevens bij inlog
 def getuserdetails(Username):
     conn = sqlite3.connect(db_path)
@@ -38,15 +81,17 @@ def getuserdetails(Username):
     conn.close()
     return user
 
-def log_actie(action, user, result="", severity = "None"):
+def log_actie(action, user, result="", severity = "None", sus = "No"):
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
-
+    if user == NULL:
+        user[0] = 0
+        user[2] = "login attempt"
     timestamp = datetime.now().isoformat(timespec='seconds')
     cursor.execute('''
-        INSERT INTO ActionLog (Action, UserID,Username, Timestamp, Result, Severity)
-        VALUES (?, ?, ?, ?, ? , ?)
-    ''', (action, user[0], user[2], timestamp, result, severity))
+        INSERT INTO ActionLog (Action, UserID,Username, Timestamp, Result, Severity, Suspiscious)
+        VALUES (?, ?, ?, ?, ? , ?, ? )
+    ''', (action, user[0], user[2], timestamp, result, severity, sus))
 
     conn.commit()
     conn.close()

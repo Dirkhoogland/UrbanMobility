@@ -100,6 +100,7 @@ def createdatabase():
             Timestamp TEXT NOT NULL,
             Result TEXT,
             Severity TEXT,
+            Suspiscious TEXT,
             FOREIGN KEY(UserID) REFERENCES Users(ID)
         )
     ''')
