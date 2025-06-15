@@ -1,34 +1,69 @@
-﻿from datetime import date
+﻿from asyncio.windows_events import NULL
+from datetime import date, datetime, timedelta
 import sqlite3
 import os
 from tabnanny import check
 import Hasher
 import Validator
 
+
+
 script_dir = os.path.dirname(os.path.abspath(__file__))
 db_path = os.path.join(script_dir, "Database.db")
+
+def aantal_gefaalde_logins(user_id, minuten=10):
+    tijd_grens = datetime.now() - timedelta(minutes=minuten)
+    tijd_grens_str = tijd_grens.isoformat(timespec='seconds')
+
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    cursor.execute('''
+        SELECT COUNT(*) FROM ActionLog
+        WHERE UserID = ?
+        AND Action = 'Login poging'
+        AND Result = 'Ongeldig wachtwoord'
+        AND Timestamp >= ?
+    ''', (user_id, tijd_grens_str))
+    
+    aantal = cursor.fetchone()[0]
+    conn.close()
+    return aantal
 
 def login(Username, Password):
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM Users WHERE Username = ?", (Username,))
     user = cursor.fetchone()
-    
     conn.close()
+    max_pogingen = 3
+    if user != None:
+        pogingen = aantal_gefaalde_logins(user[0])
+
+        if pogingen >= max_pogingen:
+            print("Too many attempts try again later.")
+            log_actie("Login geblokkeerd", user, "Te veel pogingen", "High", "Yes")
+            return False
+    
+
 
     if user is None:
-        print("Gebruiker niet gevonden.")
+        log_actie("Login poging", "Gebruiker niet gevonden")
+        print("user not found.")
         return False
 
-    stored_hash = user[3]  
+    stored_hash = user[3]
 
     if Hasher.check_password(Password, stored_hash):
-        print("Inloggen gelukt!")
+        log_actie("Login poging", user, result="Succesvol")
+        print("Login successful!")
         return True
     else:
-        print("Ongeldig wachtwoord.")
+        log_actie("Login poging", user, result="Ongeldig wachtwoord")
+        print("invalid password.")
         return False
     
+
+
 # krijgt de user gegevens bij inlog
 def getuserdetails(Username):
     conn = sqlite3.connect(db_path)
@@ -38,7 +73,20 @@ def getuserdetails(Username):
     conn.close()
     return user
 
+def log_actie(action, user, result="", severity = "None", sus = "No"):
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    if user == NULL:
+        user[0] = 0
+        user[2] = "login attempt"
+    timestamp = datetime.now().isoformat(timespec='seconds')
+    cursor.execute('''
+        INSERT INTO ActionLog (Action, UserID,Username, Timestamp, Result, Severity, Suspiscious)
+        VALUES (?, ?, ?, ?, ? , ?, ? )
+    ''', (action, user[0], user[2], timestamp, result, severity, sus))
 
+    conn.commit()
+    conn.close()
 
 
 # scooter functies Service
@@ -139,7 +187,7 @@ def passwordchange(user, pw, oldpw):
         print("Ongeldig wachtwoord.")
         return False
 
-def add_profile_for_user(user_id, firstname, lastname):
+def add_profile_for_user(user_id, firstname, lastname, user):
     # Formaat: YYYY-MM-DD
     registration_date = date.today().isoformat()  
 
@@ -155,13 +203,40 @@ def add_profile_for_user(user_id, firstname, lastname):
 
         conn.commit()
         print("Profiel succesvol aangemaakt.")
+        log_actie(f" {user[2]} successfully  created a profile for {user_id}", user, 'success', 'normal')
+      
     except sqlite3.Error as e:
         print(f"Fout bij aanmaken profiel: {e}")
+        log_actie(f"Systeem admin {user[2]} failed to create a profile for {user_id}", user, 'fail', 'error')
     finally:
         conn.close()
 
+def setup_add_profile_for_user(user_id, firstname, lastname):
+    # Formaat: YYYY-MM-DD
+    registration_date = date.today().isoformat()  
+
+    conn = sqlite3.connect(db_path)
+    conn.execute("PRAGMA foreign_keys = ON") 
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute('''
+            INSERT INTO Profiles (UserID, Firstname, Lastname, RegistrationDate)
+            VALUES (?, ?, ?, ?)
+        ''', (user_id, firstname, lastname, registration_date))
+
+        conn.commit()
+        print("Profiel succesvol aangemaakt.")
+
+      
+    except sqlite3.Error as e:
+        print(f"Fout bij aanmaken profiel: {e}")
+        
+    finally:
+        conn.close()
 def searchprofile(user_id):
     conn = sqlite3.connect(db_path)
+    conn.execute("PRAGMA foreign_keys = ON") 
     cursor = conn.cursor()
 
     cursor.execute("SELECT * FROM Profiles WHERE UserID = ?", (user_id,))
@@ -170,16 +245,13 @@ def searchprofile(user_id):
     conn.close()
 
     if profiel:
-        print("Profiel gevonden:")
-        print(f"Voornaam: {profiel[2]}")
-        print(f"Achternaam: {profiel[3]}")
-        print(f"Registratiedatum: {profiel[4]}")
+
         return profiel
     else:
         print("Geen profiel gevonden voor deze gebruiker.")
         return None
 
-def add_user(username, password, rank):
+def add_user(username, password, rank, user):
 
     check = check_user(username)
     if check == False:
@@ -195,8 +267,11 @@ def add_user(username, password, rank):
 
             conn.commit()
             print("User succesvol aangemaakt.")
+            log_actie(f"{user[2]} successfully created account for {username}", user, 'success', 'normal')
+       
         except sqlite3.Error as e:
             print(f"Fout bij aanmaken User: {e}")
+            log_actie(f"{user[2]} failed to create account for {username}", user, 'fail', 'error')
             conn.close()
             return False
 
@@ -204,6 +279,7 @@ def add_user(username, password, rank):
         return True
     else:
         print("Username bestaat al")
+        log_actie(f"{user[2]} failed to create account for {username}", user, 'fail', 'error')
         return False
 
 def check_user(username):
@@ -220,6 +296,7 @@ def check_user(username):
     else:
 
         return False
+
 def get_user(username):
     conn = sqlite3.connect(db_path)
     conn.execute("PRAGMA foreign_keys = ON") 
@@ -234,17 +311,142 @@ def get_user(username):
     else:
 
         return
+
+def get_users(user):
+   conn = sqlite3.connect(db_path)
+   conn.execute("PRAGMA foreign_keys = ON") 
+   cursor = conn.cursor()
+   try:
+    cursor.execute('''
+        SELECT Users.ID, Users.Rank, Users.Username, Profiles.Firstname, Profiles.Lastname
+        FROM Users
+        JOIN Profiles ON Users.ID = Profiles.UserID
+    ''')
+
+    rows = cursor.fetchall()
+    conn.close()
+
+    gebruikers_lijst = []
+    for row in rows:
+        gebruiker_str = f"ID: {row[0]} | Rank: {row[1]} | Username: {row[2]} | Firstname: {row[3]} | Lastname: {row[4]}"
+        gebruikers_lijst.append(gebruiker_str)
+   except sqlite3.Error as e:
+        print("Error at:", e)
+        return False
+   return gebruikers_lijst
+
+def updateprofile(id ,firstname, lastname, user):
+    conn = sqlite3.connect(db_path)
+    conn.execute("PRAGMA foreign_keys = ON") 
+    cursor = conn.cursor()
+    try:
+        cursor.execute('''
+            UPDATE Profiles
+            SET Firstname = ?,
+            Lastname = ? 
+            WHERE ID = ?
+        ''', (firstname,lastname, id))
+
+        conn.commit()
+        conn.close()
+        print("Profile succesfully edited.")
+        log_actie(f"Systeem admin {user[2]} successfully updated their own profile", user, 'success', 'normal')
+      
+    except sqlite3.Error as e:
+        print("Error while editing:", e)
+        log_actie(f"Systeem admin {user[2]} failed to update their own profile", user, 'fail', 'error')
+
 # Systeem admin
 
-def CreateServiceMedewerker(username, password, firstname, lastname):
-   check = add_user(username, password, 2)
+def CreateServiceMedewerker(username, password, firstname, lastname, user):
+  check = add_user(username, password, 2, user)
+  try:
    if check:
-       user = get_user(username)
+       engineer = get_user(username)
        if user:
-            add_profile_for_user(user[0], firstname, lastname)
+            add_profile_for_user(engineer[0], firstname, lastname)
+            log_actie(f"Systeem admin {user[2]} successfully created profile for {engineer[2]}", user, 'success', 'normal')
        else:
            print("Error creating profile, could not find user")
-   return
+           log_actie(f"Systeem admin {user[2]} failed created profile for {engineer[2]}", user, 'success', 'normal')
+   
+  except sqlite3.Error as e:
+        print("Error at:", e)
+        log_actie(f"Systeem admin {user[2]} failed created profile for {engineer[2]}", user, 'success', 'normal')
+   
+        return False
+  return
+
+def updateServiceEngineername(Engineer, username, user):
+    conn = sqlite3.connect(db_path)
+    conn.execute("PRAGMA foreign_keys = ON") 
+    cursor = conn.cursor()
+    try:
+        cursor.execute('''
+            UPDATE Users
+            SET Username = ?
+            WHERE ID = ?
+        ''', (username, Engineer[0]))
+
+        conn.commit()
+        print("User succesfully edited.")
+        log_actie(f"Systeem admin {user[2]} successfully updated {Engineer[2]}", user, 'success', 'normal')
+    except sqlite3.Error as e:
+        print("Error while editing:", e)
+        log_actie(f"Systeem admin {user[2]} failed to update {Engineer[2]}", user, 'fail', 'error')
+    finally:
+        conn.close()
+
+def Deleteaccountown(user):
+    conn = sqlite3.connect(db_path)
+    conn.execute("PRAGMA foreign_keys = ON") 
+    cursor = conn.cursor()
+    try:
+
+
+        cursor.execute("DELETE FROM Users WHERE ID = ?", (user[0],))
+
+        conn.commit()
+        conn.close()
+
+        print(f"User successfully deleted returning to login.")
+        log_actie(f"Systeem admin {user[2]} deleted self", user, 'success', 'normal')
+        return True
+
+    except sqlite3.Error as e:
+        print("Error at:", e)
+        log_actie(f"Systeem admin {user[2]} failed to delete self", user, 'fail', 'error')
+        return False
+
+def Deleteaccount(engineer, user):
+    conn = sqlite3.connect(db_path)
+    conn.execute("PRAGMA foreign_keys = ON") 
+    cursor = conn.cursor()
+    try:
+
+        cursor.execute("DELETE FROM Users WHERE ID = ?", (engineer[0],))
+
+        conn.commit()
+        conn.close()
+
+        print(f"User successfully deleted.")
+        log_actie(f"Systeem admin {user[2]} deleted {engineer[2]}", user, 'success', 'normal')
+        return True
+
+    except sqlite3.Error as e:
+        log_actie(f"Systeem admin {user[2]} failed to delete {engineer[2]}", user, 'fail', 'error')
+        print("Error at:", e)
+        return False
+
+def passwordchangeengineer(engineer, pw, user ):
+        hashed_pw = Hasher.hash_password(pw)
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+        cursor.execute("UPDATE Users SET Password = ? WHERE ID = ?", (hashed_pw, engineer[0]))
+        conn.commit()                 
+        conn.close()  
+        print("Password updated.")
+        log_actie(f"Systeem admin {user[2]} changed password of {engineer[2]}", user, 'success', 'normal')
 
 # super admin 
 

@@ -105,15 +105,13 @@ def createdatabase(path = db_path):
     Password TEXT NOT NULL
     )''')
 
-    cursor.execute('''
-    CREATE TABLE Profiles (
-        ID INTEGER PRIMARY KEY AUTOINCREMENT,
-        UserID INTEGER NOT NULL,
-        Firstname TEXT NOT NULL,
-        Lastname TEXT NOT NULL,
-        RegistrationDate TEXT NOT NULL,  -- Gebruik ISO 8601: YYYY-MM-DD
-        FOREIGN KEY (UserID) REFERENCES Users(ID) ON DELETE CASCADE
-    )''')
+    cursor.execute('''CREATE TABLE Profiles (ID INTEGER PRIMARY KEY AUTOINCREMENT,
+    UserID INTEGER NOT NULL,
+    Firstname TEXT NOT NULL,
+    Lastname TEXT NOT NULL,
+    RegistrationDate TEXT NOT NULL,
+    FOREIGN KEY (UserID) REFERENCES Users(ID) ON DELETE CASCADE
+        )''')
 
     cursor.execute('''CREATE TABLE Traveller(
     ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -146,6 +144,24 @@ def createdatabase(path = db_path):
     Mileage INTEGER,
     LastMaintainanceDate TEXT NOT NULL -- ISO 8601 format: YYYY-MM-DD
     )''')
+
+
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS ActionLog (
+            ID INTEGER PRIMARY KEY AUTOINCREMENT,
+            Action TEXT NOT NULL,
+            UserID INTEGER,
+            Username TEXT NOT NULL,
+            Timestamp TEXT NOT NULL,
+            Result TEXT,
+            Severity TEXT,
+            Suspiscious TEXT,
+            FOREIGN KEY(UserID) REFERENCES Users(ID)
+        )
+    ''')
+    conn.commit()
+
+
 
     conn.close()
 
@@ -204,5 +220,5 @@ def filldatabase():
     conn.commit()
     conn.close()
     for userid,firstname, lastname in profiles:
-        Databasefunctions.add_profile_for_user(userid,firstname, lastname)
+        Databasefunctions.setup_add_profile_for_user(userid,firstname, lastname)
 

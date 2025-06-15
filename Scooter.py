@@ -90,6 +90,6 @@ def Getattributes(user):
     opties = Menus.scooterattributes()
 
     Menus.toon_dynamisch_menu(opties, "Scooter attributes")
-    input( "test")
+    input( "Press enter to continue . . .")
 
 
