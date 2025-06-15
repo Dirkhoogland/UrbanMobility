@@ -36,6 +36,11 @@ def Traveller_encrypt(traveller: tuple) -> tuple:
         traveller = list(traveller)
         traveller[0] = encrypt_message(traveller[0]) # Firstname
         traveller[1] = encrypt_message(traveller[1]) # Lastname
+        traveller[4] = encrypt_message(traveller[4]) # Streetname
+        traveller[6] = encrypt_message(traveller[6]) # Zipcode
+        traveller[8] = encrypt_message(traveller[8]) # Email
+        traveller[9] = encrypt_message(traveller[9]) # phonenumber
+        traveller[10] = encrypt_message(traveller[10]) # DLN
         traveller = tuple(traveller)
 
     return traveller
@@ -53,9 +58,14 @@ def Traveller_encrypt_many(travellers): # -> list<tuple>
 def traveller_decrypt(traveller: tuple) -> tuple:
     if traveller is not None:
         traveller = list(traveller)
-        # traveller[0] is Id
-        traveller[1] = encrypt_message(traveller[1]) # Firstname
-        traveller[2] = encrypt_message(traveller[2]) # Lastname
+        traveller[1] = decrypt_message(traveller[1]) # Firstname
+        traveller[2] = decrypt_message(traveller[2]) # Lastname
+        traveller[5] = decrypt_message(traveller[5]) # Streetname
+        traveller[7] = decrypt_message(traveller[7]) # Zipcode
+        traveller[9] = decrypt_message(traveller[9]) # Email
+        traveller[10] = decrypt_message(traveller[10]) # phonenumber
+        traveller[11] = decrypt_message(traveller[11]) # DLN
+        
         traveller = tuple(traveller)
 
     return traveller
@@ -68,3 +78,5 @@ def Traveller_decrypt_many(travellers): # -> list<tuple>
             i += 1
 
     return travellers
+
+
