@@ -49,15 +49,13 @@ def createdatabase():
     Password TEXT NOT NULL
     )''')
 
-    cursor.execute('''
-    CREATE TABLE Profiles (
-        ID INTEGER PRIMARY KEY AUTOINCREMENT,
-        UserID INTEGER NOT NULL,
-        Firstname TEXT NOT NULL,
-        Lastname TEXT NOT NULL,
-        RegistrationDate TEXT NOT NULL,  -- Gebruik ISO 8601: YYYY-MM-DD
-        FOREIGN KEY (UserID) REFERENCES Users(ID) ON DELETE CASCADE
-    )''')
+    cursor.execute('''CREATE TABLE Profiles (ID INTEGER PRIMARY KEY AUTOINCREMENT,
+    UserID INTEGER NOT NULL,
+    Firstname TEXT NOT NULL,
+    Lastname TEXT NOT NULL,
+    RegistrationDate TEXT NOT NULL,
+    FOREIGN KEY (UserID) REFERENCES Users(ID) ON DELETE CASCADE
+        )''')
 
     cursor.execute('''CREATE TABLE Traveller(
     ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -164,5 +162,5 @@ def filldatabase():
     conn.commit()
     conn.close()
     for userid,firstname, lastname in profiles:
-        Databasefunctions.add_profile_for_user(userid,firstname, lastname)
+        Databasefunctions.setup_add_profile_for_user(userid,firstname, lastname)
 

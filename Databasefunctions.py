@@ -5,19 +5,9 @@ import os
 from tabnanny import check
 import Hasher
 import Validator
-   # cursor.execute('''
-   #      CREATE TABLE IF NOT EXISTS ActionLog (
-   #          ID INTEGER PRIMARY KEY AUTOINCREMENT,
-   #          Action TEXT NOT NULL,
-   #          UserID INTEGER,
-   #          Username TEXT NOT NULL,
-   #          Timestamp TEXT NOT NULL,
-   #          Result TEXT,
-   #          Severity TEXT,
-   #          Suspiscious TEXT,
-   #          FOREIGN KEY(UserID) REFERENCES Users(ID)
-   #      )
-   #  ''')
+
+
+
 script_dir = os.path.dirname(os.path.abspath(__file__))
 db_path = os.path.join(script_dir, "Database.db")
 
@@ -44,18 +34,20 @@ def login(Username, Password):
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM Users WHERE Username = ?", (Username,))
     user = cursor.fetchone()
-    max_pogingen = 5
-    pogingen = aantal_gefaalde_logins(user[0])
-
-    if pogingen >= max_pogingen:
-        print("Too many attempts try again later.")
-        log_actie("Login geblokkeerd", user, result="Te veel pogingen", "High", "Yes")
-        return False
-    
     conn.close()
+    max_pogingen = 3
+    if user != None:
+        pogingen = aantal_gefaalde_logins(user[0])
+
+        if pogingen >= max_pogingen:
+            print("Too many attempts try again later.")
+            log_actie("Login geblokkeerd", user, "Te veel pogingen", "High", "Yes")
+            return False
+    
+
 
     if user is None:
-        log_actie("Login poging", result="Gebruiker niet gevonden")
+        log_actie("Login poging", "Gebruiker niet gevonden")
         print("user not found.")
         return False
 
@@ -219,6 +211,29 @@ def add_profile_for_user(user_id, firstname, lastname, user):
     finally:
         conn.close()
 
+def setup_add_profile_for_user(user_id, firstname, lastname):
+    # Formaat: YYYY-MM-DD
+    registration_date = date.today().isoformat()  
+
+    conn = sqlite3.connect(db_path)
+    conn.execute("PRAGMA foreign_keys = ON") 
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute('''
+            INSERT INTO Profiles (UserID, Firstname, Lastname, RegistrationDate)
+            VALUES (?, ?, ?, ?)
+        ''', (user_id, firstname, lastname, registration_date))
+
+        conn.commit()
+        print("Profiel succesvol aangemaakt.")
+
+      
+    except sqlite3.Error as e:
+        print(f"Fout bij aanmaken profiel: {e}")
+        
+    finally:
+        conn.close()
 def searchprofile(user_id):
     conn = sqlite3.connect(db_path)
     conn.execute("PRAGMA foreign_keys = ON") 
@@ -230,10 +245,7 @@ def searchprofile(user_id):
     conn.close()
 
     if profiel:
-        # print("Profiel gevonden:")
-        # print(f"Voornaam: {profiel[2]}")
-        # print(f"Achternaam: {profiel[3]}")
-        # print(f"Registratiedatum: {profiel[4]}")
+
         return profiel
     else:
         print("Geen profiel gevonden voor deze gebruiker.")
@@ -336,15 +348,14 @@ def updateprofile(id ,firstname, lastname, user):
         ''', (firstname,lastname, id))
 
         conn.commit()
+        conn.close()
         print("Profile succesfully edited.")
         log_actie(f"Systeem admin {user[2]} successfully updated their own profile", user, 'success', 'normal')
       
     except sqlite3.Error as e:
         print("Error while editing:", e)
         log_actie(f"Systeem admin {user[2]} failed to update their own profile", user, 'fail', 'error')
-      
-    finally:
-        conn.close()
+
 # Systeem admin
 
 def CreateServiceMedewerker(username, password, firstname, lastname, user):
@@ -386,13 +397,11 @@ def updateServiceEngineername(Engineer, username, user):
     finally:
         conn.close()
 
-def Deleteaccount(user):
+def Deleteaccountown(user):
     conn = sqlite3.connect(db_path)
     conn.execute("PRAGMA foreign_keys = ON") 
+    cursor = conn.cursor()
     try:
-
-        cursor = conn.cursor()
-        cursor.execute("DELETE FROM Profiles WHERE UserID = ?", (user[0],))
 
 
         cursor.execute("DELETE FROM Users WHERE ID = ?", (user[0],))
@@ -412,11 +421,8 @@ def Deleteaccount(user):
 def Deleteaccount(engineer, user):
     conn = sqlite3.connect(db_path)
     conn.execute("PRAGMA foreign_keys = ON") 
+    cursor = conn.cursor()
     try:
-
-        cursor = conn.cursor()
-        cursor.execute("DELETE FROM Profiles WHERE UserID = ?", (engineer[0],))
-
 
         cursor.execute("DELETE FROM Users WHERE ID = ?", (engineer[0],))
 

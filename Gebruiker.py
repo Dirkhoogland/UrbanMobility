@@ -59,7 +59,7 @@ def Deleteuser(user):
 
     check = Validator.sanitize_input(check)
     if check == 'CONFIRM':
-        Databasefunctions.Deleteaccount(user)
+        Databasefunctions.Deleteaccountown(user)
         UrbanMobility.Start()
     else:
         print("Deletion aborted")
