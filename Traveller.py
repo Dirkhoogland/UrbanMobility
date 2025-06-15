@@ -37,7 +37,7 @@ def AddTraveller():
         firstname = ""
         while firstname == "":
             firstname = str(sanitize_input("Firstname: ")).capitalize().strip()
-            firstname = encrypt_message(firstname).decode()
+            firstname = encrypt_message(firstname)
             print(firstname)
 
         
@@ -48,7 +48,7 @@ def AddTraveller():
         lastname = ""
         while lastname == "":
             lastname = str(sanitize_input("Lastname: ")).capitalize().strip()
-            lastname = encrypt_message(lastname).decode()
+            lastname = encrypt_message(lastname)
             print(lastname)
 
         if(lastname == "*"):
