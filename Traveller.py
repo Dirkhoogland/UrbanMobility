@@ -3,6 +3,7 @@ import os
 from Validator import is_valid_email, is_valid_phone, is_valid_DLN, is_valid_zipCode
 from Menus import toon_dynamisch_menu, TravelerUpdateOptions, genderOption, cityOption
 from Manager import BirthdayManager, GenderManager, cityManager
+from DatabaseSetup import CreateBackup
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 db_path = os.path.join(script_dir, "Database.db")
@@ -180,6 +181,7 @@ def Add(Firstname, Lastname, Birthday, Gender, Streetname,
 
 
 def Update(Email):
+    CreateBackup()
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     try:
