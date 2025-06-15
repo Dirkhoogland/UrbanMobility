@@ -1,45 +1,46 @@
 import sqlite3
 import os
-from cryptography.fernet import Fernet  # Fixed spelling and case
-
-# import site
-# import sys
-
-# print(site.getsitepackages())
-# print(sys.path)
+from cryptography.fernet import Fernet
 
 
-# def GetSecreteKey():
-#     try:
-#         with open("secret.txt", "r") as secrets_file:
-#             return secrets_file.read()
-#     except:
-#         print("No key found generating new key")
-    
-    
-# key = GetSecreteKey()
-
-# def GenerateKey():
-#     key = Fernet.Generate_key
-#     with open("secret.txt", "r") as secrets_file:
-#         key = secrets_file.read()
-#     engine = Fernet(key)
-
-def test_Key_Demo(string):
-    # Put this somewhere safe!
+def generate_key():
     key = Fernet.generate_key()
-    key2 = Fernet.generate_key()
-    f = Fernet(key)
-    k = Fernet(key2)
-    string = string.encode("utf-8")
-    token = f.encrypt(string)
-    print(token)
-    token = f.decrypt(token)
-    print(token)
-    token = k.encrypt(token)
-    print(token)
-    token = k.decrypt(token)
-    print(token)
+    with open("key.txt", "w") as secrets_file:
+        secrets_file.write(key.decode())  # Write as string
+    print("Key generated and saved to key.txt")
 
+
+def get_key():
+    if not os.path.exists("key.txt"):
+        print("No key found. Generating new key...")
+        generate_key()
+
+    with open("key.txt", "r") as key_file:
+        return key_file.read()
+
+
+def encrypt_message(message: str):
+    key = get_key()
+    f = Fernet(key.encode())
+    token = f.encrypt(message.encode())
+    return token
+
+
+def decrypt_message(token: bytes):
+    key = get_key()
+    f = Fernet(key.encode())
+    message = f.decrypt(token)
+    return message.decode()
+
+
+def test_key_demo():
+    message = "This is a secret message"
+    print("\nOriginal message:", message)
+
+    encrypted = encrypt_message(message)
+    print("Encrypted:", encrypted)
+
+    decrypted = decrypt_message(encrypted)
+    print("Decrypted:", decrypted)
     
     

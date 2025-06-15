@@ -4,6 +4,7 @@ from Validator import is_valid_email, is_valid_phone, is_valid_DLN, is_valid_zip
 from Menus import toon_dynamisch_menu, TravelerUpdateOptions, genderOption, cityOption
 from Manager import BirthdayManager, GenderManager, cityManager
 from DatabaseSetup import CreateBackup
+from Encrypt import encrypt_message, decrypt_message
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 db_path = os.path.join(script_dir, "Database.db")
@@ -14,9 +15,15 @@ def View(Email):
     cursor.execute('''
         SELECT * FROM Traveller WHERE EmailAdress = ?
     ''', (Email,))
-    target = cursor.fetchone()
+    target = cursor.fetchone() # tranfer to list to able to modify data
     conn.close()
-    
+
+    if target is not None:
+        target = list(target)
+        target[1] = decrypt_message(target[1].encode())
+        target[2] = decrypt_message(target[2].encode())
+        target = tuple(target)
+
     return target
     
 def abortAdd(string):
@@ -30,6 +37,9 @@ def AddTraveller():
         firstname = ""
         while firstname == "":
             firstname = str(sanitize_input("Firstname: ")).capitalize().strip()
+            firstname = encrypt_message(firstname).decode()
+            print(firstname)
+
         
         if(firstname == "*"):
             quit = True
@@ -38,6 +48,8 @@ def AddTraveller():
         lastname = ""
         while lastname == "":
             lastname = str(sanitize_input("Lastname: ")).capitalize().strip()
+            lastname = encrypt_message(lastname).decode()
+            print(lastname)
 
         if(lastname == "*"):
             quit = True
@@ -109,6 +121,7 @@ def AddTraveller():
                 print(f"A user with email of '{email}' already exists,\nyou can update existing user data by ussing the update menu if it requires changes")
                 email = ""
                 continue
+            break
 
 
         if(email == "*"):
