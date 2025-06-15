@@ -41,15 +41,16 @@ def Traveller_encrypt(traveller: tuple) -> tuple:
     return traveller
 
 def Traveller_encrypt_many(travellers): # -> list<tuple>
-    i = 0
-    while i < len(travellers): # equavelent of Count in C#
-        travellers[i] = Traveller_encrypt(travellers[i])
-        i += 1
+    if travellers is not None:
+        i = 0
+        while i < len(travellers): # equavelent of Count in C#
+            travellers[i] = Traveller_encrypt(travellers[i])
+            i += 1
 
     return travellers
 
 # Used in View also includes ID collum so indexing is diffrent 
-def traveller_decrypte(traveller: tuple) -> tuple:
+def traveller_decrypt(traveller: tuple) -> tuple:
     if traveller is not None:
         traveller = list(traveller)
         # traveller[0] is Id
@@ -58,3 +59,12 @@ def traveller_decrypte(traveller: tuple) -> tuple:
         traveller = tuple(traveller)
 
     return traveller
+
+def Traveller_decrypt_many(travellers): # -> list<tuple>
+    if travellers is not None:
+        i = 0
+        while i < len(travellers): # equavelent of Count in C#
+            travellers[i] = traveller_decrypt(travellers[i])
+            i += 1
+
+    return travellers
