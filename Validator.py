@@ -1,9 +1,9 @@
 import re
 from datetime import datetime, date
 
-def sanitize_input(user_input: str) -> str:
+def sanitize_input(input_display = ""):
     while True:
-        string = input(user_input)
+        string = input(input_display)
         # Verwijder SQL-injectiegevoelige tekens
         
         dangerous_patterns = r"['\";]|--|(/\*.*?\*/)|(\b(SELECT|INSERT|DELETE|DROP|UPDATE|UNION|OR|AND)\b)"
