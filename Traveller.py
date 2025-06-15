@@ -20,8 +20,8 @@ def View(Email):
 
     if target is not None:
         target = list(target)
-        target[1] = decrypt_message(target[1].encode())
-        target[2] = decrypt_message(target[2].encode())
+        target[1] = decrypt_message(target[1]) # Firstname
+        target[2] = decrypt_message(target[2]) # Lastname
         target = tuple(target)
 
     return target
