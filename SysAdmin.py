@@ -8,8 +8,8 @@ def ServiceEngineeredit(user):
     while menu == True:
         optiesmenu = Menus.Servicemedewerkeropties()
         Menus.toon_dynamisch_menu(optiesmenu, "Sys Admin edit engineer")
-        optie = input("What do you want to open: ")
-        optie = Validator.sanitize_input(optie)
+
+        optie = Validator.sanitize_input("What do you want to open: ")
         if optie == '1':
             Gebruiker.Addservice(user)
         if optie == '2':
@@ -32,8 +32,8 @@ def SysMenu(user):
         opties = Menus.system()
         Menus.toon_dynamisch_menu(opties, "Systeem Administrator")
 
-        optie = input("What do you want to open: ")
-        optie = Validator.sanitize_input(optie)
+
+        optie = Validator.sanitize_input("What do you want to open: ")
         if optie == '1':
             Gebruiker.ViewUserlist(user)
         if optie == '2':
