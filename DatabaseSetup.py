@@ -4,7 +4,7 @@ from datetime import date
 
 import Databasefunctions
 import Hasher
-from Encrypt import Traveller_encrypt_many
+from Encrypt import Traveller_encrypt_many, Users_encrypt_many, Profiles_encrypt_many
 
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -64,21 +64,10 @@ def CreateBackup():
     while True:
         db_backup = f"Backups\{today}\Database({kopie}).db"
         db_backup = os.path.join(script_dir, db_backup) # creates path to this project
-        # ussing external drive as backup
-        system_backup = f"D:\\UrbanMobility\Backups\{today}\Database({kopie}).db"
-        system_backup = os.path.abspath(system_backup)
-        if(is_database_empty(db_backup) and is_database_empty(system_backup)):
+        if(is_database_empty(db_backup)):
             break
         else:
             kopie = kopie + 1
-
-    try:
-        is_database_empty(system_backup) # creates os file
-        with sqlite3.connect(db_path) as source, sqlite3.connect(system_backup) as dest:
-            source.backup(dest) # Saves in external drive if present
-    except:
-        print("No external drive detected, to save the backups in a secured location")
-
 
     try:
         # clone db
@@ -210,10 +199,15 @@ def filldatabase():
     (1, '_jan.01', 'S3cure#Pass!12'),
     (2, 'Mark_007', 'Strong!Pass123$')
     ]
+
+    users = Users_encrypt_many(users)
+
     profiles = [
     (2, "Jan", "Jansen"),
     (3, "Mark", "Pieters")
     ]   
+
+    profiles = Profiles_encrypt_many(profiles)
 
 
     for rank, username, plain_password in users:

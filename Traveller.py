@@ -4,7 +4,7 @@ from Validator import is_valid_email, is_valid_phone, is_valid_DLN, is_valid_zip
 from Menus import toon_dynamisch_menu, TravelerUpdateOptions, genderOption, cityOption
 from Manager import BirthdayManager, GenderManager, cityManager
 from DatabaseSetup import CreateBackup
-from Encrypt import traveller_decrypt, Traveller_encrypt, decrypt_message, encrypt_message
+from Encrypt import Traveller_decrypt, Traveller_encrypt, decrypt_message, encrypt_message
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 db_path = os.path.join(script_dir, "Database.db")

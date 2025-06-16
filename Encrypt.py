@@ -55,7 +55,7 @@ def Traveller_encrypt_many(travellers): # -> list<tuple>
     return travellers
 
 # Used in View also includes ID collum so indexing is diffrent 
-def traveller_decrypt(traveller: tuple) -> tuple:
+def Traveller_decrypt(traveller: tuple) -> tuple:
     if traveller is not None:
         traveller = list(traveller)
         traveller[1] = decrypt_message(traveller[1]) # Firstname
@@ -74,9 +74,53 @@ def Traveller_decrypt_many(travellers): # -> list<tuple>
     if travellers is not None:
         i = 0
         while i < len(travellers): # equavelent of Count in C#
-            travellers[i] = traveller_decrypt(travellers[i])
+            travellers[i] = Traveller_decrypt(travellers[i])
             i += 1
 
     return travellers
+
+def Users_encrypt(user) -> tuple:
+    if user is not None:
+        user[1] = decrypt_message(user[1]) 
+        pass
+
+    return user
+
+def Users_encrypt_many(users): # -> list<tuple>
+    if users is not None:
+        i = 0
+        while i < len(users):
+            users[i] = Users_encrypt(users[i])
+            i += 1
+
+    return users
+
+def User_decrypt(user) -> tuple:
+    if user is not None:
+        user[2] = decrypt_message(user[2]) 
+
+
+def Profiles_encrypt_many(profiles): # -> list<tuple>
+    if profiles is not None:
+        i = 0
+        while i < len(profiles):
+            profiles[i] = Profiles_encrypt(profiles[i])
+            i += 1
+
+    return profiles
+
+
+def Profiles_encrypt(profile) -> tuple: 
+    if profile is not None:
+        # profile[NONE] = ID
+        # profile[0] = UserID
+        profile[1] = encrypt_message(profile[1])
+        profile[2] = encrypt_message(profile[2])
+        # profile[3] = RegistrationDate
+
+
+
+
+
 
 
