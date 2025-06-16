@@ -21,7 +21,7 @@ def system():
     return ["User list", "Add/modify Service Engineer","Add/modify travellers", "Scooter info/update", "Profile", "Back up system","View logs", "Logout"]
 
 def super():
-    return ["Add/modify Service Engineer", "Add/modify systeem Admin", "Update Scooter","Get Scooter attributes", "Update Password", "Logout"]
+    return ["User list","Add/Modify System Admin", "Add/modify Service Engineer","Add/modify travellers", "Scooter info/update", "Profile", "Back up Code","Create back up", "View logs", "Logout"]
 
 def addmodifyengineermenu():
     return ["Add new Service Engineer", "Modifty Service Engineer", "Remove Service Engineer", "Reset Service Engineer Password",]
@@ -61,11 +61,13 @@ def cityOption():
 def Servicemedewerkeropties():
     opties = ["New Service Engineer", "Update Service Engineer", "Delete Service Engineer", "Service Engineer password recovery"]
     return opties
-
+def systemadminopties():
+    opties = ["New System Admin", "Update System Admin", "Delete System Admin", "System Admin password recovery"]
+    return opties
 def profiles():
      opties = ["Update profile", "Update password", "Delete account"]
      return opties
-    
+
 
 
     

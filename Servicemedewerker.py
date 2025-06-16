@@ -5,18 +5,20 @@ def ServiceMenu(user):
     while menu == True:
         opties = Menus.service()
         Menus.toon_dynamisch_menu(opties, "Service medewerker")
-
-        optie = input("Wat wil je openen: ")
-        optie = Validator.sanitize_input(optie)
-        if optie == '1':
+        try:
+                optie = int(input("Select option: "))
+        except ValueError:
+                print("invalid input, choose a number.")
+                continue
+        if optie == 1:
             Scooter.UpdateScooter(user)
-        if optie == '2':
+        if optie == 2:
             Scooter.Getattributes(user)
-        if optie == '3':
+        if optie == 3:
             Gebruiker.changepassword(user)
-        if optie == '4':
+        if optie == 4:
             Profiles.ViewProfile(user)
-        if optie == '5':
+        if optie == 5:
             menu == False
             return
 

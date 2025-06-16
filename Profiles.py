@@ -12,14 +12,16 @@ def ViewProfile(user):
     while menu == True:
         opties = Menus.profiles()
         Menus.toon_dynamisch_menu(opties, "Profile menu")
-
-        optie = input("What do you want to open: ")
-        optie = Validator.sanitize_input(optie)
-        if optie == '1':
+        try:
+                optie = int(input("Select option: "))
+        except ValueError:
+                print("invalid input, choose a number.")
+                continue
+        if optie == 1:
             Updateprofile(user, user[0])
-        if optie == '2':
+        if optie == 2:
             Gebruiker.changepassword(user)      
-        if optie == '3':
+        if optie == 3:
            Gebruiker.Deleteuser(user)
 
     #input("Druk op Enter om door te gaan...")
@@ -30,17 +32,17 @@ def Updateprofile(user, id):
     print("User profile")
     profile = ViewProfile(id)
 
-    checkuser = input("Do you want to continue Y/N: ")    
-    checkuser = Validator.sanitize_input(checkuser)
+ 
+    checkuser = Validator.sanitize_input("Do you want to continue Y/N: ")
     checkuser.upper();
     username = profile[2]
     Newlastname = profile[3]
     if checkuser == "Y":
         print("Leave empty if it does not need to be updated")
-        Newusername = input("New Firstname:")
-        Newusername = Validator.sanitize_input(Newusername)
-        Newlastname = input("New Lastname: ")
-        Newlastname = Validator.sanitize_input(Newlastname)
+
+        Newusername = Validator.sanitize_input("New Firstname:")
+
+        Newlastname = Validator.sanitize_input("New Lastname: ")
         if Newusername:
             username = Newusername
         if Newlastname:

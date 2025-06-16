@@ -459,3 +459,23 @@ def CreateSysteemAdmin(username, password, firstname, lastname):
        else:
            print("Error creating profile, could not find user")
    return
+
+def updateSystemAdminname(admin, username, user):
+    conn = sqlite3.connect(db_path)
+    conn.execute("PRAGMA foreign_keys = ON") 
+    cursor = conn.cursor()
+    try:
+        cursor.execute('''
+            UPDATE Users
+            SET Username = ?
+            WHERE ID = ?
+        ''', (username, admin[0]))
+
+        conn.commit()
+        print("User succesfully edited.")
+        log_actie(f"Super admin {user[2]} successfully updated {admin[2]}", user, 'success', 'normal')
+    except sqlite3.Error as e:
+        print("Error while editing:", e)
+        log_actie(f"Super admin {user[2]} failed to update {admin[2]}", user, 'fail', 'error')
+    finally:
+        conn.close()
