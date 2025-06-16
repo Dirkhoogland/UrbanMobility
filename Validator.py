@@ -7,7 +7,7 @@ def sanitize_input(input_display = ""):
 
         
 
-        white_list = r"^[a-zA-Z0-9_~!@#$%.\-|\; ?]+$" # only allow safe characters
+        white_list  = r"^[a-zA-Z0-9~!@#$%&_\-+=`|\\()\[\]{}:;'<>,.? ]+$" # only allow safe characters
 
         if not re.fullmatch(white_list, string):
             sub = str('"')

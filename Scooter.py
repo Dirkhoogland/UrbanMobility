@@ -4,7 +4,7 @@ import Menus , Validator
  
 def UpdateScooter(user):
     print("Wat is het Serialnumber van de scooter, vul in q om terug te gaan.")
-    Serialnumber = input("Serialnumber: ")
+    Serialnumber = Validator.sanitize_input("Serialnumber: ")
     if Serialnumber == "q":
        return
     else:

@@ -9,16 +9,20 @@ def ServiceEngineeredit(user):
         optiesmenu = Menus.Servicemedewerkeropties()
         Menus.toon_dynamisch_menu(optiesmenu, "Sys Admin edit engineer")
 
-        optie = Validator.sanitize_input("What do you want to open: ")
-        if optie == '1':
+        try:
+                optie = int(input("Select option: "))
+        except ValueError:
+                print("invalid input, choose a number.")
+                continue
+        if optie == 1:
             Gebruiker.Addservice(user)
-        if optie == '2':
+        if optie == 2:
             Gebruiker.UpdateEngineer(user)
-        if optie == '3':
+        if optie == 3:
             Gebruiker.Deleteother(user)
-        if optie == '4':
+        if optie == 4:
             Gebruiker.changepasswordengineer(user)
-        if optie == '5':
+        if optie == 5:
             Profiles.ViewProfile(user)
         else:
             menu = False
@@ -33,22 +37,26 @@ def SysMenu(user):
         Menus.toon_dynamisch_menu(opties, "Systeem Administrator")
 
 
-        optie = Validator.sanitize_input("What do you want to open: ")
-        if optie == '1':
+        try:
+                optie = int(input("Select option: "))
+        except ValueError:
+                print("invalid input, choose a number.")
+                continue
+        if optie == 1:
             Gebruiker.ViewUserlist(user)
-        if optie == '2':
+        if optie == 2:
             ServiceEngineeredit(user)  
-        if optie == '3':
+        if optie == 3:
             ServiceEngineeredit(user)   
-        if optie == '4':
+        if optie == 4:
            Scooter.Getattributes(user)
-        if optie == '5':
+        if optie == 5:
             Profiles.ViewProfile(user) 
-        if optie == '6':
+        if optie == 6:
             Databasefunctions.backup(user)
-        if optie == '7':
+        if optie == 7:
             Databasefunctions.logs()
-        if optie == '8':
+        if optie == 8:
             menu == False
             return
         else:

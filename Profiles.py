@@ -12,14 +12,16 @@ def ViewProfile(user):
     while menu == True:
         opties = Menus.profiles()
         Menus.toon_dynamisch_menu(opties, "Profile menu")
-
-
-        optie = Validator.sanitize_input("What do you want to open: ")
-        if optie == '1':
+        try:
+                optie = int(input("Select option: "))
+        except ValueError:
+                print("invalid input, choose a number.")
+                continue
+        if optie == 1:
             Updateprofile(user, user[0])
-        if optie == '2':
+        if optie == 2:
             Gebruiker.changepassword(user)      
-        if optie == '3':
+        if optie == 3:
            Gebruiker.Deleteuser(user)
 
     #input("Druk op Enter om door te gaan...")
