@@ -1,5 +1,38 @@
 import Databasefunctions, Menus , Validator, UrbanMobility, Profiles
+def Addservice(user):
+    print("New service Engineer.")
+    check = input("Do you want to continue Y/N: ")    
+    check = Validator.sanitize_input(check)
+    check.upper();
 
+    if check == "Y":
+        validateusername = False
+        while validateusername == False:
+            print("Username has to be 8-10 characters  and can only start with a _ or letter.")
+            naam = input("New Engineers username: ")
+            naam = Validator.sanitize_input(naam)
+            validateusername = Validator.is_valid_username(naam)
+
+        validatepassword = False
+        while validatepassword == False:
+            print("Password has to be 12-30 characters with:   [A-Z],[a-z] numbers [0-9] and special characters  ~!@#$%&_-+=`|\(){}[]:;'<>,.? ")
+            print("The password has to be with a lower case, upper case,  cijfer and at least one speciaal character.")
+            password = input("Password Engineer: ")
+            password = Validator.sanitize_input(password)
+            validatepassword = Validator.is_valid_password(password)
+
+        firstname = input("User firstname: ")
+        
+        lastname = input("User lastname: ")
+
+        Databasefunctions.CreateServiceMedewerker(naam, password, firstname, lastname, user)
+
+
+
+    else:
+        print("Cancelled creation")
+
+        return
 def changepassword(user):
     print(f"Welcome to change password: {user[2]}")
 
@@ -122,4 +155,69 @@ def UpdateEngineer(user):
                     return
         else:
             print("User is not a service engineer.")
+            return
+
+
+def UpdateSysteemadmin(user):
+    print("Edit System Admin.")
+    check = input("Do you want to continue Y/N: ")    
+    check = Validator.sanitize_input(check)
+    check.upper();
+    
+    if check == "Y":
+        engineer = input("Which System Admin: (username)")
+        engineer = Validator.sanitize_input(engineer)
+        data = Databasefunctions.get_user(engineer)
+        if data[1] == 1:
+  
+
+            print(f" You want to edit user info: {data[2]} with Id {data[0]} and Rank {data[1]}")
+            checkuser = input("Do you want to continue Y/N: ")    
+            checkuser = Validator.sanitize_input(checkuser)
+            checkuser.upper();
+
+
+            if checkuser == "Y":
+               print("You can only edit the username.")
+               newusername = input("New Username: ")
+               newusername = Validator.sanitize_input(newusername)
+               Databasefunctions.updateSystemAdminname(engineer, newusername)
+
+               checkforprofile = input("Do you want to update their profile? Y/N")
+               checkforprofile = Validator.sanitize_input(checkforprofile)
+               checkforprofile.upper();
+               if checkforprofile == "Y":
+                   Profiles.Updateprofile(engineer)
+               else:
+                    return
+        else:
+            print("User is not a System Admin.")
+            return
+
+def UpdatePasswordSysteemadmin(user):
+    print("Change password for System Admin.")
+    check = input("Do you want to continue Y/N: ")    
+    check = Validator.sanitize_input(check)
+    check.upper();
+    
+    if check == "Y":
+        engineer = input("Which System Admin: (username)")
+        engineer = Validator.sanitize_input(engineer)
+        data = Databasefunctions.get_user(engineer)
+        if data[1] == 1:
+
+            nieuwpassword = input("New Password: ")
+            nieuwpassword = Validator.sanitize_input(nieuwpassword)
+
+            nieuwpasswordrepeat = input("Repeat new password: ")
+            nieuwpasswordrepeat = Validator.sanitize_input(nieuwpasswordrepeat)
+            check = input("Type CONFIRM to confirm: ")
+
+            check = Validator.sanitize_input(check)
+            if check == 'CONFIRM':
+             Databasefunctions.passwordchangeengineer(data, nieuwpassword, user)
+
+
+        else:
+            print("User is not a System Admin.")
             return
