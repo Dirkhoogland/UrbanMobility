@@ -80,8 +80,10 @@ def Traveller_decrypt_many(travellers): # -> list<tuple>
     return travellers
 
 def Users_encrypt(user) -> tuple:
+    user = list(user)
     if user is not None:
-        user[1] = decrypt_message(user[1]) 
+        user[1] = encrypt_message(user[1]) 
+        user = tuple(user)
         pass
 
     return user
@@ -112,11 +114,15 @@ def Profiles_encrypt_many(profiles): # -> list<tuple>
 
 def Profiles_encrypt(profile) -> tuple: 
     if profile is not None:
+        profile = list(profile)
         # profile[NONE] = ID
         # profile[0] = UserID
         profile[1] = encrypt_message(profile[1])
         profile[2] = encrypt_message(profile[2])
+        profile = tuple(profile)
         # profile[3] = RegistrationDate
+
+    return profile
 
 
 
