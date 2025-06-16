@@ -27,7 +27,27 @@ def ServiceEngineeredit(user):
         else:
             menu = False
             SysMenu(user)
-
+def scootermenu(user):
+    menu = True
+    while menu == True:
+        optiesmenu = Menus.scooterinfo(user[1])
+        Menus.toon_dynamisch_menu(optiesmenu, "Systeem Admin edit scooter ")
+        try:
+                optie = int(input("Select option: "))
+        except ValueError:
+                print("invalid input, choose a number.")
+                continue
+        if optie == 1:
+            Scooter.UpdateScooter(user)
+        if optie == 2:
+            Scooter.Getattributes(user)
+        if optie == 3:
+            Scooter.Addscooter(user)
+        if optie == 4:
+            Scooter.Deletescooter(user)
+        else:
+            menu = False
+    return
 
 
 def SysMenu(user):
@@ -49,7 +69,7 @@ def SysMenu(user):
         if optie == 3:
             ServiceEngineeredit(user)   
         if optie == 4:
-           Scooter.Getattributes(user)
+           scootermenu(user)
         if optie == 5:
             Profiles.ViewProfile(user) 
         if optie == 6:

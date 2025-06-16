@@ -4,7 +4,7 @@ import sqlite3
 import os
 from tabnanny import check
 import Hasher
-import Validator
+import Validator, Menus
 
 
 
@@ -88,7 +88,30 @@ def log_actie(action, user, result="", severity = "None", sus = "No"):
     conn.commit()
     conn.close()
 
+def logs():
+    opties = []
 
+    try:
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+        cursor.execute("SELECT ID, Action, UserID, Username, Timestamp, Result, Severity, Suspiscious FROM ActionLog")
+        logs = cursor.fetchall()
+        conn.close()
+
+        for index, log in enumerate(logs, start=1):
+            optie = (
+                f" Action: {log[1]} | "
+                f"UserID: {log[2]} | Username: {log[3]} | "
+                f"Timestamp: {log[4]} | Result: {log[5]} | "
+                f"Severity: {log[6]} | Suspicious: {log[7]}"
+            )
+            opties.append(optie)
+
+    except sqlite3.Error as e:
+        print(f"Database error: {e}")
+    
+    Menus.toon_dynamisch_menu(opties, "Logs")
+    input( "Press enter to continue . . .")
 # scooter functies Service
 
 def GetScooterService(Serialnumber):
