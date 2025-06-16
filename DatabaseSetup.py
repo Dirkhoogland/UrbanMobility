@@ -4,6 +4,7 @@ from datetime import date
 
 import Databasefunctions
 import Hasher
+from Encrypt import Traveller_encrypt_many
 
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -192,6 +193,8 @@ def filldatabase():
     ("Tom", "de Boer", "1985-11-03", "M", "Beukenstraat", 57, "5678CD", "Rotterdam", "tom.boer@example.com", "+31-6-06876543", "NL9876543"),
     ("Fatima", "El Amrani", "1998-07-25", "F", "Kastanjelaan", 11, "2025EF", "Rotterdam", "fatima.amrani@example.com", "+31-6-06999887", "NL1122334"),
     ]
+
+    travellers = Traveller_encrypt_many(travellers)
 
     cursor.executemany('''
     INSERT INTO Traveller (

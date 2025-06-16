@@ -1,13 +1,13 @@
 import re
 from datetime import datetime, date
 
-def sanitize_input(user_input: str) -> str:
+def sanitize_input(input_display = ""):
     while True:
-        string = input(user_input)
+        string = input(input_display)
         # Verwijder SQL-injectiegevoelige tekens
         
         dangerous_patterns = r"['\";]|--|(/\*.*?\*/)|(\b(SELECT|INSERT|DELETE|DROP|UPDATE|UNION|OR|AND)\b)"
-        white_list = r"[^a-zA-Z0-9 ~!@#$%_\-\|\;\]]" # only allow safe characters
+        white_list = r"[^a-zA-Z0-9 ~!@#$%_.\-\|\;\]]" # only allow safe characters
         if re.search(dangerous_patterns, string):
             print("forbidden format detected, please provide safe input")
             continue

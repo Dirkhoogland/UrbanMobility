@@ -4,6 +4,7 @@ from Validator import is_valid_email, is_valid_phone, is_valid_DLN, is_valid_zip
 from Menus import toon_dynamisch_menu, TravelerUpdateOptions, genderOption, cityOption
 from Manager import BirthdayManager, GenderManager, cityManager
 from DatabaseSetup import CreateBackup
+from Encrypt import traveller_decrypt, Traveller_encrypt, decrypt_message, encrypt_message
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 db_path = os.path.join(script_dir, "Database.db")
@@ -12,12 +13,23 @@ def View(Email):
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     cursor.execute('''
-        SELECT * FROM Traveller WHERE EmailAdress = ?
-    ''', (Email,))
-    target = cursor.fetchone()
+        SELECT * FROM Traveller
+    ''')
+    travellers = cursor.fetchall() 
     conn.close()
-    
-    return target
+
+    for target in travellers:
+        # traveller[1] = decrypt_message(traveller[1]) # Firstname
+        # traveller[2] = decrypt_message(traveller[2]) # Lastname
+        # traveller[5] = decrypt_message(traveller[5]) # Streetname
+        # traveller[7] = decrypt_message(traveller[7]) # Zipcode
+        # traveller[9] = decrypt_message(traveller[9]) # Email
+        # traveller[10] = decrypt_message(traveller[10]) # phonenumber
+        # traveller[11] = decrypt_message(traveller[11]) # DLN
+        # Email is encrypted
+        if(decrypt_message(target[9]) == Email):
+            return traveller_decrypt(target)
+    return None
     
 def abortAdd(string):
     return string == "*"
@@ -89,7 +101,7 @@ def AddTraveller():
                 print("Zipcode must start with 2 letters and end with 4 numbers")
                 print("Example:")
                 print("1234AB")
-    
+
         if(zipCode == "*"):
             quit = True
             break
@@ -109,6 +121,7 @@ def AddTraveller():
                 print(f"A user with email of '{email}' already exists,\nyou can update existing user data by ussing the update menu if it requires changes")
                 email = ""
                 continue
+            break
 
 
         if(email == "*"):
@@ -158,13 +171,15 @@ def AddTraveller():
 
 def Add(Firstname, Lastname, Birthday, Gender, Streetname, 
         Housenumber, zipCode, City, EmailAdress, MobilePhone, DrivingLiscenceNumber):
+    CreateBackup()
     try:
+        traveller = (Firstname, Lastname, Birthday, Gender, Streetname, Housenumber, zipCode, City, EmailAdress, MobilePhone, DrivingLiscenceNumber)
+        traveller = Traveller_encrypt(traveller) # encrypt privacy intensive fields
+        
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
-        traveller = [
-            (Firstname, Lastname, Birthday, Gender, Streetname, Housenumber, zipCode, City, EmailAdress, MobilePhone, DrivingLiscenceNumber)
-        ]
-        cursor.executemany('''
+
+        cursor.execute('''
         INSERT INTO Traveller (
             Firstname, Lastname, Birthday, Gender, Streetname, Housenumber, 
             zipCode, City, EmailAdress, MobilePhone, DrivingLiscenceNumber
@@ -209,7 +224,7 @@ def Update(Email):
 
                 cursor.execute('''
                     UPDATE traveller SET Firstname = ? WHERE EmailAdress = ?
-                ''', (Newfirstname, Email,))
+                ''', (encrypt_message(Newfirstname), Email,))
             
                 conn.commit()
                 print("Update on Firstname succesfull")
@@ -220,7 +235,7 @@ def Update(Email):
                     Newlastname = str(("New Lastname: ")).capitalize().strip()
                 cursor.execute('''
                     UPDATE traveller SET Lastname = ? WHERE EmailAdress = ?
-                ''', (Newlastname, Email))
+                ''', (encrypt_message(Newlastname), Email))
 
                 conn.commit()
                 print("Update on Lastname succesfull")
@@ -256,7 +271,7 @@ def Update(Email):
                     Newstreetname = str(sanitize_input("New Streetname: ")).strip()
                 conn.execute('''
                     UPDATE traveller SET Streetname = ? WHERE EmailAdress = ?
-                ''', (Newstreetname, Email))
+                ''', (encrypt_message(Newstreetname), Email))
 
                 conn.commit()
                 print("Update on Streetname succesfull")
@@ -290,7 +305,7 @@ def Update(Email):
 
                 cursor.execute('''
                     UPDATE traveller SET ZipCode = ? WHERE EmailAdress = ?
-                ''', (NewzipCode, Email))
+                ''', (encrypt_message(NewzipCode), Email))
 
                 conn.commit()
                 print("Update on Zipcode succesfull")
@@ -320,7 +335,7 @@ def Update(Email):
 
                 cursor.execute('''
                     UPDATE traveller SET MobilePhone = ? WHERE EmailAdress = ?
-                ''', (Newphonenumber, Email))
+                ''', (encrypt_message(Newphonenumber), Email))
                 
                 conn.commit()
                 print("Update on MobilePhone succesfull")
@@ -337,7 +352,7 @@ def Update(Email):
                 
                 cursor.execute('''
                     UPDATE traveller SET DrivingLiscenceNumber = ? WHERE EmailAdress = ?
-                ''', (DLN, Email))
+                ''', (encrypt_message(DLN), Email))
 
                 conn.commit()
                 print("Update on DrivingLiscenceNumber succesfull")
