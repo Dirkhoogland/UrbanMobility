@@ -4,14 +4,13 @@ from datetime import date
 
 import Databasefunctions
 import Hasher
-from Encrypt import Traveller_encrypt_many, Users_encrypt_many, Profiles_encrypt_many
+from Encrypt import Traveller_encrypt_many, Users_encrypt_many, Profiles_encrypt_many, encrypt_message, decrypt_message
+from Validator import is_valid_password
 
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 db_path = os.path.join(script_dir, "Database.db")
 def Databasesetupstart():
-
-
 
     # functie die kijkt of de DB geen tabellen heb voor set up
     if is_database_empty():
@@ -218,4 +217,64 @@ def filldatabase():
     conn.close()
     for userid,firstname, lastname in profiles:
         Databasefunctions.setup_add_profile_for_user(userid,firstname, lastname)
+
+
+def CreateBackupKey():
+    print("You have no password for your key. Create a password for your key with:")
+    print(" - Length of 12 to 30 characters")
+    print(" - At least 1 lowercase letter")
+    print(" - At least 1 uppercase letter")
+    print(" - At least 1 number")
+    print(" - At least 1 symbol (~!@#$%&)")
+    
+    password = ""
+    
+    while True:
+        password = input("Enter new password for backup permission: ")
+        if is_valid_password(password):
+            break
+        else:
+            print("Password is invalid. It must have:")
+            print(" - Length of 12 to 30 characters")
+            print(" - At least 1 lowercase letter")
+            print(" - At least 1 uppercase letter")
+            print(" - At least 1 number")
+            print(" - At least 1 symbol (~!@#$%&)")
+    
+    path = "BackupKey.txt"
+    path = os.path.join(script_dir, path)
+    if not os.path.exists(path):
+        with open("UrbanMobility/BackupKey.txt", "w") as secrets_file:
+            secrets_file.write(encrypt_message(password))
+        print("Backup key created and saved.")
+    else:
+        print("BackupKey.txt already exists. Key not overwritten.")
+
+def AccessPassword():
+    path = "BackupKey.txt"
+    path = os.path.join(script_dir, path)
+    if not os.path.exists(path):
+        CreateBackupKey()
+    attempt = 0
+    while True:
+        if attempt == 3:
+            print("Acces autritrization failed: ")
+            print("To many login attempts")
+            return False
+        password = input("Password: ")
+        if password == decrypt_message(ReadBackupKey()):
+            print("Acces autritrization passed")
+            return True
+        print("Wrong password")
+        attempt += 1
+
+def ReadBackupKey():
+    path = "BackupKey.txt"
+    path = os.path.join(script_dir, path)
+    if os.path.exists(path):
+        with open(path, "r") as secrets_file:
+            return secrets_file.read()
+    else:
+        print("failed to open file")
+
 

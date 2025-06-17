@@ -5,16 +5,16 @@ from cryptography.fernet import Fernet
 
 def generate_key():
     key = Fernet.generate_key()
-    with open("key.txt", "w") as secrets_file:
+    with open("UrbanMobility/key.txt", "w") as secrets_file:
         secrets_file.write(key.decode())  # Write as string
     print("Key generated and saved to key.txt")
 
 def get_key():
-    if not os.path.exists("key.txt"):
+    if not os.path.exists("UrbanMobility/key.txt"):
         print("No key found. Generating new key...")
         generate_key()
 
-    with open("key.txt", "r") as key_file:
+    with open("UrbanMobility/key.txt", "r") as key_file:
         return key_file.read()
 
 
