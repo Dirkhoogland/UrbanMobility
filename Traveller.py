@@ -363,3 +363,30 @@ def Update(Email):
     finally:
         if conn:
             conn.close()
+
+def Delete(Email):
+    try:
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+
+        Id = -1
+        traveller = View(Email)
+        if traveller == None:
+            print("user not found")
+            return
+        print(traveller)
+        Id = traveller[0]
+
+        cursor.execute('''
+        DELETE FROM Traveller
+        WHERE ID = ?
+        ''', (Id,))
+
+        conn.commit()
+        print("Traveller deleted successfully.")
+
+    except sqlite3.OperationalError:
+        ("An error accured rebooting...")
+    finally:
+        if conn:
+            conn.close()
