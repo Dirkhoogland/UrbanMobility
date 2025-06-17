@@ -4,7 +4,8 @@ from Validator import is_valid_email, is_valid_phone, is_valid_DLN, is_valid_zip
 from Menus import toon_dynamisch_menu, TravelerUpdateOptions, genderOption, cityOption
 from Manager import BirthdayManager, GenderManager, cityManager
 from DatabaseSetup import CreateBackup
-from Encrypt import Traveller_decrypt, Traveller_encrypt, decrypt_message, encrypt_message
+from Encrypt import Traveller_encrypt,  encrypt_message
+from Decrypt import Traveller_decrypt, decrypt_message
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 db_path = os.path.join(script_dir, "Database.db")
@@ -28,7 +29,7 @@ def View(Email):
         # traveller[11] = decrypt_message(traveller[11]) # DLN
         # Email is encrypted
         if(decrypt_message(target[9]) == Email):
-            return traveller_decrypt(target)
+            return Traveller_decrypt(target)
     return None
     
 def abortAdd(string):
@@ -171,7 +172,6 @@ def AddTraveller():
 
 def Add(Firstname, Lastname, Birthday, Gender, Streetname, 
         Housenumber, zipCode, City, EmailAdress, MobilePhone, DrivingLiscenceNumber):
-    CreateBackup()
     try:
         traveller = (Firstname, Lastname, Birthday, Gender, Streetname, Housenumber, zipCode, City, EmailAdress, MobilePhone, DrivingLiscenceNumber)
         traveller = Traveller_encrypt(traveller) # encrypt privacy intensive fields
@@ -196,18 +196,17 @@ def Add(Firstname, Lastname, Birthday, Gender, Streetname,
 
 
 def Update(Email):
-    CreateBackup()
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     try:
         while True:
-        
+            Id = -1
             traveller = View(Email)
             if traveller == None:
                 print("user not found")
                 break
-
             print(traveller)
+            Id = traveller[0]
             
             print()
             print("what do you want to update?")
@@ -223,8 +222,8 @@ def Update(Email):
                     Newfirstname = str(sanitize_input("New Firstname: ")).capitalize().strip()
 
                 cursor.execute('''
-                    UPDATE traveller SET Firstname = ? WHERE EmailAdress = ?
-                ''', (encrypt_message(Newfirstname), Email,))
+                    UPDATE traveller SET Firstname = ? WHERE ID = ?
+                ''', (encrypt_message(Newfirstname), Id,))
             
                 conn.commit()
                 print("Update on Firstname succesfull")
@@ -234,8 +233,8 @@ def Update(Email):
                 while Newlastname == "":
                     Newlastname = str(("New Lastname: ")).capitalize().strip()
                 cursor.execute('''
-                    UPDATE traveller SET Lastname = ? WHERE EmailAdress = ?
-                ''', (encrypt_message(Newlastname), Email))
+                    UPDATE traveller SET Lastname = ? WHERE ID = ?
+                ''', (encrypt_message(Newlastname), Id))
 
                 conn.commit()
                 print("Update on Lastname succesfull")
@@ -245,8 +244,8 @@ def Update(Email):
                     Newbirthday = BirthdayManager()
 
                     cursor.execute('''
-                    UPDATE traveller SET Birthday = ? WHERE EmailAdress = ?
-                    ''', (Newbirthday, Email))
+                    UPDATE traveller SET Birthday = ? WHERE ID = ?
+                    ''', (Newbirthday, Id))
 
                     conn.commit()
                     print("Update on Birthday succesfull")
@@ -259,8 +258,8 @@ def Update(Email):
                 if gender == "F" or gender == "M":
 
                     cursor.execute('''
-                    UPDATE traveller SET Gender = ? WHERE EmailAdress = ?
-                    ''', (gender, Email))
+                    UPDATE traveller SET Gender = ? WHERE ID = ?
+                    ''', (gender, Id))
 
                     conn.commit()
                     print("Update on Gender succesfull")
@@ -270,8 +269,8 @@ def Update(Email):
                 while Newstreetname == "":
                     Newstreetname = str(sanitize_input("New Streetname: ")).strip()
                 conn.execute('''
-                    UPDATE traveller SET Streetname = ? WHERE EmailAdress = ?
-                ''', (encrypt_message(Newstreetname), Email))
+                    UPDATE traveller SET Streetname = ? WHERE ID = ?
+                ''', (encrypt_message(Newstreetname), Id))
 
                 conn.commit()
                 print("Update on Streetname succesfull")
@@ -288,8 +287,8 @@ def Update(Email):
                         print("No negative housenumbers allowed")
 
                 cursor.execute('''
-                    UPDATE traveller SET HouseNumber = ? WHERE EmailAdress = ?
-                ''', (Newhousenumber, Email))
+                    UPDATE traveller SET HouseNumber = ? WHERE ID = ?
+                ''', (Newhousenumber, Id))
 
                 conn.commit()
                 print("Update on Housenumber succesfull")
@@ -304,8 +303,8 @@ def Update(Email):
                         print("AB1234")
 
                 cursor.execute('''
-                    UPDATE traveller SET ZipCode = ? WHERE EmailAdress = ?
-                ''', (encrypt_message(NewzipCode), Email))
+                    UPDATE traveller SET ZipCode = ? WHERE ID = ?
+                ''', (encrypt_message(NewzipCode), Id))
 
                 conn.commit()
                 print("Update on Zipcode succesfull")
@@ -314,7 +313,7 @@ def Update(Email):
                 Newcity = "UNKNOWN" # place holder
                 Newcity = cityManager()
                 cursor.execute('''
-                    UPDATE traveller SET City = ? WHERE EmailAdress = ?
+                    UPDATE traveller SET City = ? WHERE ID = ?
                 ''', (Newcity, Email))
 
                 conn.commit()
@@ -334,8 +333,8 @@ def Update(Email):
                 Newphonenumber = "+" + Newphonenumber 
 
                 cursor.execute('''
-                    UPDATE traveller SET MobilePhone = ? WHERE EmailAdress = ?
-                ''', (encrypt_message(Newphonenumber), Email))
+                    UPDATE traveller SET MobilePhone = ? WHERE ID = ?
+                ''', (encrypt_message(Newphonenumber), Id))
                 
                 conn.commit()
                 print("Update on MobilePhone succesfull")
@@ -351,8 +350,8 @@ def Update(Email):
                         print("A12345678")
                 
                 cursor.execute('''
-                    UPDATE traveller SET DrivingLiscenceNumber = ? WHERE EmailAdress = ?
-                ''', (encrypt_message(DLN), Email))
+                    UPDATE traveller SET DrivingLiscenceNumber = ? WHERE ID = ?
+                ''', (encrypt_message(DLN), Id))
 
                 conn.commit()
                 print("Update on DrivingLiscenceNumber succesfull")
@@ -362,6 +361,33 @@ def Update(Email):
 
     except sqlite3.OperationalError:
         print("An error accured rebooting...")
+    finally:
+        if conn:
+            conn.close()
+
+def Delete(Email):
+    try:
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+
+        Id = -1
+        traveller = View(Email)
+        if traveller == None:
+            print("user not found")
+            return
+        print(traveller)
+        Id = traveller[0]
+
+        cursor.execute('''
+        DELETE FROM Traveller
+        WHERE ID = ?
+        ''', (Id,))
+
+        conn.commit()
+        print("Traveller deleted successfully.")
+
+    except sqlite3.OperationalError:
+        ("An error accured rebooting...")
     finally:
         if conn:
             conn.close()
