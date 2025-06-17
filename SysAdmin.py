@@ -38,7 +38,7 @@ def scootermenu(user):
                 print("invalid input, choose a number.")
                 continue
         if optie == 1:
-            Scooter.UpdateScooter(user)
+            Scooter.UpdateScooteradmin(user)
         if optie == 2:
             Scooter.Getattributes(user)
         if optie == 3:

@@ -139,6 +139,38 @@ def GetScooterService(Serialnumber):
  except sqlite3.Error as e:
         print(f"Database error: {e}")
 
+def ScooterupdateAdmin(scooter, user):
+   try:
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+        cursor = conn.cursor()
+        cursor.execute("""
+            UPDATE Scooters
+            SET Brand = ?, Model = ?, SerialNumber = ?, TopSpeed = ?, BatteryCapacity = ?, 
+                Soc = ?, TargetRange = ?, OutOfService = ?, Milage = ?, LastMaintenance = ?
+            WHERE ID = ?
+        """, (
+            scooter[1],  
+            scooter[2],  
+            scooter[3],  
+            scooter[4], 
+            scooter[5],  
+            scooter[6],  
+            scooter[7],  
+            scooter[10], 
+            scooter[11], 
+            scooter[12], 
+            scooter[0]   
+        ))
+        conn.commit() 
+        conn.close()  
+        log_actie(f"{user[2]} failed to updating a scooter with SerialNumber {scooter[3]}", user, 'fail', 'error')
+   except sqlite3.Error as e:
+        print(f"Error with creating scooter: {e}")
+        log_actie(f"{user[2]} failed to updating a scooter with SerialNumber {scooter[3]}", user, 'fail', 'error')
+   finally:
+        return
+
 def Scooterupdate(Scooter, user):
     try:
         speedcheck = Validator.is_valid_top_speed(Scooter[4])
