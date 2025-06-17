@@ -1,7 +1,45 @@
+from curses import qiflush
 from time import sleep
 import Databasefunctions
 import Menus , Validator
- 
+def newscooter(user):
+    scooter_data = {}
+
+    serialcheck = Speedcheck = batterycheck = soccheck = checktrs = servicecheck = maincheck = False
+
+    scooter_data['Brand'] = Validator.sanitize_input("Scooter Brand: ")
+    scooter_data['Model'] = Validator.sanitize_input("Scooter Model: ")
+
+    while not serialcheck:
+        scooter_data['SerialNumber'] = Validator.sanitize_input("Scooter Serial Number: ")
+        serialcheck = Validator.is_valid_serialnumber(scooter_data['SerialNumber'])
+
+    while not Speedcheck:
+        scooter_data['TopSpeed'] = input("Top Speed: ")
+        Speedcheck = Validator.is_valid_top_speed(scooter_data['TopSpeed'])
+
+    while not batterycheck:
+        scooter_data['BatteryCapacity'] = input("Battery Capacity: ")
+        batterycheck = Validator.is_valid_battery_capacity(scooter_data['BatteryCapacity'])
+
+    while not soccheck:
+        scooter_data['Soc'] = Validator.sanitize_input("State of Charge: ")
+        soccheck = Validator.is_valid_soc(scooter_data['Soc'])
+
+    while not checktrs:
+        scooter_data['TargetRange'] = Validator.sanitize_input("Target range SoC: ")
+        checktrs = Validator.is_valid_soc(scooter_data['TargetRange'])
+
+    while not servicecheck:
+        scooter_data['OutOfService'] = input("Out of Service (0 of 1): ")
+        servicecheck = Validator.validate_out_of_service(scooter_data['OutOfService'])
+
+    scooter_data['Milage'] = Validator.sanitize_input("Mileage: ")
+
+    while not maincheck:
+        scooter_data['LastMaintenance'] = input("Last Service Date (YYYY-MM-DD): ")
+        maincheck = Validator.is_valid_maintenance_date(scooter_data['LastMaintenance'])
+
 def UpdateScooter(user):
     print("Wat is het Serialnumber van de scooter, vul in q om terug te gaan.")
     Serialnumber = Validator.sanitize_input("Serialnumber: ")
@@ -71,7 +109,7 @@ def UpdateScooter(user):
     check = Validator.sanitize_input("Wil je deze updaten? Y/N").upper()
     Scooter = scooter
     if check == "Y":
-        Databasefunctions.Scooterupdate(Scooter)
+        Databasefunctions.Scooterupdate(Scooter, user)
     else:
         print("Update afgelast")
         sleep(100)

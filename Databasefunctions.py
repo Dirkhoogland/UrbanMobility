@@ -12,6 +12,7 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 db_path = os.path.join(script_dir, "Database.db")
 
 def aantal_gefaalde_logins(user_id, minuten=10):
+ try:
     tijd_grens = datetime.now() - timedelta(minutes=minuten)
     tijd_grens_str = tijd_grens.isoformat(timespec='seconds')
 
@@ -28,8 +29,11 @@ def aantal_gefaalde_logins(user_id, minuten=10):
     aantal = cursor.fetchone()[0]
     conn.close()
     return aantal
+ except sqlite3.Error as e:
+        print(f"Database error: {e}")
 
 def login(Username, Password):
+ try:
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM Users WHERE Username = ?", (Username,))
@@ -51,6 +55,7 @@ def login(Username, Password):
         print("user not found.")
         return False
 
+
     stored_hash = user[3]
 
     if Hasher.check_password(Password, stored_hash):
@@ -61,19 +66,26 @@ def login(Username, Password):
         log_actie("Login poging", user, result="Ongeldig wachtwoord")
         print("invalid password.")
         return False
+ except sqlite3.Error as e:
+        print(f"Database error: {e}")
     
 
 
 # krijgt de user gegevens bij inlog
 def getuserdetails(Username):
+ try:
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     cursor.execute("SELECT ID, Rank, Username FROM Users WHERE Username = ?", (Username,))
     user = cursor.fetchone()
     conn.close()
     return user
+ except sqlite3.Error as e:
+        print(f"Database error: {e}")
+        return
 
 def log_actie(action, user, result="", severity = "None", sus = "No"):
+ try:
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     if user == NULL:
@@ -87,6 +99,8 @@ def log_actie(action, user, result="", severity = "None", sus = "No"):
 
     conn.commit()
     conn.close()
+ except sqlite3.Error as e:
+        print(f"Database error: {e}")
 
 def logs():
     opties = []
@@ -115,33 +129,36 @@ def logs():
 # scooter functies Service
 
 def GetScooterService(Serialnumber):
+ try:
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM Scooters WHERE Serialnumber = ?", (Serialnumber,))
     Scooter = cursor.fetchone()
     conn.close()
     return Scooter
+ except sqlite3.Error as e:
+        print(f"Database error: {e}")
 
-def Scooterupdate(Scooter):
+def Scooterupdate(Scooter, user):
+    try:
+        speedcheck = Validator.is_valid_top_speed(Scooter[4])
+        if speedcheck == False:
+            print(f"Invalid speed: {Scooter[4]}")
 
-    speedcheck = Validator.is_valid_top_speed(Scooter[4])
-    if speedcheck == False:
-        print(f"Invalid speed: {Scooter[4]}")
+        capacitycheck = Validator.is_valid_battery_capacity(Scooter[5])
+        if capacitycheck == False:
+            print(f"Invalid Battery Capacity: {Scooter[5]}")
 
-    capacitycheck = Validator.is_valid_battery_capacity(Scooter[5])
-    if capacitycheck == False:
-        print(f"Invalid Battery Capacity: {Scooter[5]}")
+        chargecheck = Validator.is_valid_soc(Scooter[6])
+        if chargecheck == False:
+            print(f"Invalid Battery Capacity: {Scooter[6]}")
 
-    chargecheck = Validator.is_valid_soc(Scooter[6])
-    if chargecheck == False:
-        print(f"Invalid Battery Capacity: {Scooter[6]}")
+        maintcheck = Validator.is_valid_maintenance_date(Scooter[12])
+        if maintcheck == False:
+            print(f"Invalid maintainance date: {Scooter[12]}")
 
-    maintcheck = Validator.is_valid_maintenance_date(Scooter[12])
-    if maintcheck == False:
-        print(f"Invalid maintainance date: {Scooter[12]}")
-
-    if speedcheck and capacitycheck and chargecheck and maintcheck:
-        print("Waarden zijn gelidig database wordt geupdate")
+        if speedcheck and capacitycheck and chargecheck and maintcheck:
+            print("Waarden zijn gelidig database wordt geupdate")
 
 
 
@@ -171,19 +188,60 @@ def Scooterupdate(Scooter):
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
         cursor.execute(query, values)
-        conn.commit()                 
+        conn.commit() 
         conn.close()  
+        log_actie(f"{user[2]} failed to updating a scooter with SerialNumber {Scooter[3]}", user, 'fail', 'error')
+    except sqlite3.Error as e:
+        print(f"Error with creating scooter: {e}")
+        log_actie(f"{user[2]} failed to updating a scooter with SerialNumber {Scooter[3]}", user, 'fail', 'error')
+    finally:
+        return
 
+def CreateScooter(scooter_data, user):
+ try:
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+ 
+    cursor.execute('''
+    INSERT INTO Scooters (
+        Brand, Model, SerialNumber, TopSpeed, BatteryCapacity,
+        Soc, TargetRange, OutOfService, Milage, LastMaintenance
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ''', (
+    scooter_data['Brand'],
+    scooter_data['Model'],
+    scooter_data['SerialNumber'],
+    scooter_data['TopSpeed'],
+    scooter_data['BatteryCapacity'],
+    scooter_data['Soc'],
+    scooter_data['TargetRange'],
+    scooter_data['OutOfService'],
+    scooter_data['Milage'],
+    scooter_data['LastMaintenance']
+    ))
+
+    conn.commit()                 
+    conn.close() 
+    log_actie(f" {user[2]} successfully  created a scooter with SerialNumber  {scooter_data['SerialNumber']}", user, 'success', 'normal')
+ except sqlite3.Error as e:
+        print(f"Error with creating scooter: {e}")
+        log_actie(f"{user[2]} failed to create a scooter with SerialNumber {scooter_data['SerialNumber']}", user, 'fail', 'error')
+ finally:
+    return
 # general functions
 def FetchallScooter():
+ try:
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM Scooters")
     Scooter = cursor.fetchall()
     conn.close()
     return Scooter
+ except sqlite3.Error as e:
+        print(f"Database error: {e}")
 
 def passwordchange(user, pw, oldpw):
+ try:
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     cursor.execute("Select Password FROM Users WHERE ID = ?", (user[0],))
@@ -197,42 +255,50 @@ def passwordchange(user, pw, oldpw):
 
 
     if Hasher.check_password(oldpw, stored_hash):
-        hashed_pw = Hasher.hash_password(pw)
+        
+            hashed_pw = Hasher.hash_password(pw)
 
-        conn = sqlite3.connect(db_path)
-        cursor = conn.cursor()
-        cursor.execute("UPDATE Users SET Password = ? WHERE ID = ?", (hashed_pw, user[0]))
-        conn.commit()                 
-        conn.close()  
-        print("Password updated.")
-
+            conn = sqlite3.connect(db_path)
+            cursor = conn.cursor()
+            cursor.execute("UPDATE Users SET Password = ? WHERE ID = ?", (hashed_pw, user[0]))
+            conn.commit()                 
+            conn.close()  
+            print("Password updated.")
+            log_actie(f" {user[2]} successfully  updated their password", user, 'success', 'normal')
     else:
-        print("Ongeldig wachtwoord.")
+        print("invalid password.")
         return False
+ except sqlite3.Error as e:
+   
+            log_actie(f"{user[2]} failed to update their password", user, 'fail', 'error')
+ finally:
+  return
+
 
 def add_profile_for_user(user_id, firstname, lastname, user):
+ try:
     # Formaat: YYYY-MM-DD
-    registration_date = date.today().isoformat()  
+   registration_date = date.today().isoformat()  
 
-    conn = sqlite3.connect(db_path)
-    conn.execute("PRAGMA foreign_keys = ON") 
-    cursor = conn.cursor()
+   conn = sqlite3.connect(db_path)
+   conn.execute("PRAGMA foreign_keys = ON") 
+   cursor = conn.cursor()
 
-    try:
-        cursor.execute('''
+
+   cursor.execute('''
             INSERT INTO Profiles (UserID, Firstname, Lastname, RegistrationDate)
             VALUES (?, ?, ?, ?)
         ''', (user_id, firstname, lastname, registration_date))
 
-        conn.commit()
-        print("Profiel succesvol aangemaakt.")
-        log_actie(f" {user[2]} successfully  created a profile for {user_id}", user, 'success', 'normal')
-      
-    except sqlite3.Error as e:
+   conn.commit()
+   conn.close()
+   print("Profiel succesvol aangemaakt.")
+   log_actie(f" {user[2]} successfully  created a profile for {user_id}", user, 'success', 'normal')
+ except sqlite3.Error as e:
         print(f"Fout bij aanmaken profiel: {e}")
         log_actie(f"Systeem admin {user[2]} failed to create a profile for {user_id}", user, 'fail', 'error')
-    finally:
-        conn.close()
+ finally:
+        return
 
 def setup_add_profile_for_user(user_id, firstname, lastname):
     # Formaat: YYYY-MM-DD
@@ -249,14 +315,14 @@ def setup_add_profile_for_user(user_id, firstname, lastname):
         ''', (user_id, firstname, lastname, registration_date))
 
         conn.commit()
-        print("Profiel succesvol aangemaakt.")
+        conn.close()
 
       
     except sqlite3.Error as e:
-        print(f"Fout bij aanmaken profiel: {e}")
+        print(f"error with making profile in setup: {e}")
         
     finally:
-        conn.close()
+        return
 def searchprofile(user_id):
     conn = sqlite3.connect(db_path)
     conn.execute("PRAGMA foreign_keys = ON") 
@@ -275,7 +341,7 @@ def searchprofile(user_id):
         return None
 
 def add_user(username, password, rank, user):
-
+ try:
     check = check_user(username)
     if check == False:
         conn = sqlite3.connect(db_path)
@@ -289,23 +355,27 @@ def add_user(username, password, rank, user):
             ''', (rank, username, hashed_pw))
 
             conn.commit()
+            conn.close()
             print("User succesvol aangemaakt.")
             log_actie(f"{user[2]} successfully created account for {username}", user, 'success', 'normal')
        
         except sqlite3.Error as e:
             print(f"Fout bij aanmaken User: {e}")
             log_actie(f"{user[2]} failed to create account for {username}", user, 'fail', 'error')
-            conn.close()
             return False
 
-        conn.close()
+
         return True
     else:
         print("Username bestaat al")
         log_actie(f"{user[2]} failed to create account for {username}", user, 'fail', 'error')
         return False
+  except sqlite3.Error as e:
+            print(f"Error with create: {e}")
+            return False
 
 def check_user(username):
+ try:
     conn = sqlite3.connect(db_path)
     conn.execute("PRAGMA foreign_keys = ON") 
     cursor = conn.cursor()
@@ -319,8 +389,11 @@ def check_user(username):
     else:
 
         return False
-
+ except sqlite3.Error as e:
+            print(f"Error with fetch: {e}")
+            return False
 def get_user(username):
+ try:
     conn = sqlite3.connect(db_path)
     conn.execute("PRAGMA foreign_keys = ON") 
     cursor = conn.cursor()
@@ -334,35 +407,40 @@ def get_user(username):
     else:
 
         return
+ except sqlite3.Error as e:
+            print(f"Error with fetch: {e}")
+            return False
 
 def get_users(user):
+ try:
    conn = sqlite3.connect(db_path)
    conn.execute("PRAGMA foreign_keys = ON") 
    cursor = conn.cursor()
-   try:
-    cursor.execute('''
+
+   cursor.execute('''
         SELECT Users.ID, Users.Rank, Users.Username, Profiles.Firstname, Profiles.Lastname
         FROM Users
         JOIN Profiles ON Users.ID = Profiles.UserID
     ''')
 
-    rows = cursor.fetchall()
-    conn.close()
+   rows = cursor.fetchall()
+   conn.close()
 
-    gebruikers_lijst = []
-    for row in rows:
+   gebruikers_lijst = []
+   for row in rows:
         gebruiker_str = f"ID: {row[0]} | Rank: {row[1]} | Username: {row[2]} | Firstname: {row[3]} | Lastname: {row[4]}"
         gebruikers_lijst.append(gebruiker_str)
-   except sqlite3.Error as e:
+ except sqlite3.Error as e:
         print("Error at:", e)
         return False
-   return gebruikers_lijst
+ return gebruikers_lijst
 
 def updateprofile(id ,firstname, lastname, user):
-    conn = sqlite3.connect(db_path)
-    conn.execute("PRAGMA foreign_keys = ON") 
-    cursor = conn.cursor()
     try:
+        conn = sqlite3.connect(db_path)
+        conn.execute("PRAGMA foreign_keys = ON") 
+        cursor = conn.cursor()
+
         cursor.execute('''
             UPDATE Profiles
             SET Firstname = ?,
@@ -462,6 +540,7 @@ def Deleteaccount(engineer, user):
         return False
 
 def passwordchangeengineer(engineer, pw, user ):
+    try:
         hashed_pw = Hasher.hash_password(pw)
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
@@ -470,6 +549,11 @@ def passwordchangeengineer(engineer, pw, user ):
         conn.close()  
         print("Password updated.")
         log_actie(f"Systeem admin {user[2]} changed password of {engineer[2]}", user, 'success', 'normal')
+    except sqlite3.Error as e:
+        log_actie(f"Systeem admin {user[2]} failed to changed password of {engineer[2]}", user, 'fail', 'error')
+        print("Error at:", e)
+        return False
+    
 
 # super admin 
 

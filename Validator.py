@@ -55,7 +55,13 @@ def is_valid_password(password):
     if not re.search(r"[~!@#$%&_\-+=`|\\(){}\[\]:;\"'<>,.?/]", password):
         return False
 
-
+def validate_out_of_service(input_str):
+    input_str = input_str.strip()
+    if input_str in ['1', '0']:
+        return True
+    else:
+        print("Invalid input 0 or 1.")
+        return False
     return True
 # checks if dates are valid and not in the future
 def is_valid_iso_date(date_str):
