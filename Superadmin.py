@@ -65,7 +65,7 @@ def scootermenu(user):
         if optie == 2:
             Scooter.Getattributes(user)
         if optie == 3:
-            Scooter.Addscooter(user)
+            Scooter.newscooter(user)
         if optie == 4:
             Scooter.Deletescooter(user)
         else:

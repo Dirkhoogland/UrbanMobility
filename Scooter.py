@@ -1,4 +1,3 @@
-from curses import qiflush
 from time import sleep
 import Databasefunctions
 import Menus , Validator
@@ -120,5 +119,12 @@ def Getattributes(user):
  
     Menus.toon_dynamisch_menu(opties, "Scooter attributes")
     input( "Press enter to continue . . .")
+
+def Deletescooter(user):
+    serialcheck = False
+    while not serialcheck:
+        number = Validator.sanitize_input("Scooter Serial Number: ")
+        serialcheck = Validator.is_valid_serialnumber(number)
+    Databasefunctions.DeleteScooter(number, user)
  
  

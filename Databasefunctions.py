@@ -228,6 +228,35 @@ def CreateScooter(scooter_data, user):
         log_actie(f"{user[2]} failed to create a scooter with SerialNumber {scooter_data['SerialNumber']}", user, 'fail', 'error')
  finally:
     return
+
+def DeleteScooter(Serialnumber, user):
+    try:
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+
+        # Optioneel: controleer of de scooter bestaat
+        cursor.execute("SELECT * FROM Scooters WHERE SerialNumber = ?", (Serialnumber,))
+        scooter = cursor.fetchone()
+        if not scooter:
+            print("no scooter found.")
+            log_actie(f" {user[2]} failed to  removed a scooter with SerialNumber  {Serialnumber} as it doesnt exist", user, 'fail', 'error')
+            return False
+
+        # Verwijder de scooter
+        cursor.execute("DELETE FROM Scooters WHERE SerialNumber = ?", (Serialnumber,))
+        conn.commit()
+        print("Scooter removed.")
+        conn.close()
+        log_actie(f" {user[2]} successfully  removed a scooter with SerialNumber  {Serialnumber}", user, 'success', 'normal')
+        return True
+
+    except sqlite3.Error as e:
+        print("error with revmoing scooter:", e)
+        log_actie(f" {user[2]} failed to  removed a scooter with SerialNumber  {Serialnumber}", user, 'fail', 'error')
+        return False
+
+    finally:
+        conn.close()
 # general functions
 def FetchallScooter():
  try:
@@ -370,7 +399,7 @@ def add_user(username, password, rank, user):
         print("Username bestaat al")
         log_actie(f"{user[2]} failed to create account for {username}", user, 'fail', 'error')
         return False
-  except sqlite3.Error as e:
+ except sqlite3.Error as e:
             print(f"Error with create: {e}")
             return False
 
@@ -558,6 +587,7 @@ def passwordchangeengineer(engineer, pw, user ):
 # super admin 
 
 def CreateSysteemAdmin(username, password, firstname, lastname):
+ try:
    check = add_user(username, password, 1)
    if check:
        user = get_user(username)
@@ -566,6 +596,10 @@ def CreateSysteemAdmin(username, password, firstname, lastname):
        else:
            print("Error creating profile, could not find user")
    return
+ except sqlite3.Error as e:
+        log_actie(f"Super admin  failed to create system admin {username[2]}", user, 'fail', 'error')
+        print("Error at:", e)
+        return False
 
 def updateSystemAdminname(admin, username, user):
     conn = sqlite3.connect(db_path)
