@@ -1,3 +1,4 @@
+import DatabaseSetup
 import Scooter, Gebruiker , Menus , Databasefunctions , Profiles, Servicemedewerker, Validator, SysAdmin
 import Validator 
 
@@ -24,6 +25,7 @@ def ServiceEngineeredit(user):
         else:
             menu = False
     return
+
 def SysteemadminEdit(user):
     menu = True
     while menu == True:
@@ -48,13 +50,34 @@ def SysteemadminEdit(user):
             menu = False
     return
 
+def scootermenu(user):
+    menu = True
+    while menu == True:
+        optiesmenu = Menus.scooterinfo(user[1])
+        Menus.toon_dynamisch_menu(optiesmenu, "super Admin edit scooter ")
+        try:
+                optie = int(input("Select option: "))
+        except ValueError:
+                print("invalid input, choose a number.")
+                continue
+        if optie == 1:
+            Scooter.UpdateScooteradmin(user)
+        if optie == 2:
+            Scooter.Getattributes(user)
+        if optie == 3:
+            Scooter.newscooter(user)
+        if optie == 4:
+            Scooter.Deletescooter(user)
+        else:
+            menu = False
+    return
+
 def SuperMenu(user):
     menu = True
     while menu == True:
         opties = Menus.super()
         Menus.toon_dynamisch_menu(opties, "Super Admin")
-# def super():
-#     return ["User list","Add/Modify System Admin", "Add/modify Service Engineer","Add/modify travellers", "Scooter info/update", "Profile", "Back up Code","Create back up", "View logs", "Logout"]
+
         try:
                 optie = int(input("Select option: "))
         except ValueError:
@@ -68,9 +91,15 @@ def SuperMenu(user):
         if optie == 3:
             ServiceEngineeredit(user)
         if optie == 4:
-            Gebruiker.changepasswordengineer(user)
+            Gebruiker.changepasswordengineer(user) # change to traveller
         if optie == 5:
-            Profiles.ViewProfile(user)
+            scootermenu(user) # no create or delete
+        if optie == 6:
+            backupcode(user) # no codes yet/functions
+        if optie == 7:
+            DatabaseSetup.CreateBackup() # doesnt work yet
+        if optie == 8:
+            Databasefunctions.logs()
         else:
             menu = False
             SuperMenu(user)

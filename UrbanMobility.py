@@ -18,14 +18,14 @@ def getuserrank(rank):
 def Start():
     login = True;
     while login == True:
-        username =  Validator.sanitize_input("Vul je username in: ")
-       # username = '_jan.01'
-        # username = "super_admin"
-        # username = Validator.sanitize_input(username)
-        password =  Validator.sanitize_input("Vul je password in: ")
-      #  password = 'S3cure#Pass!12'
-        # password = "Admin_123?"
-        # password = Validator.sanitize_input(password)
+        # username =  Validator.sanitize_input("Vul je username in: ")
+
+        username = "super_admin"
+ 
+        # password =  Validator.sanitize_input("Vul je password in: ")
+
+        password = "Admin_123?"
+
         check = Databasefunctions.login(username, password)
         if check == True: 
             login = False
