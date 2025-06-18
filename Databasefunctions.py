@@ -7,6 +7,7 @@ import Hasher
 import Validator, Menus
 from Encrypt import encrypt_message
 from Decrypt import decrypt_message
+from logger import Decrypte_all_logs
 
 
 
@@ -107,29 +108,19 @@ def log_actie(action, user, result="", severity = "None", sus = "No"):
 
 def logs():
     opties = []
+    logs = Decrypte_all_logs()
 
-    try:
-        conn = sqlite3.connect(db_path)
-        cursor = conn.cursor()
-        cursor.execute("SELECT ID, Action, UserID, Username, Timestamp, Result, Severity, Suspiscious FROM ActionLog")
-        logs = cursor.fetchall()
-        conn.close()
-
-        for index, log in enumerate(logs, start=1):
-            optie = (
-                f" Action: {decrypt_message(log[1])} | "
-                f"UserID: {log[2]} | Username: {decrypt_message(log[3])} | "
-                f"Timestamp: {decrypt_message(log[4])} | Result: {decrypt_message(log[5])} | "
-                f"Severity: {decrypt_message(log[6])} | Suspicious: {decrypt_message(log[7])}"
-            )
-            opties.append(optie)
-
-    except sqlite3.Error as e:
-        print(f"Database error: {e}")
+    for log in logs:
+        optie = (
+            f" Action: {decrypt_message(log[1])} | "
+            f"UserID: {log[2]} | Username: {decrypt_message(log[3])} | "
+            f"Timestamp: {decrypt_message(log[4])} | Result: {decrypt_message(log[5])} | "
+            f"Severity: {decrypt_message(log[6])} | Suspicious: {decrypt_message(log[7])}"
+        )
+        opties.append(optie)
     
     Menus.toon_dynamisch_menu(opties, "Logs")
     input( "Press enter to continue . . .")
-# scooter functies Service
 def StateofChargeupdate(soc, Serialnumber, user):
     try:
         conn = sqlite3.connect(db_path)
