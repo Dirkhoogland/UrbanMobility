@@ -5,6 +5,8 @@ import os
 from tabnanny import check
 import Hasher
 import Validator, Menus
+from Encrypt import encrypt_message
+from Decrypt import decrypt_message
 
 
 
@@ -92,11 +94,12 @@ def log_actie(action, user, result="", severity = "None", sus = "No"):
         user[0] = 0
         user[2] = "login attempt"
     timestamp = datetime.now().isoformat(timespec='seconds')
+    
     cursor.execute('''
         INSERT INTO ActionLog (Action, UserID,Username, Timestamp, Result, Severity, Suspiscious)
         VALUES (?, ?, ?, ?, ? , ?, ? )
-    ''', (action, user[0], user[2], timestamp, result, severity, sus))
-
+    ''', (encrypt_message(action), user[0], encrypt_message(user[2]), encrypt_message(timestamp), encrypt_message(result), encrypt_message(severity), encrypt_message(sus))
+    )
     conn.commit()
     conn.close()
  except sqlite3.Error as e:
@@ -114,10 +117,10 @@ def logs():
 
         for index, log in enumerate(logs, start=1):
             optie = (
-                f" Action: {log[1]} | "
-                f"UserID: {log[2]} | Username: {log[3]} | "
-                f"Timestamp: {log[4]} | Result: {log[5]} | "
-                f"Severity: {log[6]} | Suspicious: {log[7]}"
+                f" Action: {decrypt_message(log[1])} | "
+                f"UserID: {log[2]} | Username: {decrypt_message(log[3])} | "
+                f"Timestamp: {decrypt_message(log[4])} | Result: {decrypt_message(log[5])} | "
+                f"Severity: {decrypt_message(log[6])} | Suspicious: {decrypt_message(log[7])}"
             )
             opties.append(optie)
 
