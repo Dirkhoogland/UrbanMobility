@@ -9,8 +9,6 @@ from Encrypt import encrypt_message
 from Decrypt import decrypt_message
 from logger import Decrypte_all_logs
 
-
-
 script_dir = os.path.dirname(os.path.abspath(__file__))
 db_path = os.path.join(script_dir, "Database.db")
 
@@ -51,8 +49,6 @@ def login(Username, Password):
             log_actie("Login geblokkeerd", user, "Te veel pogingen", "High", "Yes")
             return False
     
-
-
     if user is None:
         log_actie("Login poging", "Gebruiker niet gevonden")
         print("user not found.")
@@ -112,10 +108,10 @@ def logs():
 
     for log in logs:
         optie = (
-            f" Action: {decrypt_message(log[1])} | "
-            f"UserID: {log[2]} | Username: {decrypt_message(log[3])} | "
-            f"Timestamp: {decrypt_message(log[4])} | Result: {decrypt_message(log[5])} | "
-            f"Severity: {decrypt_message(log[6])} | Suspicious: {decrypt_message(log[7])}"
+            f" Action: {log[1]} | "
+            f"UserID: {log[2]} | Username: {log[3]} | "
+            f"Timestamp: {log[4]} | Result: {log[5]} | "
+            f"Severity: {log[6]} | Suspicious: {log[7]}"
         )
         opties.append(optie)
     
