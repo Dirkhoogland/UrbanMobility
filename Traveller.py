@@ -6,11 +6,11 @@ from Manager import BirthdayManager, GenderManager, cityManager
 from DatabaseSetup import CreateBackup
 from Encrypt import Traveller_encrypt,  encrypt_message
 from Decrypt import Traveller_decrypt, decrypt_message
-
+from logger import Log_encrypt
 script_dir = os.path.dirname(os.path.abspath(__file__))
 db_path = os.path.join(script_dir, "Database.db")
 
-def View(Email):
+def View(Email, User = "UNKNOWN"):
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     cursor.execute('''
@@ -29,6 +29,7 @@ def View(Email):
         # traveller[11] = decrypt_message(traveller[11]) # DLN
         # Email is encrypted
         if(decrypt_message(target[9]) == Email):
+            # Log_encrypt()
             return Traveller_decrypt(target)
     return None
     
