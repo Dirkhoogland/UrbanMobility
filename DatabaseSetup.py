@@ -242,7 +242,7 @@ def CreateBackupKey():
     path = "BackupKey.txt"
     path = os.path.join(script_dir, path)
     if not os.path.exists(path):
-        with open("UrbanMobility/BackupKey.txt", "w") as secrets_file:
+        with open(path, "w") as secrets_file:
             secrets_file.write(encrypt_message(password))
         print("Backup key created and saved.")
     else:
