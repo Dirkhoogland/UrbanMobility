@@ -3,18 +3,21 @@ import os
 from cryptography.fernet import Fernet
 
 
+script_dir = os.path.dirname(os.path.abspath(__file__))
+key_path = os.path.join(script_dir, "key.txt")
+
 def generate_key():
     key = Fernet.generate_key()
-    with open("UrbanMobility/key.txt", "w") as secrets_file:
+    with open(key_path, "w") as secrets_file:
         secrets_file.write(key.decode())  # Write as string
     print("Key generated and saved to key.txt")
 
 def get_key():
-    if not os.path.exists("UrbanMobility/key.txt"):
+    if not os.path.exists(key_path):
         print("No key found. Generating new key...")
         generate_key()
 
-    with open("UrbanMobility/key.txt", "r") as key_file:
+    with open(key_path, "r") as key_file:
         return key_file.read()
 
 
@@ -87,7 +90,20 @@ def Profiles_encrypt(profile) -> tuple:
 
     return profile
 
+def Log_encrypt(log) -> tuple:
+    if log is not None:
+        log = list(log)
+        log[0] = encrypt_message(log[0])
+        # log[1] = UserID
+        log[2] = encrypt_message(log[2])
+        log[3] = encrypt_message(log[3])
+        log[4] = encrypt_message(log[4])
+        log[5] = encrypt_message(log[5])
+        log[6] = "Yes" if log[6] else "No"  # True is Yes otherwise False
+        log[6] = encrypt_message(log[6])
+        log = tuple(log)
 
+    return log
 
 
 

@@ -5,8 +5,9 @@ import os
 from tabnanny import check
 import Hasher
 import Validator, Menus
-
-
+from Encrypt import encrypt_message
+from Decrypt import decrypt_message
+from logger import Decrypte_all_logs, Log_decrypt_many
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 db_path = os.path.join(script_dir, "Database.db")
@@ -36,35 +37,41 @@ def login(Username, Password):
  try:
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM Users WHERE Username = ?", (Username,))
-    user = cursor.fetchone()
+    cursor.execute("SELECT * FROM Users")
+    users = cursor.fetchall()
     conn.close()
     max_pogingen = 3
-    if user != None:
-        pogingen = aantal_gefaalde_logins(user[0])
+    pogingen = 0
+    found = None
+
+    for user in users:
+        if(decrypt_message(user[2]) == Username):
+            user_list = list(user)              # converteer naar lijst
+            user_list[2] = decrypt_message(user[2])  # pas aan
+            found = user_list
+            break
 
         if pogingen >= max_pogingen:
             print("Too many attempts try again later.")
             log_actie("Login geblokkeerd", user, "Te veel pogingen", "High", "Yes")
             return False
     
-
-
-    if user is None:
+    if found is None:
         log_actie("Login poging", "Gebruiker niet gevonden")
         print("user not found.")
+        pogingen += 1
         return False
 
 
     stored_hash = user[3]
-
     if Hasher.check_password(Password, stored_hash):
         log_actie("Login poging", user, result="Succesvol")
         print("Login successful!")
-        return True
+        return found
     else:
         log_actie("Login poging", user, result="Ongeldig wachtwoord")
         print("invalid password.")
+        pogingen += 1
         return False
  except sqlite3.Error as e:
         print(f"Database error: {e}")
@@ -92,11 +99,12 @@ def log_actie(action, user, result="", severity = "None", sus = "No"):
         user[0] = 0
         user[2] = "login attempt"
     timestamp = datetime.now().isoformat(timespec='seconds')
+    
     cursor.execute('''
-        INSERT INTO ActionLog (Action, UserID,Username, Timestamp, Result, Severity, Suspiscious)
+        INSERT INTO ActionLog (Action, UserID, Username, Timestamp, Result, Severity, Suspiscious)
         VALUES (?, ?, ?, ?, ? , ?, ? )
-    ''', (action, user[0], user[2], timestamp, result, severity, sus))
-
+    ''', (encrypt_message(action), user[0], encrypt_message(user[2]), encrypt_message(timestamp), encrypt_message(result), encrypt_message(severity), encrypt_message(sus))
+    )
     conn.commit()
     conn.close()
  except sqlite3.Error as e:
@@ -104,29 +112,19 @@ def log_actie(action, user, result="", severity = "None", sus = "No"):
 
 def logs():
     opties = []
+    logs = Decrypte_all_logs()
 
-    try:
-        conn = sqlite3.connect(db_path)
-        cursor = conn.cursor()
-        cursor.execute("SELECT ID, Action, UserID, Username, Timestamp, Result, Severity, Suspiscious FROM ActionLog")
-        logs = cursor.fetchall()
-        conn.close()
-
-        for index, log in enumerate(logs, start=1):
-            optie = (
-                f" Action: {log[1]} | "
-                f"UserID: {log[2]} | Username: {log[3]} | "
-                f"Timestamp: {log[4]} | Result: {log[5]} | "
-                f"Severity: {log[6]} | Suspicious: {log[7]}"
-            )
-            opties.append(optie)
-
-    except sqlite3.Error as e:
-        print(f"Database error: {e}")
+    for log in logs:
+        optie = (
+            f" Action: {log[1]} | "
+            f"UserID: {log[2]} | Username: {log[3]} | "
+            f"Timestamp: {log[4]} | Result: {log[5]} | "
+            f"Severity: {log[6]} | Suspicious: {log[7]}"
+        )
+        opties.append(optie)
     
     Menus.toon_dynamisch_menu(opties, "Logs")
     input( "Press enter to continue . . .")
-# scooter functies Service
 def StateofChargeupdate(soc, Serialnumber, user):
     try:
         conn = sqlite3.connect(db_path)
