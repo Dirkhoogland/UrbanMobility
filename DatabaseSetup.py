@@ -2,6 +2,7 @@ import sqlite3
 import os
 from datetime import date
 
+from Databasefunctions import setup_add_profile_for_user
 import Hasher
 from Encrypt import Traveller_encrypt_many, Users_encrypt_many, Profiles_encrypt_many, encrypt_message
 from Decrypt import decrypt_message
@@ -10,6 +11,7 @@ from Validator import is_valid_password
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 db_path = os.path.join(script_dir, "Database.db")
+
 def Databasesetupstart():
 
     # functie die kijkt of de DB geen tabellen heb voor set up
@@ -213,7 +215,7 @@ def filldatabase():
     conn.commit()
     conn.close()
     for userid,firstname, lastname in profiles:
-        Databasefunctions.setup_add_profile_for_user(userid,firstname, lastname)
+        setup_add_profile_for_user(userid,firstname, lastname)
 
 
 def CreateBackupKey():

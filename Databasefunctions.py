@@ -7,7 +7,7 @@ import Hasher
 import Validator, Menus
 from Encrypt import encrypt_message
 from Decrypt import decrypt_message
-from logger import Decrypte_all_logs
+from logger import Decrypte_all_logs, Log_decrypt_many
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 db_path = os.path.join(script_dir, "Database.db")
@@ -37,26 +37,30 @@ def login(Username, Password):
  try:
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM Users WHERE Username = ?", (Username,))
-    user = cursor.fetchone()
+    cursor.execute("SELECT * FROM Users")
+    users = cursor.fetchall()
     conn.close()
     max_pogingen = 3
-    if user != None:
-        pogingen = aantal_gefaalde_logins(user[0])
+    pogingen = 0
+    found = None
+    for user in users:
+        if(decrypt_message(user[2]) == Username):
+            found = user
+            break
 
         if pogingen >= max_pogingen:
             print("Too many attempts try again later.")
             log_actie("Login geblokkeerd", user, "Te veel pogingen", "High", "Yes")
             return False
     
-    if user is None:
+    if found is None:
         log_actie("Login poging", "Gebruiker niet gevonden")
         print("user not found.")
+        pogingen += 1
         return False
 
 
     stored_hash = user[3]
-
     if Hasher.check_password(Password, stored_hash):
         log_actie("Login poging", user, result="Succesvol")
         print("Login successful!")
@@ -64,6 +68,7 @@ def login(Username, Password):
     else:
         log_actie("Login poging", user, result="Ongeldig wachtwoord")
         print("invalid password.")
+        pogingen += 1
         return False
  except sqlite3.Error as e:
         print(f"Database error: {e}")
