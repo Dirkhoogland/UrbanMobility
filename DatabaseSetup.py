@@ -4,7 +4,8 @@ from datetime import date
 
 import Databasefunctions
 import Hasher
-from Encrypt import Traveller_encrypt_many, Users_encrypt_many, Profiles_encrypt_many, encrypt_message, decrypt_message
+from Encrypt import Traveller_encrypt_many, Users_encrypt_many, Profiles_encrypt_many, encrypt_message
+from Decrypt import decrypt_message
 from Validator import is_valid_password
 
 
@@ -149,9 +150,6 @@ def createdatabase(path = db_path):
         )
     ''')
     conn.commit()
-
-
-
     conn.close()
 
 
