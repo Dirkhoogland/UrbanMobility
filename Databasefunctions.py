@@ -5,7 +5,7 @@ import os
 from tabnanny import check
 import Hasher
 import Validator, Menus
-from Encrypt import Profiles_encrypt, Usersname_encrypt, encrypt_message, Users_encrypt
+from Encrypt import Profiles_encrypt, Usersname_encrypt, encrypt_message, Users_encrypt, profilename_encrypt
 from Decrypt import Profiles_decrypt, Userdetailsdecrypt, decrypt_message
 from logger import Decrypte_all_logs, Log_decrypt_many
 
@@ -698,19 +698,38 @@ def get_users(user):
         print("Error at:", e)
         return False
  return gebruikers_lijst
-
-def updateprofile(id ,firstname, lastname, user):
+def updateprofilfirstnamee(id ,firstname, user):
     try:
         conn = sqlite3.connect(db_path)
         conn.execute("PRAGMA foreign_keys = ON") 
         cursor = conn.cursor()
-
+        firstname = profilename_encrypt(firstname)
         cursor.execute('''
             UPDATE Profiles
-            SET Firstname = ?,
+            SET Firstname = ?
+            WHERE UserID = ?
+        ''', (firstname, id))
+
+        conn.commit()
+        conn.close()
+        print("Profile succesfully edited.")
+        log_actie(f"{user[2]} successfully updated profile  of user id {id}", user, 'success', 'normal')
+      
+    except sqlite3.Error as e:
+        print("Error while editing:", e)
+        log_actie(f"{user[2]} failed to update profile of user id {id}", user, 'fail', 'error')
+
+def updateprofilelastname(id, lastname, user):
+    try:
+        conn = sqlite3.connect(db_path)
+        conn.execute("PRAGMA foreign_keys = ON") 
+        cursor = conn.cursor()
+        lastname = profilename_encrypt(lastname)
+        cursor.execute('''
+            UPDATE Profiles
             Lastname = ? 
-            WHERE ID = ?
-        ''', (firstname,lastname, id))
+            WHERE UserID = ?
+        ''',(lastname, id))
 
         conn.commit()
         conn.close()
@@ -744,7 +763,7 @@ def CreateServiceMedewerker(username, password, firstname, lastname, user):
    if check:
        engineer = getuserbyname(username)
        if user:
-            add_profile_for_user(engineer[0], firstname, lastname)
+            add_profile_for_user(engineer[0], firstname, lastname, user)
             log_actie(f"Systeem admin {user[2]} successfully created profile for {engineer[2]}", user, 'success', 'normal')
        else:
            print("Error creating profile, could not find user")
@@ -843,7 +862,7 @@ def CreateSysteemAdmin(username, password, firstname, lastname, user):
    if check:
        newuser = getuserbyname(username)
        if user:
-            add_profile_for_user(newuser[0], firstname, lastname)
+            add_profile_for_user(newuser[0], firstname, lastname, user)
        else:
            print("Error creating profile, could not find user")
    return

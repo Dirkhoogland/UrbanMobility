@@ -63,7 +63,7 @@ def CreateBackup():
         return # create no backup in empty db
     
     while True:
-        db_backup = f"Backups\{today}\Database({kopie}).db"
+        db_backup = rf"Backups\{today}\Database({kopie}).db"
         db_backup = os.path.join(script_dir, db_backup) # creates path to this project
         if(is_database_empty(db_backup)):
             break
@@ -204,10 +204,6 @@ def filldatabase():
     (2, "Jan", "Jansen"),
     (3, "Mark", "Pieters")
     ]   
-
-    profiles = Profiles_encrypt_many(profiles)
-
-
     for rank, username, plain_password in users:
         hashed_pw = Hasher.hash_password(plain_password)
         cursor.execute('INSERT INTO Users (Rank, Username, Password) VALUES (?, ?, ?)', (rank, username, hashed_pw))

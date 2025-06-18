@@ -20,7 +20,7 @@ def ViewProfile(user):
                 print("invalid input, choose a number.")
                 continue
         if optie == 1:
-            Updateprofile(user, user)
+            Updateprofile(user, user[0])
         if optie == 2:
             Gebruiker.changepassword(user)      
         if optie == 3:
@@ -48,18 +48,35 @@ def Updateprofile(user, id):
     checkuser.upper();
     username = profile[2]
     Newlastname = profile[3]
+    opties = ["Firstname", "Lastname", "Leave menu"]
     if checkuser == "Y":
-        print("Leave empty if it does not need to be updated")
+     menu = True
+     while menu == True:
+        Menus.toon_dynamisch_menu(opties, "Profile menu")
+        try:
+                optie = int(input("Select option: "))
+        except ValueError:
+                print("invalid input, choose a number.")
+                continue
+        if optie == 1:
+             Newusername = Validator.sanitize_input("New Firstname:")
+             Databasefunctions.updateprofilfirstnamee(id, Newusername, user)
+        if optie == 2:
+            Newlastname = Validator.sanitize_input("New Lastname: ") 
+            Databasefunctions.updateprofilelastname(id, Newlastname, user)
+        if optie == 3:
+           menu = False
+           return
 
-        Newusername = Validator.sanitize_input("New Firstname:")
+        # Newusername = Validator.sanitize_input("New Firstname:")
 
-        Newlastname = Validator.sanitize_input("New Lastname: ")
-        if Newusername:
-            username = Newusername
-        if Newlastname:
-            lastname = Newlastname
+        # Newlastname = Validator.sanitize_input("New Lastname: ")
+        # if Newusername:
+        #     username = Newusername
+        # if Newlastname:
+        #     lastname = Newlastname
 
-        Databasefunctions.updateprofile(username, lastname, profile[0], user)
+        # Databasefunctions.updateprofile(username, lastname, profile[0], user)
 
 
 
