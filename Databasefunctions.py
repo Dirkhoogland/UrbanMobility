@@ -43,9 +43,12 @@ def login(Username, Password):
     max_pogingen = 3
     pogingen = 0
     found = None
+
     for user in users:
         if(decrypt_message(user[2]) == Username):
-            found = user
+            user_list = list(user)              # converteer naar lijst
+            user_list[2] = decrypt_message(user[2])  # pas aan
+            found = user_list
             break
 
         if pogingen >= max_pogingen:
@@ -64,7 +67,7 @@ def login(Username, Password):
     if Hasher.check_password(Password, stored_hash):
         log_actie("Login poging", user, result="Succesvol")
         print("Login successful!")
-        return True
+        return found
     else:
         log_actie("Login poging", user, result="Ongeldig wachtwoord")
         print("invalid password.")
