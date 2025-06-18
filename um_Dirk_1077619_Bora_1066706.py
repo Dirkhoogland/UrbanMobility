@@ -7,6 +7,7 @@ from Databasefunctions import *
 
 if __name__ == "__main__":
     print("versie 1.31") # om build te checken
+    Start()
     Databasesetupstart()
     # while True:
     #     if AccessPassword():
