@@ -60,7 +60,7 @@ def cityManager():
         try:
             choice = int(input("select option: "))
         except ValueError:
-            print("invalid input, choose between number: ")
+            print("invalid input, choose between number")
             continue
 
         # ║ 1. Amsterdam                ║
@@ -104,7 +104,7 @@ def cityManager():
         if choice == 10:
             return "Zoetemeer"
         
-        print("invalid input, choose between number ")
+        print("invalid input, choose between number")
         print("Example:")
         print("[1] Amesterdam")
         print("[2] Barendrecht")
