@@ -7,6 +7,7 @@ from DatabaseSetup import CreateBackup
 from Encrypt import Traveller_encrypt,  encrypt_message
 from Decrypt import Traveller_decrypt, decrypt_message
 from logger import Log_encrypt
+
 script_dir = os.path.dirname(os.path.abspath(__file__))
 db_path = os.path.join(script_dir, "Database.db")
 
@@ -197,8 +198,8 @@ def Add(Firstname, Lastname, Birthday, Gender, Streetname,
 
 
 def Update(Email):
+    conn = None # for finnaly block if sqlite3.connect(db_path) fails 
     try:
-        conn = None # for finnaly block if sqlite3.connect(db_path) fails 
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
         while True:
@@ -316,7 +317,7 @@ def Update(Email):
                 Newcity = cityManager()
                 cursor.execute('''
                     UPDATE traveller SET City = ? WHERE ID = ?
-                ''', (Newcity, Email))
+                ''', (Newcity, Id))
 
                 conn.commit()
                 print("Update on City succesfull")
