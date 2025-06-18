@@ -127,6 +127,208 @@ def logs():
     Menus.toon_dynamisch_menu(opties, "Logs")
     input( "Press enter to continue . . .")
 # scooter functies Service
+def StateofChargeupdate(soc, Serialnumber, user):
+    try:
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+
+        cursor.execute('''
+            UPDATE scooter
+            SET Soc = ?
+            WHERE SerialNumber = ?
+        ''', (soc, Serialnumber))
+
+        conn.commit()
+        print("State of Charge edited.")
+        conn.close()
+        log_actie(f"{user[2]} successfully updated a scooter with SerialNumber {Serialnumber}", user, 'sucess', 'normal')
+    except sqlite3.Error as e:
+        print(f"Error with updating scooter: {e}")
+        log_actie(f"{user[2]} failed to updating a scooter with SerialNumber {Serialnumber}", user, 'fail', 'error')
+def brand(brand, Serialnumber, user):
+    try:
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+
+        cursor.execute('''
+            UPDATE Scooters
+            SET Brand = ?
+            WHERE SerialNumber = ?
+        ''', (brand, Serialnumber))
+
+        conn.commit()
+        print("Brand edited.")
+        conn.close()
+        log_actie(f"{user[2]} successfully updated a scooter with SerialNumber {Serialnumber}", user, 'sucess', 'normal')
+    except sqlite3.Error as e:
+        print(f"Error with updating scooter: {e}")
+        log_actie(f"{user[2]} failed to updating a scooter with SerialNumber {Serialnumber}", user, 'fail', 'error')
+def model(model, Serialnumber, user):
+    try:
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+
+        cursor.execute('''
+            UPDATE Scooters
+            SET Model = ?
+            WHERE SerialNumber = ?
+        ''', (model, Serialnumber))
+
+        conn.commit()
+        print("Model edited.")
+        conn.close()
+        log_actie(f"{user[2]} successfully updated a scooter with SerialNumber {Serialnumber}", user, 'sucess', 'normal')
+
+    except sqlite3.Error as e:
+        print(f"Error with updating scooter: {e}")
+        log_actie(f"{user[2]} failed to updating a scooter with SerialNumber {Serialnumber}", user, 'fail', 'error')
+def Serialnumber(ser, Serialnumber, user):
+    try:
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+
+        cursor.execute('''
+            UPDATE Scooters
+            SET SerialNumber = ?
+            WHERE SerialNumber = ?
+        ''', (ser, Serialnumber))
+
+        conn.commit()
+        print("Serialnumber edited.")
+        conn.close()
+        log_actie(f"{user[2]} successfully updated a scooter with SerialNumber {Serialnumber}", user, 'sucess', 'normal')
+
+    except sqlite3.Error as e:
+        print(f"Error with updating scooter: {e}")
+        log_actie(f"{user[2]} failed to updating a scooter with SerialNumber {Serialnumber}", user, 'fail', 'error')
+def Speed(ser, Serialnumber, user):
+    try:
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+
+        cursor.execute('''
+            UPDATE Scooters
+            SET TopSpeed = ?
+            WHERE SerialNumber = ?
+        ''', (ser, Serialnumber))
+
+        conn.commit()
+        print("Top speed edited.")
+        conn.close()
+        log_actie(f"{user[2]} successfully updated a scooter with SerialNumber {Serialnumber}", user, 'sucess', 'normal')
+
+    except sqlite3.Error as e:
+        print(f"Error with updating scooter: {e}")
+        log_actie(f"{user[2]} failed to updating a scooter with SerialNumber {Serialnumber}", user, 'fail', 'error')
+def Battery(ser, Serialnumber, user):
+    try:
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+
+        cursor.execute('''
+            UPDATE Scooters
+            SET BatteryCapacity = ?
+            WHERE SerialNumber = ?
+        ''', (ser, Serialnumber))
+
+        conn.commit()
+        print("BatteryCapacity edited.")
+        conn.close()
+        log_actie(f"{user[2]} successfully updated a scooter with SerialNumber {Serialnumber}", user, 'sucess', 'normal')
+
+    except sqlite3.Error as e:
+        print(f"Error with updating scooter: {e}")
+        log_actie(f"{user[2]} failed to updating a scooter with SerialNumber {Serialnumber}", user, 'fail', 'error')
+def Milage(mil, Serialnumber, user):
+    try:
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+
+        cursor.execute('''
+            UPDATE Scooters
+            SET Mileage = ?
+            WHERE SerialNumber = ?
+        ''', (mil, Serialnumber))
+
+        conn.commit()
+        print("Milage edited.")
+        conn.close()
+        log_actie(f"{user[2]} successfully updated a scooter with SerialNumber {Serialnumber}", user, 'sucess', 'normal')
+    except sqlite3.Error as e:
+        print(f"Error with updating scooter: {e}")
+        log_actie(f"{user[2]} failed to updating a scooter with SerialNumber {Serialnumber}", user, 'fail', 'error')
+def targetrangeupdate(rnge, Serialnumber, user):
+    try:
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+
+        cursor.execute('''
+            UPDATE Scooters
+            SET TargetRangeSoC = ?
+            WHERE SerialNumber = ?
+        ''', (rnge, Serialnumber))
+
+        conn.commit()
+        print("Target range edited.")
+        conn.close()
+        log_actie(f"{user[2]} successfully updated a scooter with SerialNumber {Serialnumber}", user, 'sucess', 'normal')
+    except sqlite3.Error as e:
+        print(f"Error with updating scooter: {e}")
+        log_actie(f"{user[2]} failed to updating a scooter with SerialNumber {Serialnumber}", user, 'fail', 'error')
+def OutOfService(service, Serialnumber, user):
+    try:
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+
+        cursor.execute('''
+            UPDATE Scooters
+            SET OutOfServiceStatus = ?
+            WHERE SerialNumber = ?
+        ''', (service, Serialnumber))
+
+        conn.commit()
+        print("out of service status edited.")
+        conn.close()
+        log_actie(f"{user[2]} successfully updated a scooter with SerialNumber {Serialnumber}", user, 'sucess', 'normal')
+    except sqlite3.Error as e:
+        print(f"Error with updating scooter: {e}")
+        log_actie(f"{user[2]} failed to updating a scooter with SerialNumber {Serialnumber}", user, 'fail', 'error')
+def LocationUpdate(lat, long, Serialnumber, user):
+    try:
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+        latlong_str = f"{lat},{long}"
+        cursor.execute('''
+            UPDATE Scooters
+            SET Location = ?
+            WHERE SerialNumber = ?
+        ''', (latlong_str, Serialnumber))
+
+        conn.commit()
+        print("Location edited.")
+        conn.close()
+        log_actie(f"{user[2]} successfully updated a scooter with SerialNumber {Serialnumber}", user, 'sucess', 'normal')
+    except sqlite3.Error as e:
+        print(f"Error with updating scooter: {e}")
+        log_actie(f"{user[2]} failed to updating a scooter with SerialNumber {Serialnumber}", user, 'fail', 'error')
+def maintdate(date, Serialnumber, user):
+    try:
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+
+        cursor.execute('''
+            UPDATE Scooters
+            SET LastMaintainanceDate = ?
+            WHERE SerialNumber = ?
+        ''', (date, Serialnumber))
+
+        conn.commit()
+        print("date edited.")
+        conn.close()
+        log_actie(f"{user[2]} successfully updated a scooter with SerialNumber {Serialnumber}", user, 'sucess', 'normal')
+    except sqlite3.Error as e:
+        print(f"Error with updating scooter: {e}")
+        log_actie(f"{user[2]} failed to updating a scooter with SerialNumber {Serialnumber}", user, 'fail', 'error')
 
 def GetScooterService(Serialnumber):
  try:
@@ -164,9 +366,9 @@ def ScooterupdateAdmin(scooter, user):
         ))
         conn.commit() 
         conn.close()  
-        log_actie(f"{user[2]} failed to updating a scooter with SerialNumber {scooter[3]}", user, 'fail', 'error')
+        log_actie(f"{user[2]} successfully updated a scooter with SerialNumber {scooter[3]}", user, 'sucess', 'normal')
    except sqlite3.Error as e:
-        print(f"Error with creating scooter: {e}")
+        print(f"Error with updating scooter: {e}")
         log_actie(f"{user[2]} failed to updating a scooter with SerialNumber {scooter[3]}", user, 'fail', 'error')
    finally:
         return

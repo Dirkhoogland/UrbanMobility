@@ -34,7 +34,13 @@ def scooterinfo(rank):
         return ["Update Scooter", "Get Scooter attributes"]
     if rank <= 1:
         return ["Update Scooter", "Get Scooter attributes", "Add new Scooter", "Delete Scooter", "Update information Scooter"]
-    
+
+def scooteredit(rank):
+    if rank == 2:
+        return ["State of Charge", "Target range", "location", "Out of Service", "Milage", " Last maintenance date", "Return"]
+    if rank <= 1:
+        return ["Brand", "Model", "Serial Number", "Top speed", "Battery capacity", "State of Charge", "Target range", "location", "Out of Service", "Milage", " Last maintenance date", "return"]   
+
 def TravelerUpdateOptions():
     return ["Firstname", "Lastname", "Birthday", "Gender", "Streetname", "Housenumber", "Zipcode", "City", "Phonenumber", "DrivingsLicenceNumber", "Quit Update Menu" ]
 

@@ -7,18 +7,23 @@ def sanitize_input(input_display = ""):
 
         
 
-        white_list  = r"^[a-zA-Z0-9~!@#$%&_\-+=`|\\()\[\]{}:;'<>,.? ]+$" # only allow safe characters
+        white_list  = r"^[a-zA-Z0-9~!@#$%&_\-+=/`|\\()\[\]{}:;'<>,.? ]+$" # only allow safe characters
 
         if not re.fullmatch(white_list, string):
-            sub = str('"')
-            sub_2 = "{ }"
-            print(f"forbidden characters detected avoid ussing characters like: < > \ {sub_2} [ ] + =  & , : ' {sub} ")
+
+            print(f"forbidden characters detected ")
             continue
         break
 
     # Optioneel: trim spaties
     return string.strip()
+def is_valid_latitude(lat: str) -> bool:
+    pattern = r"^-?([0-8]?\d(\.\d{5})?|90\.00000)$"
+    return re.match(pattern, lat) is not None
 
+def is_valid_longitude(lon: str) -> bool:
+    pattern = r"^-?(1?[0-7]?\d(\.\d{5})?|180\.00000)$"
+    return re.match(pattern, lon) is not None
 
 # checks if emails are valid
 def is_valid_email(email):
@@ -90,7 +95,19 @@ def is_valid_maintenance_date(datum_str):
     except ValueError:
         return False
 
-
+def is_valid_milage(value):
+        try:
+            milage = float(value)
+            if milage < 0:
+                print("Kilometervalue cant be negative .")
+                return False
+            elif milage > 1_000_000:
+                print("Kilometervalue is too high.")
+                return False
+            return True
+        except ValueError:
+   
+            return False
     # accepteert dus 2.5 kWh of 2kWh
 def is_valid_battery_capacity(value):
     return bool(re.fullmatch(r"\d+(\.\d+)?\s*kWh", value.strip(), re.IGNORECASE))
