@@ -41,6 +41,14 @@ def User_decrypt(user) -> tuple:
         user = tuple(user)
 
     return user
+def Userdetailsdecrypt(details):
+    if details is not None:
+        details = list(details)
+        details[2] = decrypt_message(details[2]) 
+        details[3] = decrypt_message(details[3]) 
+        details[4] = decrypt_message(details[4]) 
+    return details
+
 
 def Profiles_decrypt(profile):
     if profile is not None:

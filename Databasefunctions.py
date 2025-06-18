@@ -5,8 +5,8 @@ import os
 from tabnanny import check
 import Hasher
 import Validator, Menus
-from Encrypt import encrypt_message
-from Decrypt import decrypt_message
+from Encrypt import Profiles_encrypt, Usersname_encrypt, encrypt_message, Users_encrypt
+from Decrypt import Profiles_decrypt, Userdetailsdecrypt, decrypt_message
 from logger import Decrypte_all_logs, Log_decrypt_many
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -65,7 +65,7 @@ def login(Username, Password):
 
     stored_hash = user[3]
     if Hasher.check_password(Password, stored_hash):
-        log_actie("Login poging", user, result="Succesvol")
+        log_actie("Login poging", found, result="Succesvol")
         print("Login successful!")
         return found
     else:
@@ -540,7 +540,8 @@ def add_profile_for_user(user_id, firstname, lastname, user):
  try:
     # Formaat: YYYY-MM-DD
    registration_date = date.today().isoformat()  
-
+   user_info = [user_id, firstname, lastname]
+   profile = Profiles_encrypt(user_info)
    conn = sqlite3.connect(db_path)
    conn.execute("PRAGMA foreign_keys = ON") 
    cursor = conn.cursor()
@@ -549,7 +550,7 @@ def add_profile_for_user(user_id, firstname, lastname, user):
    cursor.execute('''
             INSERT INTO Profiles (UserID, Firstname, Lastname, RegistrationDate)
             VALUES (?, ?, ?, ?)
-        ''', (user_id, firstname, lastname, registration_date))
+        ''', (user_id, profile[1], profile[2], registration_date))
 
    conn.commit()
    conn.close()
@@ -564,7 +565,8 @@ def add_profile_for_user(user_id, firstname, lastname, user):
 def setup_add_profile_for_user(user_id, firstname, lastname):
     # Formaat: YYYY-MM-DD
     registration_date = date.today().isoformat()  
-
+    user_info = [user_id, firstname, lastname]
+    profile = Profiles_encrypt(user_info)
     conn = sqlite3.connect(db_path)
     conn.execute("PRAGMA foreign_keys = ON") 
     cursor = conn.cursor()
@@ -573,7 +575,7 @@ def setup_add_profile_for_user(user_id, firstname, lastname):
         cursor.execute('''
             INSERT INTO Profiles (UserID, Firstname, Lastname, RegistrationDate)
             VALUES (?, ?, ?, ?)
-        ''', (user_id, firstname, lastname, registration_date))
+        ''', (user_id, profile[1], profile[2], registration_date))
 
         conn.commit()
         conn.close()
@@ -595,7 +597,7 @@ def searchprofile(user_id):
     conn.close()
 
     if profiel:
-
+        profiel = Profiles_decrypt(profiel)
         return profiel
     else:
         print("Geen profiel gevonden voor deze gebruiker.")
@@ -609,11 +611,13 @@ def add_user(username, password, rank, user):
         conn.execute("PRAGMA foreign_keys = ON") 
         cursor = conn.cursor()
         hashed_pw = Hasher.hash_password(password)
+
+        usere = Usersname_encrypt(username)
         try:
             cursor.execute('''
                INSERT INTO Users (Rank, Username, Password )
                 VALUES (?, ?, ?)
-            ''', (rank, username, hashed_pw))
+            ''', (rank, usere, hashed_pw))
 
             conn.commit()
             conn.close()
@@ -640,16 +644,17 @@ def check_user(username):
     conn = sqlite3.connect(db_path)
     conn.execute("PRAGMA foreign_keys = ON") 
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM Users WHERE Username = ?", (username,))
-    user = cursor.fetchone()
+    cursor.execute("SELECT * FROM Users")
+    users = cursor.fetchall()
     conn.close()
+    for user in users:
+        if(decrypt_message(user[2]) == username):
+            return True
+    return False
+ except sqlite3.Error as e:
+            print(f"Error with fetch: {e}")
+            return False
 
-    if user:
-
-        return True
-    else:
-
-        return False
  except sqlite3.Error as e:
             print(f"Error with fetch: {e}")
             return False
@@ -658,13 +663,18 @@ def get_user(username):
     conn = sqlite3.connect(db_path)
     conn.execute("PRAGMA foreign_keys = ON") 
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM Users WHERE Username = ?", (username,))
-    user = cursor.fetchone()
+    cursor.execute("SELECT * FROM Users WHERE")
+    users = cursor.fetchall()
     conn.close()
+    for user in users:
+        if(decrypt_message(user[2]) == username):
+            user_list = list(user)              # converteer naar lijst
+            user_list[2] = decrypt_message(user[2])  # pas aan
+            found = user_list
+            break
+    if found:
 
-    if user:
-
-        return user
+        return found
     else:
 
         return
@@ -689,7 +699,8 @@ def get_users(user):
 
    gebruikers_lijst = []
    for row in rows:
-        gebruiker_str = f"ID: {row[0]} | Rank: {row[1]} | Username: {row[2]} | Firstname: {row[3]} | Lastname: {row[4]}"
+        decrypted = Userdetailsdecrypt(row)
+        gebruiker_str = f"ID: {decrypted[0]} | Rank: {decrypted[1]} | Username: {decrypted[2]} | Firstname: {decrypted[3]} | Lastname: {decrypted[4]}"
         gebruikers_lijst.append(gebruiker_str)
  except sqlite3.Error as e:
         print("Error at:", e)
@@ -740,6 +751,7 @@ def CreateServiceMedewerker(username, password, firstname, lastname, user):
   return
 
 def updateServiceEngineername(Engineer, username, user):
+    username = Usersname_encrypt(username)
     conn = sqlite3.connect(db_path)
     conn.execute("PRAGMA foreign_keys = ON") 
     cursor = conn.cursor()
@@ -818,9 +830,9 @@ def passwordchangeengineer(engineer, pw, user ):
 
 # super admin 
 
-def CreateSysteemAdmin(username, password, firstname, lastname):
+def CreateSysteemAdmin(username, password, firstname, lastname, user):
  try:
-   check = add_user(username, password, 1)
+   check = add_user(username, password, 1, user)
    if check:
        user = get_user(username)
        if user:
@@ -834,6 +846,7 @@ def CreateSysteemAdmin(username, password, firstname, lastname):
         return False
 
 def updateSystemAdminname(admin, username, user):
+    username = Usersname_encrypt(username)
     conn = sqlite3.connect(db_path)
     conn.execute("PRAGMA foreign_keys = ON") 
     cursor = conn.cursor()

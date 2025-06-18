@@ -58,6 +58,14 @@ def Users_encrypt(user) -> tuple:
         pass
 
     return user
+def Usersname_encrypt(user):
+    if user is not None:
+
+        user = encrypt_message(user) 
+
+        pass
+
+    return user
 
 def Users_encrypt_many(users): # -> list<tuple>
     if users is not None:

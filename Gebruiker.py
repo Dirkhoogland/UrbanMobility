@@ -15,24 +15,52 @@ def Addservice(user):
 
         validatepassword = False
         while validatepassword == False:
-            print("Password has to be 12-30 characters with:   [A-Z],[a-z] numbers [0-9] and special characters  ~!@#$%&_-+=`|\(){}[]:;'<>,.? ")
+            print(r"Password has to be 12-30 characters with:   [A-Z],[a-z] numbers [0-9] and special characters  ~!@#$%&_-+=`|\(){}[]:;'<>,.? ")
             print("The password has to be with a lower case, upper case,  cijfer and at least one speciaal character.")
 
             password = Validator.sanitize_input("Password Engineer: ")
             validatepassword = Validator.is_valid_password(password)
 
-        firstname = input("User firstname: ")
+        firstname = Validator.sanitize_input("User firstname: ")
         
-        lastname = input("User lastname: ")
+        lastname = Validator.sanitize_input("User lastname: ")
 
         Databasefunctions.CreateServiceMedewerker(naam, password, firstname, lastname, user)
-
 
 
     else:
         print("Cancelled creation")
 
         return
+
+
+def AddSysteemmedewerker(user):
+    print("New service Engineer.")
+    
+    check = Validator.sanitize_input("Do you want to continue Y/N: ")
+    check.upper();
+
+    if check == "Y":
+        validateusername = False
+        while validateusername == False:
+            print("Username has to be 8-10 characters  and can only start with a _ or letter.")
+
+            naam = Validator.sanitize_input("New Engineers username: ")
+            validateusername = Validator.is_valid_username(naam)
+
+        validatepassword = False
+        while validatepassword == False:
+            print(r"Password has to be 12-30 characters with:   [A-Z],[a-z] numbers [0-9] and special characters  ~!@#$%&_-+=`|\(){}[]:;'<>,.? ")
+            print("The password has to be with a lower case, upper case,  cijfer and at least one speciaal character.")
+
+            password = Validator.sanitize_input("Password Engineer: ")
+            validatepassword = Validator.is_valid_password(password)
+
+        firstname = Validator.sanitize_input("User firstname: ")
+        
+        lastname = Validator.sanitize_input("User lastname: ")
+
+        Databasefunctions.CreateSysteemAdmin(naam, password, firstname, lastname, user)
 def changepassword(user):
     print(f"Welcome to change password: {user[2]}")
 
@@ -163,7 +191,7 @@ def UpdateSysteemadmin(user):
     if check == "Y":
         engineer = Validator.sanitize_input("Which System Admin: (username)")
         data = Databasefunctions.get_user(engineer)
-        if data[1] == 1:
+        if data[1] == False:
   
 
             print(f" You want to edit user info: {data[2]} with Id {data[0]} and Rank {data[1]}")
