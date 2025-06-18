@@ -196,9 +196,10 @@ def Add(Firstname, Lastname, Birthday, Gender, Streetname,
 
 
 def Update(Email):
-    conn = sqlite3.connect(db_path)
-    cursor = conn.cursor()
     try:
+        conn = None # for finnaly block if sqlite3.connect(db_path) fails 
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
         while True:
             Id = -1
             traveller = View(Email)
@@ -367,6 +368,7 @@ def Update(Email):
 
 def Delete(Email):
     try:
+        conn = None
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
 
