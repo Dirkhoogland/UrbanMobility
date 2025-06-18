@@ -26,11 +26,11 @@ def Start():
 
         password = "Admin_123?"
 
-        check = Databasefunctions.login(username, password)
-        if check == True: 
+        user = Databasefunctions.login(username, password)
+        if user != False: 
             login = False
     # gets rank number and name
-    user = Databasefunctions.getuserdetails(username)
+    #user = Databasefunctions.getuserdetails(username)
     # plaatst het in een naam die gebruikelijk is voor de user
     ranking = getuserrank(user[1]);
     print(f"Welkom bij het UrbanMobility project {user[2]} rank {ranking}")
