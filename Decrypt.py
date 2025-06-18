@@ -73,7 +73,14 @@ def Log_decrypt(log) -> tuple:
         log = tuple(log)
 
     return log
+def Usersname_decrypt(user):
+    if user is not None:
 
+        user = decrypt_message(user) 
+
+        pass
+
+    return user
 def Log_decrypt_many(logs): # -> list<tuple>
     if logs is not None:
         i = 0

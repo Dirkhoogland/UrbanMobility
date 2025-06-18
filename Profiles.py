@@ -1,9 +1,11 @@
+from Decrypt import Profiles_decrypt
 import Databasefunctions, Validator, Menus , Gebruiker
 
 def ViewProfile(user):
 
 
-    profiel = Databasefunctions.searchprofile(user[0])
+    profiel = Databasefunctions.searchprofile(user)
+    profiel = Profiles_decrypt(profiel)
     print(f"Firstname: {profiel[2]}")
     print(f"Lastname: {profiel[3]}")
     print(f"Registrationdate: {profiel[4]}")
@@ -18,7 +20,7 @@ def ViewProfile(user):
                 print("invalid input, choose a number.")
                 continue
         if optie == 1:
-            Updateprofile(user, user[0])
+            Updateprofile(user, user)
         if optie == 2:
             Gebruiker.changepassword(user)      
         if optie == 3:
@@ -27,10 +29,19 @@ def ViewProfile(user):
     #input("Druk op Enter om door te gaan...")
     # return profiel
 
+def updateview(id):
+
+    profiel = Databasefunctions.searchprofile(id)
+    profiel = Profiles_decrypt(profiel)
+    print(f"Firstname: {profiel[2]}")
+    print(f"Lastname: {profiel[3]}")
+    print(f"Registrationdate: {profiel[4]}")
+    return profiel
+
 
 def Updateprofile(user, id):
     print("User profile")
-    profile = ViewProfile(id)
+    profile = updateview(id)
 
  
     checkuser = Validator.sanitize_input("Do you want to continue Y/N: ")

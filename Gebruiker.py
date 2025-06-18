@@ -1,3 +1,4 @@
+from Decrypt import Usersname_decrypt
 import Databasefunctions, Menus , Validator, UrbanMobility, Profiles
 def Addservice(user):
     print("New service Engineer.")
@@ -156,7 +157,7 @@ def UpdateEngineer(user):
     
     if check == "Y":
 
-        engineer = Validator.sanitize_input("Which engineer: (username)")
+        engineer = Validator.sanitize_input("Which engineer: (id)")
         data = Databasefunctions.get_user(engineer)
         if data[1] == 2:
   
@@ -169,13 +170,13 @@ def UpdateEngineer(user):
             if checkuser == "Y":
                print("You can only edit the username.")
                newusername = Validator.sanitize_input("New Username: ")
-               Databasefunctions.updateServiceEngineername(engineer, newusername)
+               Databasefunctions.updateServiceEngineername(data, newusername, user)
 
 
                checkforprofile = Validator.sanitize_input("Do you want to update their profile? Y/N")
                checkforprofile.upper();
                if checkforprofile == "Y":
-                   Profiles.Updateprofile(engineer)
+                   Profiles.Updateprofile(data)
                else:
                     return
         else:
@@ -189,12 +190,12 @@ def UpdateSysteemadmin(user):
     check.upper();
     
     if check == "Y":
-        engineer = Validator.sanitize_input("Which System Admin: (username)")
+        engineer = Validator.sanitize_input("Which System Admin: (id)")
         data = Databasefunctions.get_user(engineer)
-        if data[1] == False:
+        if data[1] == 1:
   
-
-            print(f" You want to edit user info: {data[2]} with Id {data[0]} and Rank {data[1]}")
+            decrypted = Usersname_decrypt(data[2])
+            print(f" You want to edit user info: {decrypted} with Id {data[0]} and Rank {data[1]}")
   
             checkuser = Validator.sanitize_input("Do you want to continue Y/N: ")
             checkuser.upper();
@@ -204,13 +205,13 @@ def UpdateSysteemadmin(user):
                print("You can only edit the username.")
 
                newusername = Validator.sanitize_input("New Username: ")
-               Databasefunctions.updateSystemAdminname(engineer, newusername)
+               Databasefunctions.updateSystemAdminname(data, newusername, user)
 
 
                checkforprofile = Validator.sanitize_input("Do you want to update their profile? Y/N")
                checkforprofile.upper();
                if checkforprofile == "Y":
-                   Profiles.Updateprofile(engineer)
+                   Profiles.Updateprofile(user, data[0])
                else:
                     return
         else:

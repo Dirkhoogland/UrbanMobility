@@ -658,25 +658,17 @@ def check_user(username):
  except sqlite3.Error as e:
             print(f"Error with fetch: {e}")
             return False
-def get_user(username):
+def get_user(user_id):
  try:
     conn = sqlite3.connect(db_path)
     conn.execute("PRAGMA foreign_keys = ON") 
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM Users WHERE")
-    users = cursor.fetchall()
+    cursor.execute("SELECT * FROM Users  WHERE ID = ?", (user_id,))
+    user = cursor.fetchone()
     conn.close()
-    for user in users:
-        if(decrypt_message(user[2]) == username):
-            user_list = list(user)              # converteer naar lijst
-            user_list[2] = decrypt_message(user[2])  # pas aan
-            found = user_list
-            break
-    if found:
-
-        return found
+    if user:
+        return user
     else:
-
         return
  except sqlite3.Error as e:
             print(f"Error with fetch: {e}")
@@ -728,14 +720,29 @@ def updateprofile(id ,firstname, lastname, user):
     except sqlite3.Error as e:
         print("Error while editing:", e)
         log_actie(f"Systeem admin {user[2]} failed to update their own profile", user, 'fail', 'error')
+def getuserbyname(username):
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM Users")
+    users = cursor.fetchall()
+    conn.close()
 
+    found = None
+
+    for user in users:
+        if(decrypt_message(user[2]) == username):
+            user_list = list(user)            
+            user_list[2] = decrypt_message(user[2])  
+            found = user_list
+            break
+    return found
 # Systeem admin
 
 def CreateServiceMedewerker(username, password, firstname, lastname, user):
   check = add_user(username, password, 2, user)
   try:
    if check:
-       engineer = get_user(username)
+       engineer = getuserbyname(username)
        if user:
             add_profile_for_user(engineer[0], firstname, lastname)
             log_actie(f"Systeem admin {user[2]} successfully created profile for {engineer[2]}", user, 'success', 'normal')
@@ -834,9 +841,9 @@ def CreateSysteemAdmin(username, password, firstname, lastname, user):
  try:
    check = add_user(username, password, 1, user)
    if check:
-       user = get_user(username)
+       newuser = getuserbyname(username)
        if user:
-            add_profile_for_user(user[0], firstname, lastname)
+            add_profile_for_user(newuser[0], firstname, lastname)
        else:
            print("Error creating profile, could not find user")
    return
