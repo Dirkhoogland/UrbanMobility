@@ -2,7 +2,7 @@ from DatabaseSetup import Databasesetupstart, CreateBackup, CreateBackupKey, Acc
 from UrbanMobility import Start
 from Traveller import View, Update, AddTraveller, Delete, Add
 from Menus import toon_dynamisch_menu, cityOption
-from Encrypt import generate_key
+from Encrypt import generate_key, get_key
 
 if __name__ == "__main__":
     print("versie 1.27") # om build te checken
@@ -10,7 +10,7 @@ if __name__ == "__main__":
     #     if AccessPassword():
     #         CreateBackup()
     # print(View("anna.jansen@example.com"))
-
+    get_key()
     Databasesetupstart()
     # Update("anna.jansen@example.com")
     Delete("anna.jansen@example.com")
