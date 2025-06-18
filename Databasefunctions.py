@@ -97,7 +97,7 @@ def log_actie(action, user, result="", severity = "None", sus = "No"):
     timestamp = datetime.now().isoformat(timespec='seconds')
     
     cursor.execute('''
-        INSERT INTO ActionLog (Action, UserID,Username, Timestamp, Result, Severity, Suspiscious)
+        INSERT INTO ActionLog (Action, UserID, Username, Timestamp, Result, Severity, Suspiscious)
         VALUES (?, ?, ?, ?, ? , ?, ? )
     ''', (encrypt_message(action), user[0], encrypt_message(user[2]), encrypt_message(timestamp), encrypt_message(result), encrypt_message(severity), encrypt_message(sus))
     )

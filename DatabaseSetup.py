@@ -2,7 +2,6 @@ import sqlite3
 import os
 from datetime import date
 
-import Databasefunctions
 import Hasher
 from Encrypt import Traveller_encrypt_many, Users_encrypt_many, Profiles_encrypt_many, encrypt_message
 from Decrypt import decrypt_message

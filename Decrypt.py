@@ -53,16 +53,16 @@ def Profiles_decrypt(profile):
 
 def Log_decrypt(log) -> tuple:
     if log is not None:
-        list(log)
+        log = list(log)
         # log[0] = ID
-        log[1] = decrypt_message(log[1])
+        log[1] = decrypt_message(log[1]) 
         # log[1] = UserID
         log[3] = decrypt_message(log[3])
         log[4] = decrypt_message(log[4])
         log[5] = decrypt_message(log[5])
         log[6] = decrypt_message(log[6])
         log[7] = decrypt_message(log[7])
-        tuple(log)
+        log = tuple(log)
 
     return log
 
