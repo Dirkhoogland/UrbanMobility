@@ -92,7 +92,7 @@ def Profiles_encrypt(profile) -> tuple:
 
 def Log_encrypt(log) -> tuple:
     if log is not None:
-        list(log)
+        log = list(log)
         log[0] = encrypt_message(log[0])
         # log[1] = UserID
         log[2] = encrypt_message(log[2])
@@ -101,7 +101,7 @@ def Log_encrypt(log) -> tuple:
         log[5] = encrypt_message(log[5])
         log[6] = "Yes" if log[6] else "No"  # True is Yes otherwise False
         log[6] = encrypt_message(log[6])
-        tuple(log)
+        log = tuple(log)
 
     return log
 
