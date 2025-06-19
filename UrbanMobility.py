@@ -20,11 +20,11 @@ def Start():
     while login == True:
         # username =  Validator.sanitize_input("Vul je username in: ")
 
-        username = "super_admin"
+        username = "_jan.01"
  
         # password =  Validator.sanitize_input("Vul je password in: ")
 
-        password = "Admin_123?"
+        password = "S3cure#Pass!12"
 
         user = Databasefunctions.login(username, password)
         if user != False: 

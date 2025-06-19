@@ -81,10 +81,10 @@ def BackupMenu(user):
         except ValueError:
                 print("invalid input, choose a number.")
                 continue
-        if optie == 1:
-            DatabaseSetup.CreateBackup()
+        if optie == 1: 
+            DatabaseSetup.CreateBackup() # done
         if optie == 2:
-            DatabaseSetup.CreateBackupKey()
+            DatabaseSetup.CreateBackupKey() # done
         if optie == 3:
             DatabaseSetup.Useownbackup()
         if optie == 4:

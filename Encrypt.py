@@ -116,6 +116,9 @@ def Log_encrypt(log) -> tuple:
 def profilename_encrypt(name):
             name = encrypt_message(name)
             return name
+def key_encrypt(key):
+            key = encrypt_message(key)
+            return key
 
 
 

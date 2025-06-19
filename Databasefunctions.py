@@ -3,9 +3,10 @@ from datetime import date, datetime, timedelta
 import sqlite3
 import os
 from tabnanny import check
+from typing import KeysView
 import Hasher
 import Validator, Menus
-from Encrypt import Profiles_encrypt, Usersname_encrypt, encrypt_message, Users_encrypt, profilename_encrypt
+from Encrypt import Profiles_encrypt, Usersname_encrypt, encrypt_message, Users_encrypt, key_encrypt, profilename_encrypt
 from Decrypt import Profiles_decrypt, Userdetailsdecrypt, decrypt_message
 from logger import Decrypte_all_logs, Log_decrypt_many
 
@@ -893,10 +894,12 @@ def updateSystemAdminname(admin, username, user):
         conn.close()
 
 def Createbackupkey(user_id, backup_name, key_value):
-    username = Usersname_encrypt(username)
+
     conn = sqlite3.connect(db_path)
     conn.execute("PRAGMA foreign_keys = ON") 
     cursor = conn.cursor()
+    key_value = key_encrypt(key_value)
+    backup_name = key_encrypt(backup_name)
     try:
         cursor.execute('''
             INSERT INTO Backupkeys (Key, UserID, Backupname)
@@ -904,8 +907,70 @@ def Createbackupkey(user_id, backup_name, key_value):
         ''', (key_value, user_id, backup_name))
         conn.commit()
         conn.close()
+        backup_name = decrypt_message(backup_name)
+        sqlite_safe_backup(db_path, "Backups", backup_name)
         print("Backup key inserted successfully.")
     except Exception as e:
         print("Error inserting backup key:", e)
 
-def restorebackup()
+def restorebackup(user_id, keyvalue,  backup_dir="Backups"):
+    
+    conn = sqlite3.connect(db_path)
+    conn.execute("PRAGMA foreign_keys = ON") 
+    cursor = conn.cursor()
+    try:
+        cursor.execute('''
+            SELECT ID, Key, UserID, Backupname FROM Backupkeys
+        ''')
+        results = cursor.fetchall()
+        conn.close()
+        for result in results:
+            if(decrypt_message(result[1]) == keyvalue and result[2] == user_id): #  and result[2] == user_id
+               backup = list(result)   
+               backup[1] = decrypt_message(backup[1])# converteer naar lijst
+               backup[3] = decrypt_message(backup[3])
+               try:
+                full_backup_path = os.path.join(backup_dir, backup[3])
+                source = sqlite3.connect(full_backup_path)
+
+                destination = sqlite3.connect(db_path)
+
+                # Kopieer inhoud van source naar destination
+                with destination:
+                    source.backup(destination)
+        
+                    print("Back-up complete.")
+    
+               except Exception as e:
+                    print(f"error with backup back-up: {e}")
+    
+               finally:
+                source.close()
+                destination.close()
+                break
+            else:
+                print("Wrong key or user not found in keylist")
+
+
+
+
+    except Exception as e:
+        print("Error fetching all backup keys:")
+        return 
+
+def sqlite_safe_backup(source_path, backup_folder, name):
+    if not os.path.exists(backup_folder):
+        os.makedirs(backup_folder)
+
+    now = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    backup_file = os.path.join(backup_folder, f"{name}.db")
+
+    src_conn = sqlite3.connect(source_path)
+    dest_conn = sqlite3.connect(backup_file)
+
+    with dest_conn:
+        src_conn.backup(dest_conn)
+
+    src_conn.close()
+    dest_conn.close()
+    print(f"Veilige back-up gemaakt naar: {backup_file}")

@@ -73,7 +73,7 @@ def SysMenu(user):
         if optie == 5:
             Profiles.ViewProfile(user) 
         if optie == 6:
-            Databasefunctions.backup(user)
+            restore(user)
         if optie == 7:
             Databasefunctions.logs()
         if optie == 8:
@@ -82,5 +82,11 @@ def SysMenu(user):
         else:
             SysMenu(user)
 
+
+def restore(user):
+
+
+  key = Validator.sanitize_input("Key: ")
+  Databasefunctions.restorebackup(user[0], key)
 
 
