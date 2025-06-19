@@ -894,6 +894,7 @@ def updateSystemAdminname(admin, username, user):
         conn.close()
 
 def Createbackupkey(user_id, backup_namen, key_value):
+
     backup_name = backup_namen + ".db"
     conn = sqlite3.connect(db_path)
     conn.execute("PRAGMA foreign_keys = ON") 
@@ -901,6 +902,12 @@ def Createbackupkey(user_id, backup_namen, key_value):
     key_value = key_encrypt(key_value)
     backup_name = key_encrypt(backup_name)
     try:
+        cursor.execute("SELECT Rank FROM Users WHERE ID = ?", (user_id,))
+        result = cursor.fetchone()
+        if not result[0] <= 1:
+            print("User not super or system admin")
+            conn.close()
+            return
         cursor.execute('''
             INSERT INTO Backupkeys (Key, UserID, Backupname)
             VALUES (?, ?, ?)
@@ -913,8 +920,24 @@ def Createbackupkey(user_id, backup_namen, key_value):
     except Exception as e:
         print("Error inserting backup key:", e)
 
-def restorebackup(user_id, keyvalue,  backup_dir="Backups"):
+def Revokekey(user_id):
+    conn = sqlite3.connect(db_path)
+    conn.execute("PRAGMA foreign_keys = ON") 
+    cursor = conn.cursor()
+    try:
+        cursor.execute('''
+        DELETE FROM Backupkeys
+        WHERE UserID = ?
+        ''', (user_id,))
+        print("Key removed")
+        conn.commit()
+        conn.close()
+    except Exception as e:
+                    print(f"error with backup back-up: {e}")
     
+    finally:
+        conn.close()
+def restorebackup(user_id, keyvalue,  backup_dir="Backups"):
     conn = sqlite3.connect(db_path)
     conn.execute("PRAGMA foreign_keys = ON") 
     cursor = conn.cursor()
@@ -965,6 +988,8 @@ def copy_file(source_path, destination_path):
     with open(source_path, 'rb') as src_file:
         with open(destination_path, 'wb') as dst_file:
             dst_file.write(src_file.read())
+
+
 def sqlite_safe_backup(source_path, backup_folder, name):
     if not os.path.exists(backup_folder):
         os.makedirs(backup_folder)

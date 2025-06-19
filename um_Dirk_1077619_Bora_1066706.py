@@ -20,7 +20,7 @@ if __name__ == "__main__":
     # log_actie("TEST", "Super_admin", "Ok", "None", "No")
     # logs()
     
-    get_key()
+    # get_key()
     
     # Update("anna.jansen@example.com")
     # Delete("anna.jansen@example.com")

@@ -1,5 +1,6 @@
 import sqlite3
 import os
+from Databasefunctions import log_actie
 from Validator import is_valid_email, is_valid_phone, is_valid_DLN, is_valid_zipCode, sanitize_input
 from Menus import toon_dynamisch_menu, TravelerUpdateOptions, genderOption, cityOption
 from Manager import BirthdayManager, GenderManager, cityManager
@@ -37,7 +38,7 @@ def View(Email, User = "UNKNOWN"):
 def abortAdd(string):
     return string == "*"
 
-def AddTraveller():
+def AddTraveller(user):
 
     print("press * and enter at any point abort adding process")
     quit = False
@@ -167,13 +168,13 @@ def AddTraveller():
         break
         
     if quit == False:
-        Add(firstname, lastname, birthday, gender, streetname, housenumber, zipCode, city, email, phonenumber, DLN)
+        Add(firstname, lastname, birthday, gender, streetname, housenumber, zipCode, city, email, phonenumber, DLN, user)
     else:
         print("aborted adding traveller process")
  
 
 def Add(Firstname, Lastname, Birthday, Gender, Streetname, 
-        Housenumber, zipCode, City, EmailAdress, MobilePhone, DrivingLiscenceNumber):
+        Housenumber, zipCode, City, EmailAdress, MobilePhone, DrivingLiscenceNumber, user):
     try:
         traveller = (Firstname, Lastname, Birthday, Gender, Streetname, Housenumber, zipCode, City, EmailAdress, MobilePhone, DrivingLiscenceNumber)
         traveller = Traveller_encrypt(traveller) # encrypt privacy intensive fields
@@ -189,15 +190,17 @@ def Add(Firstname, Lastname, Birthday, Gender, Streetname,
         ''', traveller)
 
         conn.commit()
-        print("New travler succesfully added")
+        print("New traveller succesfully added")
+        log_actie(f"{user[2]} successfully added a traveller ", user, 'sucess', 'normal')
     except sqlite3.OperationalError: 
         print("Failed to add Traveller")
+        log_actie(f"{user[2]} Failed to add Traveller ", user, 'error', 'fail')
     finally:
         if conn:
             conn.close()
 
 
-def Update(Email):
+def Update(Email, user):
     conn = None # for finnaly block if sqlite3.connect(db_path) fails 
     try:
         conn = sqlite3.connect(db_path)
@@ -230,7 +233,7 @@ def Update(Email):
             
                 conn.commit()
                 print("Update on Firstname succesfull")
-
+                log_actie(f"{user[2]} successfully updated a traveller ", user, 'sucess', 'normal')
             if option == 2:
                 Newlastname = ""
                 while Newlastname == "":
@@ -241,7 +244,7 @@ def Update(Email):
 
                 conn.commit()
                 print("Update on Lastname succesfull")
-
+                log_actie(f"{user[2]} successfully updated a traveller ", user, 'sucess', 'normal')
             if option == 3:
                 while True:
                     Newbirthday = BirthdayManager()
@@ -266,7 +269,7 @@ def Update(Email):
 
                     conn.commit()
                     print("Update on Gender succesfull")
-
+                    log_actie(f"{user[2]} successfully updated a traveller ", user, 'sucess', 'normal')
             if option == 5:
                 Newstreetname = ""
                 while Newstreetname == "":
@@ -295,7 +298,7 @@ def Update(Email):
 
                 conn.commit()
                 print("Update on Housenumber succesfull")
-
+                log_actie(f"{user[2]} successfully updated a traveller ", user, 'sucess', 'normal')
             if option == 7:
                 NewzipCode = "-1"  # place holder
                 while is_valid_zipCode(NewzipCode) == False:
@@ -321,7 +324,7 @@ def Update(Email):
 
                 conn.commit()
                 print("Update on City succesfull")
-                
+                log_actie(f"{user[2]} successfully updated a traveller ", user, 'sucess', 'normal')                
 
             if option == 9:
                 # phonenumber
@@ -341,7 +344,7 @@ def Update(Email):
                 
                 conn.commit()
                 print("Update on MobilePhone succesfull")
-                
+                log_actie(f"{user[2]} successfully updated a traveller ", user, 'sucess', 'normal')                
             if option == 10:
                 DLN = "-1" # place holder
                 while is_valid_DLN(DLN) == False:
@@ -358,17 +361,17 @@ def Update(Email):
 
                 conn.commit()
                 print("Update on DrivingLiscenceNumber succesfull")
-            
+                log_actie(f"{user[2]} successfully updated a traveller ", user, 'sucess', 'normal')            
             if option == 11:
                 break
 
     except sqlite3.OperationalError:
         print("An error accured rebooting...")
-    finally:
+        log_actie(f"{user[2]} failed to update a traveller ", user, 'Error', 'fail')
         if conn:
             conn.close()
 
-def Delete(Email):
+def Delete(Email, user):
     try:
         conn = None
         conn = sqlite3.connect(db_path)
@@ -389,9 +392,10 @@ def Delete(Email):
 
         conn.commit()
         print("Traveller deleted successfully.")
-
+        log_actie(f"{user[2]} succesfully deleted a traveller ", user, 'sucess', 'normal')
     except sqlite3.OperationalError:
         ("An error accured rebooting...")
+        log_actie(f"{user[2]} failed to delete a traveller ", user, 'Error', 'fail')
     finally:
         if conn:
             conn.close()

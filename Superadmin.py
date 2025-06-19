@@ -1,4 +1,5 @@
 import DatabaseSetup
+import Traveller
 import Scooter, Gebruiker , Menus , Databasefunctions , Profiles, Servicemedewerker, Validator, SysAdmin
 import Validator 
 
@@ -71,6 +72,21 @@ def scootermenu(user):
         else:
             menu = False
     return
+
+
+def Revokekey():
+    print("Welcome to key removal super admin")
+    menu = True
+    while menu == True:
+        try:
+                optie = int(input("Which user id?: "))
+        except ValueError:
+                print("invalid input, choose a number.")
+                continue
+        Databasefunctions.Revokekey(optie)
+        menu = False
+
+
 def BackupMenu(user):
     menu = True
     while menu == True:
@@ -82,13 +98,36 @@ def BackupMenu(user):
                 print("invalid input, choose a number.")
                 continue
         if optie == 1: 
-            DatabaseSetup.CreateBackup() # done
+            Databasefunctions.Createbackupkey(1, "Superadmin", "Superadmin") # doneuser_id, backup_namen, key_value
         if optie == 2:
             DatabaseSetup.CreateBackupKey() # done
         if optie == 3:
-            DatabaseSetup.Useownbackup()
+            Databasefunctions.restorebackup(1, "Superadmin")
         if optie == 4:
-            DatabaseSetup.Revokekey()
+            Revokekey()
+        else:
+            menu = False
+    return
+
+def TravellerMenu(user):
+    menu = True
+    while menu == True:
+        optiesmenu = Menus.addmodifytravellers()
+        Menus.toon_dynamisch_menu(optiesmenu, "Systeem Admin edit scooter ")
+        try:
+                optie = int(input("Select option: "))
+        except ValueError:
+                print("invalid input, choose a number.")
+                continue
+        if optie == 1:
+            Traveller.AddTraveller(user)
+        if optie == 2:
+            Traveller.Update(user)
+        if optie == 3:
+            Email = Validator.sanitize_input("Gebruiker Email:")
+            Traveller.View(Email, user)
+        if optie == 4:
+            Traveller.Delete(user)
         else:
             menu = False
     return
@@ -111,14 +150,12 @@ def SuperMenu(user):
         if optie == 3:
             ServiceEngineeredit(user)
         if optie == 4:
-            Gebruiker.changepasswordengineer(user) # change to traveller
+            TravellerMenu(user) 
         if optie == 5:
-            scootermenu(user) # no create or delete
+            scootermenu(user) 
         if optie == 6:
-            BackupMenu(user) # no codes yet/functions
+            BackupMenu(user) 
         if optie == 7:
-            DatabaseSetup.CreateBackup() # doesnt work yet
-        if optie == 8:
             Databasefunctions.logs()
         else:
             menu = False

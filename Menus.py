@@ -1,4 +1,5 @@
-﻿import Databasefunctions
+﻿from ssl import OP_IGNORE_UNEXPECTED_EOF
+import Databasefunctions
 
 def toon_dynamisch_menu(opties, titel="Hoofdmenu"):
     langste_optie = max([len(f"{i+1}. {optie}") for i, optie in enumerate(opties)])
@@ -21,7 +22,7 @@ def system():
     return ["User list", "Add/modify Service Engineer","Add/modify travellers", "Scooter info/update", "Profile", "Back up system","View logs", "Logout"]
 
 def super():
-    return ["User list","Add/Modify System Admin", "Add/modify Service Engineer","Add/modify travellers", "Scooter info/update", "Back up Code","Create back up", "View logs", "Logout"]
+    return ["User list","Add/Modify System Admin", "Add/modify Service Engineer","Add/modify travellers", "Scooter info/update", "Back up menu", "View logs", "Logout"]
 
 def addmodifyengineermenu():
     return ["Add new Service Engineer", "Modifty Service Engineer", "Remove Service Engineer", "Reset Service Engineer Password",]
@@ -74,6 +75,7 @@ def profiles():
      opties = ["Update profile", "Update password", "Delete account"]
      return opties
 
-
-
+def backups():
+    opties = ["Create personal back up", "Create back up code for user", "Restore personal backup", "Revoke backup code"]
+    return opties
     

@@ -249,7 +249,7 @@ def CreateBackupKey():
             password = ""
     
             while True:
-                password = input("Enter new password for backup permission: ")
+                password = Validator.sanitize_input("Enter new password for backup permission: ")
                 if is_valid_password(password):
                     break
                 else:
@@ -260,6 +260,7 @@ def CreateBackupKey():
                     print(" - At least 1 number")
                     print(" - At least 1 symbol (~!@#$%&)")
 
+            backupname = Validator.sanitize_input("Backup name:")
             Databasefunctions.Createbackupkey(data[1], backupname, password);
     
     # path = "BackupKey.txt"

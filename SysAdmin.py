@@ -1,5 +1,6 @@
 from email.policy import default
 from pickle import FALSE
+import Traveller
 import Scooter, Gebruiker , Menus , Databasefunctions , Profiles, Servicemedewerker, Validator
 import Validator 
 
@@ -27,11 +28,36 @@ def ServiceEngineeredit(user):
         else:
             menu = False
             SysMenu(user)
+
+
+def TravellerMenu(user):
+    menu = True
+    while menu == True:
+        optiesmenu = Menus.addmodifytravellers()
+        Menus.toon_dynamisch_menu(optiesmenu, "Systeem Admin edit scooter ")
+        try:
+                optie = int(input("Select option: "))
+        except ValueError:
+                print("invalid input, choose a number.")
+                continue
+        if optie == 1:
+            Traveller.AddTraveller(user)
+        if optie == 2:
+            Traveller.Update(user)
+        if optie == 3:
+            Email = Validator.sanitize_input("Gebruiker Email:")
+            Traveller.View(Email, user)
+        if optie == 4:
+            Traveller.Delete(user)
+        else:
+            menu = False
+    return
+# ["Add new Traveller", "Update Traveller in system", "Delete a traveller", "Search Traveller"]
 def scootermenu(user):
     menu = True
     while menu == True:
-        optiesmenu = Menus.scooterinfo(user[1])
-        Menus.toon_dynamisch_menu(optiesmenu, "Systeem Admin edit scooter ")
+        optiesmenu = Menus.TravelerUpdateOptions(user[1])
+        Menus.toon_dynamisch_menu(optiesmenu, "Systeem Admin edit Traveller ")
         try:
                 optie = int(input("Select option: "))
         except ValueError:
@@ -48,8 +74,6 @@ def scootermenu(user):
         else:
             menu = False
     return
-
-
 def SysMenu(user):
     menu = True
     while menu == True:
@@ -67,7 +91,7 @@ def SysMenu(user):
         if optie == 2:
             ServiceEngineeredit(user)  
         if optie == 3:
-            ServiceEngineeredit(user)   
+            TravellerMenu(user)   
         if optie == 4:
            scootermenu(user)
         if optie == 5:
@@ -85,8 +109,14 @@ def SysMenu(user):
 
 def restore(user):
 
+       
+    check = Validator.sanitize_input("Do you want to continue Y/N: ")
+    check.upper();
+    key = Validator.sanitize_input("Key: ")
+    if check == "Y":
 
-  key = Validator.sanitize_input("Key: ")
-  Databasefunctions.restorebackup(user[0], key)
+        Databasefunctions.restorebackup(user[0], key)
+    else:
+        return
 
 
