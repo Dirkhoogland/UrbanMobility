@@ -930,14 +930,15 @@ def restorebackup(user_id, keyvalue,  backup_dir="Backups"):
                backup[1] = decrypt_message(backup[1])# converteer naar lijst
                backup[3] = decrypt_message(backup[3])
                try:
-                full_backup_path = os.path.join(backup_dir, backup[3])
+                script_dir = os.path.dirname(os.path.abspath(__file__))
+                full_backup_path = os.path.join(script_dir, backup_dir, backup[3])
                 source = sqlite3.connect(full_backup_path)
 
                 destination = sqlite3.connect(db_path)
 
                 # Kopieer inhoud van source naar destination
                 with destination:
-                    source.backup(destination)
+                    copy_file(full_backup_path, db_path)
         
                     print("Back-up complete.")
     
@@ -957,7 +958,10 @@ def restorebackup(user_id, keyvalue,  backup_dir="Backups"):
     except Exception as e:
         print("Error fetching all backup keys:")
         return 
-
+def copy_file(source_path, destination_path):
+    with open(source_path, 'rb') as src_file:
+        with open(destination_path, 'wb') as dst_file:
+            dst_file.write(src_file.read())
 def sqlite_safe_backup(source_path, backup_folder, name):
     if not os.path.exists(backup_folder):
         os.makedirs(backup_folder)
