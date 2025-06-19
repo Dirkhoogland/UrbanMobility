@@ -211,11 +211,11 @@ def Update(Email, user):
             if traveller == None:
                 print("user not found")
                 break
-            print(traveller)
             Id = traveller[0]
             
             print()
             print("what do you want to update?")
+            print(traveller)
             toon_dynamisch_menu(TravelerUpdateOptions(), "Traveller Update Menu")
             try:
                 option = int(input("Select option: "))
@@ -365,6 +365,8 @@ def Update(Email, user):
             if option == 11:
                 break
 
+            
+
     except sqlite3.OperationalError:
         print("An error accured rebooting...")
         log_actie(f"{user[2]} failed to update a traveller ", user, 'Error', 'fail')
@@ -372,8 +374,8 @@ def Update(Email, user):
             conn.close()
 
 def Delete(Email, user):
+    conn = None
     try:
-        conn = None
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
 

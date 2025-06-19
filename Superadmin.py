@@ -122,12 +122,28 @@ def TravellerMenu(user):
         if optie == 1:
             Traveller.AddTraveller(user)
         if optie == 2:
-            Traveller.Update(user)
+            Email = Validator.sanitize_input("user by Email: ")
+            Traveller.Update(Email, user)
         if optie == 3:
-            Email = Validator.sanitize_input("Gebruiker Email:")
-            Traveller.View(Email, user)
+            Email = Validator.sanitize_input("user by Email: ")
+            if(Traveller.View(Email) != None):
+                while True:
+                    choice = Validator.sanitize_input(f"are you sure you want to delete this user\n{Traveller.View(Email)}\nY/N:").upper()[0]
+                    if choice == 'Y':
+                        Traveller.Delete(Email, user)
+                        break
+                    if choice == 'N':
+                        print("Canceled delete user")
+                        break
+                    print("invalid input choose Y for Delete, N for cancel Delete")
         if optie == 4:
-            Traveller.Delete(user)
+            Email = Validator.sanitize_input("user by Email: ")
+            traveller = Traveller.View(Email, user)
+            if(traveller != None):
+                print(traveller)
+            else:
+                print("Traveller not found")
+        
         else:
             menu = False
     return
