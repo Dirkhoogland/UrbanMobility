@@ -893,8 +893,8 @@ def updateSystemAdminname(admin, username, user):
     finally:
         conn.close()
 
-def Createbackupkey(user_id, backup_name, key_value):
-
+def Createbackupkey(user_id, backup_namen, key_value):
+    backup_name = backup_namen + ".db"
     conn = sqlite3.connect(db_path)
     conn.execute("PRAGMA foreign_keys = ON") 
     cursor = conn.cursor()
@@ -908,7 +908,7 @@ def Createbackupkey(user_id, backup_name, key_value):
         conn.commit()
         conn.close()
         backup_name = decrypt_message(backup_name)
-        sqlite_safe_backup(db_path, "Backups", backup_name)
+        sqlite_safe_backup(db_path, "Backups", backup_namen)
         print("Backup key inserted successfully.")
     except Exception as e:
         print("Error inserting backup key:", e)
@@ -929,6 +929,9 @@ def restorebackup(user_id, keyvalue,  backup_dir="Backups"):
                backup = list(result)   
                backup[1] = decrypt_message(backup[1])# converteer naar lijst
                backup[3] = decrypt_message(backup[3])
+               if not backup[3].endswith(".db"):
+                   backup[3] = backup[3]+".db"
+
                try:
                 script_dir = os.path.dirname(os.path.abspath(__file__))
                 full_backup_path = os.path.join(script_dir, backup_dir, backup[3])
