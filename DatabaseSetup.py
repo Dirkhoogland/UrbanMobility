@@ -3,10 +3,12 @@ import os
 from datetime import date
 
 from Databasefunctions import setup_add_profile_for_user
+import Databasefunctions
 import Hasher
 from Encrypt import Traveller_encrypt_many, Users_encrypt_many, Profiles_encrypt_many, encrypt_message
-from Decrypt import decrypt_message
+from Decrypt import Usersname_decrypt, decrypt_message
 from Validator import is_valid_password
+import Validator
 
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -76,6 +78,7 @@ def CreateBackup():
             source.backup(dest) 
 
         print("Backup created")
+
     except Exception as e:
         print(f"Failed to make backup: {e}")
     # finally:
@@ -150,6 +153,16 @@ def createdatabase(path = db_path):
             FOREIGN KEY(UserID) REFERENCES Users(ID)
         )
     ''')
+
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS Backupkeys (
+            ID INTEGER PRIMARY KEY AUTOINCREMENT,
+            Key TEXT NOT NULL,
+            UserID INTEGER,
+            Backupname TEXT NOT NULL,
+            FOREIGN KEY(UserID) REFERENCES Users(ID)
+        )
+    ''')
     conn.commit()
     conn.close()
 
@@ -215,35 +228,48 @@ def filldatabase():
 
 
 def CreateBackupKey():
-    print("You have no password for your key. Create a password for your key with:")
-    print(" - Length of 12 to 30 characters")
-    print(" - At least 1 lowercase letter")
-    print(" - At least 1 uppercase letter")
-    print(" - At least 1 number")
-    print(" - At least 1 symbol (~!@#$%&)")
-    
-    password = ""
-    
-    while True:
-        password = input("Enter new password for backup permission: ")
-        if is_valid_password(password):
-            break
-        else:
-            print("Password is invalid. It must have:")
+    engineer = Validator.sanitize_input("Which System Admin: (id)")
+    data = Databasefunctions.get_user(engineer)
+    if data[1] == 1:
+  
+            decrypted = Usersname_decrypt(data[2])
+            print(f" You want to create a key for user : {decrypted} with Id {data[0]}")
+  
+            checkuser = Validator.sanitize_input("Do you want to continue Y/N: ")
+            checkuser.upper();
+
+
+            print("You have no password for your key. Create a password for your key with:")
             print(" - Length of 12 to 30 characters")
             print(" - At least 1 lowercase letter")
             print(" - At least 1 uppercase letter")
             print(" - At least 1 number")
             print(" - At least 1 symbol (~!@#$%&)")
     
-    path = "BackupKey.txt"
-    path = os.path.join(script_dir, path)
-    if not os.path.exists(path):
-        with open(path, "w") as secrets_file:
-            secrets_file.write(encrypt_message(password))
-        print("Backup key created and saved.")
-    else:
-        print("BackupKey.txt already exists. Key not overwritten.")
+            password = ""
+    
+            while True:
+                password = input("Enter new password for backup permission: ")
+                if is_valid_password(password):
+                    break
+                else:
+                    print("Password is invalid. It must have:")
+                    print(" - Length of 12 to 30 characters")
+                    print(" - At least 1 lowercase letter")
+                    print(" - At least 1 uppercase letter")
+                    print(" - At least 1 number")
+                    print(" - At least 1 symbol (~!@#$%&)")
+
+            Databasefunctions.Createbackupkey(data[1], backupname, password);
+    
+    # path = "BackupKey.txt"
+    # path = os.path.join(script_dir, path)
+    # if not os.path.exists(path):
+    #     with open(path, "w") as secrets_file:
+    #         secrets_file.write(encrypt_message(password))
+    #     print("Backup key created and saved.")
+    # else:
+    #     print("BackupKey.txt already exists. Key not overwritten.")
 
 def AccessPassword():
     path = "BackupKey.txt"

@@ -71,7 +71,27 @@ def scootermenu(user):
         else:
             menu = False
     return
-
+def BackupMenu(user):
+    menu = True
+    while menu == True:
+        optiesmenu = Menus.backups()
+        Menus.toon_dynamisch_menu(optiesmenu, "super Admin backupmenu ")
+        try:
+                optie = int(input("Select option: "))
+        except ValueError:
+                print("invalid input, choose a number.")
+                continue
+        if optie == 1:
+            DatabaseSetup.CreateBackup()
+        if optie == 2:
+            DatabaseSetup.CreateBackupKey()
+        if optie == 3:
+            DatabaseSetup.Useownbackup()
+        if optie == 4:
+            DatabaseSetup.Revokekey()
+        else:
+            menu = False
+    return
 def SuperMenu(user):
     menu = True
     while menu == True:

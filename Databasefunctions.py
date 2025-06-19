@@ -891,3 +891,21 @@ def updateSystemAdminname(admin, username, user):
         log_actie(f"Super admin {user[2]} failed to update {admin[2]}", user, 'fail', 'error')
     finally:
         conn.close()
+
+def Createbackupkey(user_id, backup_name, key_value):
+    username = Usersname_encrypt(username)
+    conn = sqlite3.connect(db_path)
+    conn.execute("PRAGMA foreign_keys = ON") 
+    cursor = conn.cursor()
+    try:
+        cursor.execute('''
+            INSERT INTO Backupkeys (Key, UserID, Backupname)
+            VALUES (?, ?, ?)
+        ''', (key_value, user_id, backup_name))
+        conn.commit()
+        conn.close()
+        print("Backup key inserted successfully.")
+    except Exception as e:
+        print("Error inserting backup key:", e)
+
+def restorebackup()
