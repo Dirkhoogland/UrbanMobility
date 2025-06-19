@@ -4,6 +4,7 @@ import sqlite3
 import os
 from tabnanny import check
 from typing import KeysView
+import zipfile
 import Hasher
 import Validator, Menus
 from Encrypt import Profiles_encrypt, Usersname_encrypt, encrypt_message, Users_encrypt, key_encrypt, profilename_encrypt
@@ -895,7 +896,7 @@ def updateSystemAdminname(admin, username, user):
 
 def Createbackupkey(user_id, backup_namen, key_value):
 
-    backup_name = backup_namen + ".db"
+    backup_name = backup_namen
     conn = sqlite3.connect(db_path)
     conn.execute("PRAGMA foreign_keys = ON") 
     cursor = conn.cursor()
@@ -937,7 +938,9 @@ def Revokekey(user_id):
     
     finally:
         conn.close()
-def restorebackup(user_id, keyvalue,  backup_dir="Backups"):
+
+
+def restorebackup(user_id, keyvalue, backup_dir="Backups"):
     conn = sqlite3.connect(db_path)
     conn.execute("PRAGMA foreign_keys = ON") 
     cursor = conn.cursor()
@@ -947,62 +950,85 @@ def restorebackup(user_id, keyvalue,  backup_dir="Backups"):
         ''')
         results = cursor.fetchall()
         conn.close()
+
         for result in results:
-            if(decrypt_message(result[1]) == keyvalue and result[2] == user_id): #  and result[2] == user_id
-               backup = list(result)   
-               backup[1] = decrypt_message(backup[1])# converteer naar lijst
-               backup[3] = decrypt_message(backup[3])
-               if not backup[3].endswith(".db"):
-                   backup[3] = backup[3]+".db"
+            if decrypt_message(result[1]) == keyvalue and result[2] == user_id:
+                backup = list(result)
+                backup[1] = decrypt_message(backup[1])
+                backup[3] = decrypt_message(backup[3])
 
-               try:
-                script_dir = os.path.dirname(os.path.abspath(__file__))
-                full_backup_path = os.path.join(script_dir, backup_dir, backup[3])
-                source = sqlite3.connect(full_backup_path)
+                if not backup[3].endswith(".zip"):
+                    backup[3] += ".zip"
 
-                destination = sqlite3.connect(db_path)
+                try:
+                    script_dir = os.path.dirname(os.path.abspath(__file__))
+                    full_backup_path = os.path.join(script_dir, backup_dir, backup[3])
 
-                # Kopieer inhoud van source naar destination
-                with destination:
-                    copy_file(full_backup_path, db_path)
-        
-                    print("Back-up complete.")
-    
-               except Exception as e:
-                    print(f"error with backup back-up: {e}")
-    
-               finally:
-                source.close()
-                destination.close()
+                    # Uitpakken
+                    with zipfile.ZipFile(full_backup_path, 'r') as zipf:
+                        bestanden = zipf.namelist()
+                        if not bestanden:
+                            print("Zip-bestand is empty.")
+                            return
+                        zipf.extractall("temp_restore")
+                        db_naam = bestanden[0]
+                        tijdelijk_pad = os.path.join("temp_restore", db_naam)
+
+                        # Kopieer naar actieve database
+                        copy_file(tijdelijk_pad, db_path)
+
+                        print("Back-up used.")
+
+                        os.remove(tijdelijk_pad)
+                        os.rmdir("temp_restore")
+
+                except Exception as e:
+                    print(f"Error with backup: {e}")
                 break
-            else:
-                print("Wrong key or user not found in keylist")
-
-
-
+        else:
+            print("no valid key/user found.")
 
     except Exception as e:
-        print("Error fetching all backup keys:")
-        return 
-def copy_file(source_path, destination_path):
-    with open(source_path, 'rb') as src_file:
-        with open(destination_path, 'wb') as dst_file:
-            dst_file.write(src_file.read())
+        print(f"Error with retrieving back-ups: {e}")
 
+def copy_file(src, dst):
+    with open(src, 'rb') as fsrc:
+        with open(dst, 'wb') as fdst:
+            while True:
+                buf = fsrc.read(1024 * 1024) 
+                if not buf:
+                    break
+                fdst.write(buf)
 
 def sqlite_safe_backup(source_path, backup_folder, name):
     if not os.path.exists(backup_folder):
         os.makedirs(backup_folder)
 
-    now = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     backup_file = os.path.join(backup_folder, f"{name}.db")
+    zip_path = os.path.join(backup_folder, f"{name}.zip")
 
     src_conn = sqlite3.connect(source_path)
     dest_conn = sqlite3.connect(backup_file)
+    
+    try:
+        with dest_conn:
+            src_conn.backup(dest_conn)
+        print(f"Database backup gemaakt: {backup_file}")
+    finally:
+        src_conn.close()
+        dest_conn.close()
 
-    with dest_conn:
-        src_conn.backup(dest_conn)
+    try:
+        with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
+            zipf.write(backup_file, arcname=os.path.basename(backup_file))
+        print(f"Zip backup aangemaakt: {zip_path}")
+    except Exception as e:
+        print(f"Fout bij zippen: {e}")
+        return
 
-    src_conn.close()
-    dest_conn.close()
-    print(f"Veilige back-up gemaakt naar: {backup_file}")
+    os.remove(backup_file)
+
+
+
+
+        # Optioneel: Verwijder het losse .db bestand na het zippen
