@@ -115,7 +115,7 @@ def SuperMenu(user):
         if optie == 5:
             scootermenu(user) # no create or delete
         if optie == 6:
-            access_password(user) # no codes yet/functions
+            BackupMenu(user) # no codes yet/functions
         if optie == 7:
             DatabaseSetup.CreateBackup() # doesnt work yet
         if optie == 8:

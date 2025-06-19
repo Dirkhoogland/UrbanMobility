@@ -4,7 +4,9 @@ from datetime import datetime, date
 def sanitize_input(input_display = ""):
     while True:
         string = input(input_display)
-
+        if is_string_too_long(string, 124):
+         print("Error input too long")
+         continue
         
 
         white_list  = r"^[a-zA-Z0-9~!@#$%&_\-+=/`|\\()\[\]{}:;'<>,.? ]+$" # only allow safe characters
@@ -17,6 +19,10 @@ def sanitize_input(input_display = ""):
 
     # Optioneel: trim spaties
     return string.strip()
+
+
+def is_string_too_long(s: str, max_length: int) -> bool:
+    return len(s) > max_length
 def is_valid_latitude(lat: str) -> bool:
     pattern = r"^-?([0-8]?\d(\.\d{5})?|90\.00000)$"
     return re.match(pattern, lat) is not None
