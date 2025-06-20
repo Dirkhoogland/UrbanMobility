@@ -1,5 +1,4 @@
-﻿from asyncio.windows_events import NULL
-from collections import defaultdict
+﻿from collections import defaultdict
 from datetime import date, datetime, timedelta
 import sqlite3
 import os

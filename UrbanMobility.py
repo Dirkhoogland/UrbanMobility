@@ -2,8 +2,7 @@
 import Databasefunctions
 import Menus , Servicemedewerker, SysAdmin, Superadmin, Validator
 from Menus import toon_dynamisch_menu
-# programming debug for editing db
-# DatabaseSetup.Databasesetupstart()
+
 
 startup = True;
 
@@ -18,20 +17,16 @@ def getuserrank(rank):
 def Start():
     login = True;
     while login == True:
-        # username =  Validator.sanitize_input("Vul je username in: ")
+        username =  Validator.sanitize_input("Vul je username in: ")
 
-        username = "_jan"
-        #username = "super"
-        # password =  Validator.sanitize_input("Vul je password in: ")
 
-        password = "S3cure#Pass!1"
-        #password = "Admin_123?"
+        password =  Validator.sanitize_input("Vul je password in: ")
+
+
         user = Databasefunctions.login(username, password)
         if user != False: 
             login = False
-    # gets rank number and name
-    #user = Databasefunctions.getuserdetails(username)
-    # plaatst het in een naam die gebruikelijk is voor de user
+
     ranking = getuserrank(user[1]);
     print(f"Welkom bij het UrbanMobility project {user[2]} rank {ranking}")
 
