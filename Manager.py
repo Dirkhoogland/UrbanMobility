@@ -37,11 +37,7 @@ def GenderManager():
     toon_dynamisch_menu(genderOption(), "Select Gender")
     gender = None # place holder
     while True:
-        try:
-            choice = int(input("select option: "))
-        except ValueError:
-            print("invalid input, choose between number: ")
-            continue
+        choice = int_input("select option: ")
 
         if choice == 1:
             return "F"
