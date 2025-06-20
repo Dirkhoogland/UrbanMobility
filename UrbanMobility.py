@@ -21,7 +21,7 @@ def Start():
         # username =  Validator.sanitize_input("Vul je username in: ")
 
         #username = "_jan.01"
-        username = "super_admin"
+        username = "super"
         # password =  Validator.sanitize_input("Vul je password in: ")
 
         #password = "S3cure#Pass!12"

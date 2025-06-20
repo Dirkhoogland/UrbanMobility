@@ -15,70 +15,148 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 db_path = os.path.join(script_dir, "Database.db")
 
 def aantal_gefaalde_logins(user_id, minuten=10):
- try:
-    tijd_grens = datetime.now() - timedelta(minutes=minuten)
-    tijd_grens_str = tijd_grens.isoformat(timespec='seconds')
-
-    conn = sqlite3.connect(db_path)
-    cursor = conn.cursor()
-    cursor.execute('''
-        SELECT COUNT(*) FROM ActionLog
-        WHERE UserID = ?
-        AND Action = 'Login poging'
-        AND Result = 'Ongeldig wachtwoord'
-        AND Timestamp >= ?
-    ''', (user_id, tijd_grens_str))
+    try:
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+        tijd_grens = datetime.now() - timedelta(minutes=minuten)
+        tijd_grens_str = tijd_grens.isoformat(timespec='seconds')
     
-    aantal = cursor.fetchone()[0]
-    conn.close()
-    return aantal
- except sqlite3.Error as e:
+        cursor.execute('''
+                SELECT Action, Result, Timestamp FROM ActionLog
+                WHERE UserID = ?
+            ''', (user_id,))
+        rows = cursor.fetchall()
+        conn.close()
+    
+        count = 0
+        for row in rows:
+            row = list(row)
+            action = decrypt_message(row[0])
+            result = decrypt_message(row[1])
+            timestamp_str = decrypt_message(row[2])
+
+            timestamp = datetime.fromisoformat(timestamp_str)
+
+            if(
+                timestamp >= tijd_grens and
+                action == 'Login poging' and
+                result == 'Ongeldig wachtwoord'
+            ):
+                count += 1
+
+        if count > 3:
+            return True;
+        else: 
+            return False
+    
+    except sqlite3.Error as e:
+        print(f"Database error: {e}")
+
+def check_user_used(user, minuten=10):
+    try:
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+        tijd_grens = datetime.now() - timedelta(minutes=minuten)
+        tijd_grens_str = tijd_grens.isoformat(timespec='seconds')
+    
+        cursor.execute('''
+                SELECT Action, Result, Timestamp FROM ActionLog
+            ''')
+        rows = cursor.fetchall()
+        conn.close()
+
+        count = 0
+        for row in rows:
+            row = list(row)
+            result = decrypt_message(row[0])
+            action = decrypt_message(row[1])
+            timestamp_str = decrypt_message(row[2])
+
+            timestamp = datetime.fromisoformat(timestamp_str)
+
+            if(
+                timestamp >= tijd_grens and
+                result == "Login try"  and
+                f"User '{user}' not found" in action
+            ):
+                count += 1
+
+        if count > 3:
+            return True
+        else: 
+            return False
+
+    except sqlite3.Error as e:
         print(f"Database error: {e}")
 
 def login(Username, Password):
- try:
-    conn = sqlite3.connect(db_path)
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM Users")
-    users = cursor.fetchall()
-    conn.close()
-    max_pogingen = 3
-    pogingen = 0
-    found = None
+    if(check_user_used(Username)):
+        print("User has to many attemts")
+        return False
 
-    for user in users:
-        if(decrypt_message(user[2]) == Username):
-            user_list = list(user)              # converteer naar lijst
-            user_list[2] = decrypt_message(user[2])  # pas aan
-            found = user_list
-            break
+    try:
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM Users")
+        users = cursor.fetchall()
+        conn.close()
+        poging = 1
+        while True:
+            found = None
 
-        if pogingen >= max_pogingen:
-            print("Too many attempts try again later.")
-            log_actie("Login geblokkeerd", user, "Te veel pogingen", "High", "Yes")
-            return False
+            for user in users:
+                if(decrypt_message(user[2]) == Username):
+                    user_list = list(user)              # converteer naar lijst
+                    user_list[2] = decrypt_message(user[2])  # pas aan
+                    found = user_list
+                    break
+
+            if found is None:
+                severity = "None"
+                sus = "No"
+                if(poging >= 10):
+                    severity = "VeryHigh"
+                    sus = "Yes"
+                elif(poging >= 5):
+                    severity = "High"
+                    sus = "Yes"
+                elif(poging >= 3):
+                    severity = "Moderate"
+                    sus = "Yes"
+                elif(poging == 2):
+                    severity = "Low"
+                    sus = "No"
+                elif(poging <= 1):
+                    severity = "None"
+                    sus = "No"
     
-    if found is None:
-        log_actie("Login poging", "Gebruiker niet gevonden")
-        print("user not found.")
-        pogingen += 1
-        return False
+                log_actie("Login try", "...", f"User '{Username}' not found, {poging} tries used", severity, sus)
+                print("user not found.")
+                poging += 1
+                continue
+                # return False
 
+            if aantal_gefaalde_logins(found):
+                print(f"{found[2]} has reached the max inlog attempts")
+                print("please try again later")
+                log_actie("Login pogin", "...", f"User tried to access {found[2]} during lockout", "High", "Yes")
+                continue
 
-    stored_hash = user[3]
-    if Hasher.check_password(Password, stored_hash):
-        log_actie("Login poging", found, result="Succesvol")
-        print("Login successful!")
-        return found
-    else:
-        user = Usersname_decrypt(user)
-        log_actie("Login poging", user, result="Ongeldig wachtwoord")
-        print("invalid password.")
-        pogingen += 1
-        return False
- except sqlite3.Error as e:
+            stored_hash = user[3]
+            if Hasher.check_password(Password, stored_hash):
+                log_actie("Login poging", found, result="Succesvol")
+                print("Login successful!")
+                return found
+            else:
+                log_actie("Login poging", user, result="Ongeldig wachtwoord")
+                print("invalid password.")
+                poging += 1
+                continue
+                # return False
+        
+    except sqlite3.Error as e:
         print(f"Database error: {e}")
-    
+        
 
 
 # krijgt de user gegevens bij inlog
