@@ -150,7 +150,7 @@ def createdatabase(path = db_path):
             Result TEXT,
             Severity TEXT,
             Suspiscious TEXT,
-            FOREIGN KEY(UserID) REFERENCES Users(ID)
+            FOREIGN KEY(UserID) REFERENCES Users(ID) ON DELETE CASCADE
         )
     ''')
 
