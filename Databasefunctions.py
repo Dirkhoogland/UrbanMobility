@@ -902,8 +902,9 @@ def updateSystemAdminname(admin, username, user):
         conn.close()
 
 def Createbackupkey(user_id, backup_namen, key_value):
-
-    backup_name = backup_namen
+    datum = datetime.now().strftime("%Y%m%d_%H%M%S")
+    backup_filename = f"{backup_namen}_{datum}"
+    backup_name = backup_filename
     conn = sqlite3.connect(db_path)
     conn.execute("PRAGMA foreign_keys = ON") 
     cursor = conn.cursor()
@@ -923,7 +924,7 @@ def Createbackupkey(user_id, backup_namen, key_value):
         conn.commit()
         conn.close()
         backup_name = decrypt_message(backup_name)
-        sqlite_safe_backup(db_path, "Backups", backup_namen)
+        sqlite_safe_backup(db_path, "Backups", backup_filename)
         print("Backup key inserted successfully.")
     except Exception as e:
         print("Error inserting backup key:", e)
@@ -1011,6 +1012,8 @@ def sqlite_safe_backup(source_path, backup_folder, name):
     base_dir = os.path.dirname(__file__)
     backup_dir = os.path.join(base_dir, "Backups")
     os.makedirs(backup_dir, exist_ok=True)
+
+
     backup_file = os.path.join(backup_dir, f"{name}.db")
     zip_path = os.path.join(backup_dir, f"{name}.zip")
 
