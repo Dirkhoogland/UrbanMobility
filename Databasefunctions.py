@@ -15,6 +15,10 @@ from logger import Decrypte_all_logs, Log_decrypt_many
 script_dir = os.path.dirname(os.path.abspath(__file__))
 db_path = os.path.join(script_dir, "Database.db")
 
+
+pogingen_dict = defaultdict(int)
+poging = 1
+
 def aantal_gefaalde_logins(user_id, minuten=10):
     try:
         conn = sqlite3.connect(db_path)
@@ -93,6 +97,8 @@ def check_user_used(user, minuten=10):
         print(f"Database error: {e}")
 
 def login(Username, Password):
+    global pogingen_dict
+    global poging
     if(check_user_used(Username)):
         print("User has to many attemts")
         log_actie("Login try", "...", f"User tried to access {Username} during lockout", "High", "Yes")
@@ -104,29 +110,28 @@ def login(Username, Password):
         cursor.execute("SELECT * FROM Users")
         users = cursor.fetchall()
         conn.close()
-        poging = 1
-        while True:
-            found = None
-            global pogingen_dict
-            pogingen_dict = defaultdict(int)
 
-            if Username not in pogingen_dict:
+
+        found = None
+
+
+        if Username not in pogingen_dict:
                 pogingen_dict[Username] = 0
 
-            if pogingen_dict[Username] >= 5:
-                print(f"Gebruiker '{Username}' is tijdelijk geblokkeerd. Probeer het later opnieuw.")
+        if pogingen_dict[Username] >= 5:
+                print(f"user '{Username}' is temporary disabled try again later.")
                 log_actie("Login geblokkeerd", "...", f"Te veel pogingen voor '{Username}'", "VeryHigh", "Yes")
                 sleep(10000)
                 return False
 
-            for user in users:
+        for user in users:
                 if(decrypt_message(user[2]) == Username):
                     user_list = list(user)              # converteer naar lijst
                     user_list[2] = decrypt_message(user[2])  # pas aan
                     found = user_list
                     break
-
-            if found is None:
+ 
+        if found is None:
                 severity = "None"
                 sus = "No"
                 if(poging >= 10):
@@ -149,26 +154,27 @@ def login(Username, Password):
                 print("user not found.")
                 pogingen_dict[Username] += 1
                 poging += 1
-                continue
+                return False
                 # return False
 
-            if aantal_gefaalde_logins(found):
+        if aantal_gefaalde_logins(found):
                 print(f"{found[2]} has reached the max inlog attempts")
                 print("please try again later")
                 log_actie("Login try", "...", f"User tried to access {found[2]} during lockout", "High", "Yes")
-                continue
+                return False
 
-            stored_hash = user[3]
-            if Hasher.check_password(Password, stored_hash):
+        stored_hash = user[3]
+        if Hasher.check_password(Password, stored_hash):
                 pogingen_dict[Username] = 0
+                poging = 1
                 log_actie("Login try", found, result="Succesvol")
                 print("Login successful!")
                 return found
-            else:
-                log_actie("Login try", user, result="Wrong password")
+        else:
+                log_actie("Login try", found, result="Wrong password")
                 print("invalid password.")
                 poging += 1
-                continue
+                return False
                 # return False
         
     except sqlite3.Error as e:

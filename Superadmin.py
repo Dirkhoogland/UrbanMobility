@@ -8,11 +8,7 @@ def ServiceEngineeredit(user):
     while menu == True:
         optiesmenu = Menus.Servicemedewerkeropties()
         Menus.toon_dynamisch_menu(optiesmenu, "super Admin edit engineer")
-        try:
-                optie = int(input("Select option: "))
-        except ValueError:
-                print("invalid input, choose a number.")
-                continue
+        optie = Validator.int_input("Select option: ")
         if optie == 1:
             Gebruiker.Addservice(user)
         if optie == 2:
@@ -32,11 +28,7 @@ def SysteemadminEdit(user):
     while menu == True:
         optiesmenu = Menus.Servicemedewerkeropties()
         Menus.toon_dynamisch_menu(optiesmenu, "super Admin edit System Admin")
-        try:
-                optie = int(input("Select option: "))
-        except ValueError:
-                print("invalid input, choose a number.")
-                continue
+        optie = Validator.int_input("Select option: ")
         if optie == 1:
             Gebruiker.AddSysteemmedewerker(user)
         if optie == 2:
@@ -56,11 +48,7 @@ def scootermenu(user):
     while menu == True:
         optiesmenu = Menus.scooterinfo(user[1])
         Menus.toon_dynamisch_menu(optiesmenu, "super Admin edit scooter ")
-        try:
-                optie = int(input("Select option: "))
-        except ValueError:
-                print("invalid input, choose a number.")
-                continue
+        optie = Validator.int_input("Select option: ")
         if optie == 1:
             Scooter.UpdateScooteradmin(user)
         if optie == 2:
@@ -92,11 +80,7 @@ def BackupMenu(user):
     while menu == True:
         optiesmenu = Menus.backups()
         Menus.toon_dynamisch_menu(optiesmenu, "super Admin backupmenu ")
-        try:
-                optie = int(input("Select option: "))
-        except ValueError:
-                print("invalid input, choose a number.")
-                continue
+        optie = Validator.int_input("Select option: ")
         if optie == 1: 
             Databasefunctions.Createbackupkey(1, "Superadmin", "Superadmin") # doneuser_id, backup_namen, key_value
         if optie == 2:
@@ -118,11 +102,7 @@ def SuperMenu(user):
         opties = Menus.super()
         Menus.toon_dynamisch_menu(opties, "Super Admin")
 
-        try:
-                optie = int(input("Select option: "))
-        except ValueError:
-                print("invalid input, choose a number.")
-                continue
+        optie = Validator.int_input("Select option: ")
 
         if optie == 1:
             Gebruiker.ViewUserlist(user)

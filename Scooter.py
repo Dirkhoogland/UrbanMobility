@@ -78,11 +78,7 @@ def UpdateScooteradmin(user):
     while menu == True:
         Opties = Menus.scooteredit(user[1])
         Menus.toon_dynamisch_menu(Opties, "scooter edit")
-        try:
-                optie = int(input("Select option: "))
-        except ValueError:
-                print("invalid input, choose a number.")
-                continue
+        optie = Validator.int_input("Select option: ")
         if optie == 1:
             Brand(Scooter[3], user)
         if optie == 2:
@@ -147,11 +143,7 @@ def UpdateScooter(user):
     while menu == True:
         Opties = Menus.scooteredit(user[1])
         Menus.toon_dynamisch_menu(Opties, "scooter edit")
-        try:
-                optie = int(input("Select option: "))
-        except ValueError:
-                print("invalid input, choose a number.")
-                continue
+        optie = Validator.int_input("Select option: ")
         if optie == 1:
              StateOfCharge(Scooter[3], user)
         if optie == 2:

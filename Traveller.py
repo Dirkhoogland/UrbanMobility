@@ -1,7 +1,7 @@
 import sqlite3
 import os
 from Databasefunctions import log_actie
-from Validator import is_valid_email, is_valid_phone, is_valid_DLN, is_valid_zipCode, sanitize_input
+from Validator import is_valid_email, is_valid_phone, is_valid_DLN, is_valid_zipCode, sanitize_input, int_input
 from Menus import toon_dynamisch_menu, TravelerUpdateOptions, genderOption, cityOption, addmodifytravellers
 from Manager import BirthdayManager, GenderManager, cityManager
 from DatabaseSetup import CreateBackup
@@ -22,14 +22,6 @@ def View(Email, User = "UNKNOWN"):
     conn.close()
 
     for target in travellers:
-        # traveller[1] = decrypt_message(traveller[1]) # Firstname
-        # traveller[2] = decrypt_message(traveller[2]) # Lastname
-        # traveller[5] = decrypt_message(traveller[5]) # Streetname
-        # traveller[7] = decrypt_message(traveller[7]) # Zipcode
-        # traveller[9] = decrypt_message(traveller[9]) # Email
-        # traveller[10] = decrypt_message(traveller[10]) # phonenumber
-        # traveller[11] = decrypt_message(traveller[11]) # DLN
-        # Email is encrypted
         if(decrypt_message(target[9]) == Email):
             # Log_encrypt()
             return Traveller_decrypt(target)
@@ -217,11 +209,8 @@ def Update(Email, user):
             print("what do you want to update?")
             print(traveller)
             toon_dynamisch_menu(TravelerUpdateOptions(), "Traveller Update Menu")
-            try:
-                option = int(input("Select option: "))
-            except ValueError:
-                print("invalid input, choose a number.")
-                continue
+
+            option = int_input("Select option: ")
             if option == 1:
                 Newfirstname = ""
                 while Newfirstname == "":
@@ -237,7 +226,7 @@ def Update(Email, user):
             if option == 2:
                 Newlastname = ""
                 while Newlastname == "":
-                    Newlastname = str(("New Lastname: ")).capitalize().strip()
+                    Newlastname = str(sanitize_input("New Lastname: ")).capitalize().strip()
                 cursor.execute('''
                     UPDATE traveller SET Lastname = ? WHERE ID = ?
                 ''', (encrypt_message(Newlastname), Id))
@@ -284,13 +273,8 @@ def Update(Email, user):
             if option == 6:
                 Newhousenumber = -1
                 while Newhousenumber < 0:
-                    try:
-                        Newhousenumber = int(input("New Streetnumber: "))
-                    except ValueError:
-                        print("Only numbers allowed")
-                        continue
-                    if(Newhousenumber < 0): 
-                        print("No negative housenumbers allowed")
+                    Newhousenumber = int_input("New Streetnumber: ")
+
 
                 cursor.execute('''
                     UPDATE traveller SET HouseNumber = ? WHERE ID = ?
@@ -299,6 +283,7 @@ def Update(Email, user):
                 conn.commit()
                 print("Update on Housenumber succesfull")
                 log_actie(f"{user[2]} successfully updated a traveller ", user, 'sucess', 'normal')
+
             if option == 7:
                 NewzipCode = "-1"  # place holder
                 while is_valid_zipCode(NewzipCode) == False:
@@ -407,11 +392,7 @@ def TravellerMenu(user):
     while menu == True:
         optiesmenu = addmodifytravellers()
         toon_dynamisch_menu(optiesmenu, "Systeem Admin edit traveller")
-        try:
-                optie = int(input("Select option: "))
-        except ValueError:
-                print("invalid input, choose a number.")
-                continue
+        optie = int_input("Select option: ")
         if optie == 1:
             AddTraveller(user)
         if optie == 2:

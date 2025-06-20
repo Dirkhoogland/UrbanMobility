@@ -1,5 +1,6 @@
 import datetime
 from Menus import toon_dynamisch_menu, genderOption, cityOption
+from Validator import int_input
 
 def BirthdayManager():
     while True:
@@ -36,11 +37,7 @@ def GenderManager():
     toon_dynamisch_menu(genderOption(), "Select Gender")
     gender = None # place holder
     while True:
-        try:
-            choice = int(input("select option: "))
-        except ValueError:
-            print("invalid input, choose between number: ")
-            continue
+        choice = int_input("select option: ")
 
         if choice == 1:
             return "F"
@@ -57,22 +54,7 @@ def cityManager():
     toon_dynamisch_menu(cityOption(), "Select City")
     city = "UNKNOWN" # place holder
     while True:
-        try:
-            choice = int(input("select option: "))
-        except ValueError:
-            print("invalid input, choose between number")
-            continue
-
-        # ║ 1. Amsterdam                ║
-        # ║ 2. Barendrecht              ║
-        # ║ 3. Capelle aan den IJssel   ║
-        # ║ 4. Krimpen aan den IJssel   ║
-        # ║ 5. Rhoon                    ║
-        # ║ 6. Ridderkerk               ║
-        # ║ 7. Rotterdam                ║
-        # ║ 8. Schiedam                 ║
-        # ║ 9. The Hague                ║
-        # ║ 10. Zoetemeer               ║
+        choice = int_input("select option: ")
 
         if choice == 1:
             return "Amsterdam"

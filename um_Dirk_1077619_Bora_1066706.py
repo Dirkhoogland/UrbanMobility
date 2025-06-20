@@ -8,7 +8,5 @@ from Databasefunctions import *
 
 if __name__ == "__main__":
     print("versie 1.31") # om build te checken
-
     Databasesetupstart()
-    Databasefunctions.Createbackupkey(2, "Testdatabase", "test")
     Start()
