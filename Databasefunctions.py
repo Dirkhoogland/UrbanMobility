@@ -930,22 +930,47 @@ def Createbackupkey(user_id, backup_namen, key_value):
         print("Error inserting backup key:", e)
 
 def Revokekey(user_id):
-    conn = sqlite3.connect(db_path)
-    conn.execute("PRAGMA foreign_keys = ON") 
-    cursor = conn.cursor()
-    try:
-        cursor.execute('''
+   conn = sqlite3.connect(db_path)
+   conn.execute("PRAGMA foreign_keys = ON") 
+   cursor = conn.cursor()
+   try:
+
+    cursor.execute('''
+        SELECT Backupname FROM Backupkeys
+        WHERE UserID = ?
+    ''', (user_id,))
+    results = cursor.fetchall()
+
+
+    for row in results:
+        try:
+            encrypted_name = row[0]
+            backup_name = decrypt_message(encrypted_name) 
+            zip_path = os.path.join("Backups", f"{backup_name}.zip")
+            
+            if os.path.exists(zip_path):
+                os.remove(zip_path)
+                print(f"back up removed: {zip_path}")
+            else:
+                print(f"file not found: {zip_path}")
+
+        except Exception as file_error:
+            print(f"error removng file: {file_error}")
+
+
+    cursor.execute('''
         DELETE FROM Backupkeys
         WHERE UserID = ?
-        ''', (user_id,))
-        print("Key removed")
-        conn.commit()
-        conn.close()
-    except Exception as e:
-                    print(f"error with backup back-up: {e}")
-    
-    finally:
-        conn.close()
+    ''', (user_id,))
+    print("back ups removed from db.")
+
+    conn.commit()
+
+   except Exception as e:
+    print(f"error with removing backups: {e}")
+
+   finally:
+     conn.close()
 
 
 def restorebackup(user_id, keyvalue, backup_dir="Backups"):
