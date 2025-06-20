@@ -39,8 +39,8 @@ def aantal_gefaalde_logins(user_id, minuten=10):
 
             if(
                 timestamp >= tijd_grens and
-                action == 'Login poging' and
-                result == 'Ongeldig wachtwoord'
+                action == 'Login try' and
+                result == 'Wrong password'
             ):
                 count += 1
 
@@ -92,6 +92,7 @@ def check_user_used(user, minuten=10):
 def login(Username, Password):
     if(check_user_used(Username)):
         print("User has to many attemts")
+        log_actie("Login try", "...", f"User tried to access {Username} during lockout", "High", "Yes")
         return False
 
     try:
@@ -139,16 +140,16 @@ def login(Username, Password):
             if aantal_gefaalde_logins(found):
                 print(f"{found[2]} has reached the max inlog attempts")
                 print("please try again later")
-                log_actie("Login pogin", "...", f"User tried to access {found[2]} during lockout", "High", "Yes")
+                log_actie("Login try", "...", f"User tried to access {found[2]} during lockout", "High", "Yes")
                 continue
 
             stored_hash = user[3]
             if Hasher.check_password(Password, stored_hash):
-                log_actie("Login poging", found, result="Succesvol")
+                log_actie("Login try", found, result="Succesvol")
                 print("Login successful!")
                 return found
             else:
-                log_actie("Login poging", user, result="Ongeldig wachtwoord")
+                log_actie("Login try", user, result="Wrong password")
                 print("invalid password.")
                 poging += 1
                 continue
