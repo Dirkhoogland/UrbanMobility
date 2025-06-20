@@ -421,7 +421,10 @@ def TravellerMenu(user):
             Email = sanitize_input("user by Email: ")
             if(View(Email) != None):
                 while True:
-                    choice = sanitize_input(f"are you sure you want to delete this user\n{View(Email)}\nY/N:").upper()[0]
+                    try:
+                        choice = sanitize_input(f"are you sure you want to delete this user\n{View(Email)}\nY/N:").upper()[0]
+                    except:
+                        print("input invalid: choose Y for Delete, N for cancel Delete")
                     if choice == 'Y':
                         Delete(Email, user)
                         break
