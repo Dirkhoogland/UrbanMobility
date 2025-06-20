@@ -73,11 +73,7 @@ def AddTraveller(user):
         
         housenumber = -1
         while housenumber < 0:
-            try:
-                housenumber = int(sanitize_input("Streetnumber: "))
-            except ValueError:
-                print("Only numbers allowed")
-                continue
+            housenumber = int_input("Streetnumber: ")
             if(housenumber < 0): 
                 print("No negative housenumbers allowed")
 

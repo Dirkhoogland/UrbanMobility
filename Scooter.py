@@ -248,7 +248,7 @@ def Getattributes(user):
     opties = Menus.scooterattributes()
  
     Menus.toon_dynamisch_menu(opties, "Scooter attributes")
-    input( "Press enter to continue . . .")
+    Validator.sanitize_input( "Press enter to continue . . .")
 
 def Deletescooter(user):
     serialcheck = False

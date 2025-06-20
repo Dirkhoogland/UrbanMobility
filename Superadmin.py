@@ -66,11 +66,7 @@ def Revokekey():
     print("Welcome to key removal super admin")
     menu = True
     while menu == True:
-        try:
-                optie = int(input("Which user id?: "))
-        except ValueError:
-                print("invalid input, choose a number.")
-                continue
+        optie = Validator.int_input("Which user id?: ")
         Databasefunctions.Revokekey(optie)
         menu = False
 
