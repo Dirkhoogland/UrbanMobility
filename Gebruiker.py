@@ -94,17 +94,23 @@ def changepasswordengineer(user):
         engineer = Validator.sanitize_input("Which engineer: (username)")
         data = Databasefunctions.get_user(engineer)
         if data[1] == 2:
-
+           while validatepassword == False:
+            print(r"Password has to be 12-30 characters with:   [A-Z],[a-z] numbers [0-9] and special characters  ~!@#$%&_-+=`|\(){}[]:;'<>,.? ")
+            print("The password has to be with a lower case, upper case,  cijfer and at least one speciaal character.")
 
             nieuwpassword = Validator.sanitize_input("New Password: ")
+            validatepassword = Validator.is_valid_password(nieuwpassword)
 
 
+
+           while validatepasswordrepeat == False:
             nieuwpasswordrepeat = Validator.sanitize_input("Repeat new password: ")
+            validatepasswordrepeat = Validator.is_valid_password(nieuwpasswordrepeat)
             check = input("Type CONFIRM to confirm: ")
 
-            check = Validator.sanitize_input(check)
-            if check == 'CONFIRM':
-             Databasefunctions.passwordchangeengineer(data, nieuwpassword, user)
+           check = Validator.sanitize_input(check)
+           if check == 'CONFIRM':
+            Databasefunctions.passwordchangeengineer(data, nieuwpassword, user)
 
 
         else:
@@ -231,16 +237,22 @@ def UpdatePasswordSysteemadmin(user):
         engineer = Validator.sanitize_input("Which System Admin: (username)")
         data = Databasefunctions.get_user(engineer)
         if data[1] == 1:
-
+           while validatepassword == False:
+            print(r"Password has to be 12-30 characters with:   [A-Z],[a-z] numbers [0-9] and special characters  ~!@#$%&_-+=`|\(){}[]:;'<>,.? ")
+            print("The password has to be with a lower case, upper case,  cijfer and at least one speciaal character.")
 
             nieuwpassword = Validator.sanitize_input("New Password: ")
+            validatepassword = Validator.is_valid_password(nieuwpassword)
 
 
+
+           while validatepasswordrepeat == False:
             nieuwpasswordrepeat = Validator.sanitize_input("Repeat new password: ")
+            validatepasswordrepeat = Validator.is_valid_password(nieuwpasswordrepeat)
 
 
-            check = Validator.sanitize_input("Type CONFIRM to confirm: ")
-            if check == 'CONFIRM':
+           check = Validator.sanitize_input("Type CONFIRM to confirm: ")
+           if check == 'CONFIRM':
              Databasefunctions.passwordchangeengineer(data, nieuwpassword, user)
 
 
