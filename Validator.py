@@ -1,23 +1,30 @@
 ﻿import re
 from datetime import datetime, date
 
-def sanitize_input(input_display = ""):
+def sanitize_input(input_display=""):
     while True:
-        string = input(input_display)
+        try:
+            string = input(input_display)
+        except EOFError:
+            print("\n[ERROR] No input (EOF).")
+            continue  
+        except KeyboardInterrupt:
+            print("\n[INFO] input cancelled by user.")
+            continue 
+
+        # Check for too-long input
         if is_string_too_long(string, 124):
-         print("Error input too long")
-         continue
-        
-
-        white_list  = r"^[a-zA-Z0-9~!@#$%&_\-+=/`|\\()\[\]{}:;'<>,.? ]+$" # only allow safe characters
-
-        if not re.fullmatch(white_list, string):
-
-            print(f"forbidden characters detected ")
+            print("Error: input too long.")
             continue
+
+        # Whitelist filter (only allowed characters)
+        white_list = r"^[a-zA-Z0-9~!@#$%&_\-+=/`|\\()\[\]{}:;'<>,.? ]+$"
+        if not re.fullmatch(white_list, string):
+            print("Error: forbidden characters detected.")
+            continue
+
         break
 
-    # Optioneel: trim spaties
     return string.strip()
 
 
