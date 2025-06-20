@@ -22,14 +22,6 @@ def View(Email, User = "UNKNOWN"):
     conn.close()
 
     for target in travellers:
-        # traveller[1] = decrypt_message(traveller[1]) # Firstname
-        # traveller[2] = decrypt_message(traveller[2]) # Lastname
-        # traveller[5] = decrypt_message(traveller[5]) # Streetname
-        # traveller[7] = decrypt_message(traveller[7]) # Zipcode
-        # traveller[9] = decrypt_message(traveller[9]) # Email
-        # traveller[10] = decrypt_message(traveller[10]) # phonenumber
-        # traveller[11] = decrypt_message(traveller[11]) # DLN
-        # Email is encrypted
         if(decrypt_message(target[9]) == Email):
             # Log_encrypt()
             return Traveller_decrypt(target)
@@ -404,7 +396,7 @@ def TravellerMenu(user):
     while menu == True:
         optiesmenu = addmodifytravellers()
         toon_dynamisch_menu(optiesmenu, "Systeem Admin edit traveller")
-        int_input("Select option: ")
+        optie = int_input("Select option: ")
         if optie == 1:
             AddTraveller(user)
         if optie == 2:
