@@ -94,6 +94,7 @@ def is_valid_password(password):
         return False
     if not re.search(r"[~!@#$%&_\-+=`|\\(){}\[\]:;\"'<>,.?/]", password):
         return False
+    return True
 
 def validate_out_of_service(input_str):
     input_str = input_str.strip()

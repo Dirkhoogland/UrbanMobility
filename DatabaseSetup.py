@@ -232,8 +232,8 @@ def CreateBackupKey():
     data = Databasefunctions.get_user(engineer)
     if data[1] == 1:
   
-            decrypted = Usersname_decrypt(data[2])
-            print(f" You want to create a key for user : {decrypted} with Id {data[0]}")
+
+            print(f" You want to create a key for user : {data[2]} with Id {data[0]}")
   
             checkuser = Validator.sanitize_input("Do you want to continue Y/N: ").upper();
 
