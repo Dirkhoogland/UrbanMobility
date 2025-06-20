@@ -89,13 +89,9 @@ def SysMenu(user):
 
 
 def restore(user):
-
-       
-    check = Validator.sanitize_input("Do you want to continue Y/N: ")
-    check.upper();
-    key = Validator.sanitize_input("Key: ")
+    check = Validator.sanitize_input("Do you want to continue Y/N: ").upper()
     if check == "Y":
-
+        key = Validator.sanitize_input("Key: ")
         Databasefunctions.restorebackup(user[0], key)
     else:
         return
