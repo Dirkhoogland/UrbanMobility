@@ -79,9 +79,6 @@ def SysMenu(user):
             restore(user)
         if optie == 7:
             Databasefunctions.logs()
-        if optie == 8:
-            menu == False
-            return
         else:
             SysMenu(user)
 

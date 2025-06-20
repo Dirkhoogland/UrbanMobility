@@ -16,13 +16,13 @@ def toon_dynamisch_menu(opties, titel="Hoofdmenu"):
     print("╚" + "═" * breedte + "╝")
 
 def service():
-    return ["Update Scooter","Get Scooter attributes", "Update Password", "Logout"]
+    return ["Update Scooter","Get Scooter attributes", "Update Password"]
 
 def system():
-    return ["User list", "Add/modify Service Engineer","Add/modify travellers", "Scooter info/update", "Profile", "Back up system","View logs", "Logout"]
+    return ["User list", "Add/modify Service Engineer","Add/modify travellers", "Scooter info/update", "Profile", "Back up system","View logs"]
 
 def super():
-    return ["User list","Add/Modify System Admin", "Add/modify Service Engineer","Add/modify travellers", "Scooter info/update", "Back up menu", "View logs", "Logout"]
+    return ["User list","Add/Modify System Admin", "Add/modify Service Engineer","Add/modify travellers", "Scooter info/update", "Back up menu", "View logs"]
 
 def addmodifyengineermenu():
     return ["Add new Service Engineer", "Modifty Service Engineer", "Remove Service Engineer", "Reset Service Engineer Password",]
