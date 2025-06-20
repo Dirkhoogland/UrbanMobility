@@ -1,8 +1,10 @@
 ﻿from asyncio.windows_events import NULL
+from collections import defaultdict
 from datetime import date, datetime, timedelta
 import sqlite3
 import os
 from tabnanny import check
+from time import sleep
 from typing import KeysView
 import zipfile
 import Hasher
@@ -24,13 +26,15 @@ def aantal_gefaalde_logins(user_id, minuten=10):
         cursor.execute('''
                 SELECT Action, Result, Timestamp FROM ActionLog
                 WHERE UserID = ?
-            ''', (user_id,))
+            ''', (user_id[0],))
         rows = cursor.fetchall()
         conn.close()
     
         count = 0
         for row in rows:
             row = list(row)
+            if not all(row[:3]):
+                    continue
             action = decrypt_message(row[0])
             result = decrypt_message(row[1])
             timestamp_str = decrypt_message(row[2])
@@ -104,6 +108,17 @@ def login(Username, Password):
         poging = 1
         while True:
             found = None
+            global pogingen_dict
+            pogingen_dict = defaultdict(int)
+
+            if Username not in pogingen_dict:
+                pogingen_dict[Username] = 0
+
+            if pogingen_dict[Username] >= 5:
+                print(f"Gebruiker '{Username}' is tijdelijk geblokkeerd. Probeer het later opnieuw.")
+                log_actie("Login geblokkeerd", "...", f"Te veel pogingen voor '{Username}'", "VeryHigh", "Yes")
+                sleep(10000)
+                return False
 
             for user in users:
                 if(decrypt_message(user[2]) == Username):
@@ -133,6 +148,7 @@ def login(Username, Password):
     
                 log_actie("Login try", "...", f"User '{Username}' not found, {poging} tries used", severity, sus)
                 print("user not found.")
+                pogingen_dict[Username] += 1
                 poging += 1
                 continue
                 # return False
@@ -145,6 +161,7 @@ def login(Username, Password):
 
             stored_hash = user[3]
             if Hasher.check_password(Password, stored_hash):
+                pogingen_dict[Username] = 0
                 log_actie("Login try", found, result="Succesvol")
                 print("Login successful!")
                 return found
@@ -177,7 +194,7 @@ def log_actie(action, user, result="", severity = "None", sus = "No"):
  try:
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
-    if user == NULL:
+    if user == None:
         user[0] = 0
         user[2] = "login attempt"
     timestamp = datetime.now().isoformat(timespec='seconds')
