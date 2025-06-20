@@ -13,7 +13,9 @@ def sanitize_input(input_display=""):
             continue 
         except:
             print("Unknown input error")
-
+        if '\x00' in string:
+            print("Null bytes are not allowed.")
+            continue
         # Check for too-long input
         if is_string_too_long(string, 124):
             print("Error: input too long.")

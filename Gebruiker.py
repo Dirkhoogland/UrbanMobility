@@ -90,9 +90,10 @@ def changepasswordengineer(user):
     
     if check == "Y":
 
-        engineer = Validator.sanitize_input("Which engineer: (username)")
+        engineer = Validator.sanitize_input("Which engineer: (ID)")
         data = Databasefunctions.get_user(engineer)
         if data[1] == 2:
+           validatepassword = False
            while validatepassword == False:
             print(r"Password has to be 12-30 characters with:   [A-Z],[a-z] numbers [0-9] and special characters  ~!@#$%&_-+=`|\(){}[]:;'<>,.? ")
             print("The password has to be with a lower case, upper case,  cijfer and at least one speciaal character.")
@@ -101,13 +102,13 @@ def changepasswordengineer(user):
             validatepassword = Validator.is_valid_password(nieuwpassword)
 
 
-
+           validatepasswordrepeat = False
            while validatepasswordrepeat == False:
             nieuwpasswordrepeat = Validator.sanitize_input("Repeat new password: ")
             validatepasswordrepeat = Validator.is_valid_password(nieuwpasswordrepeat)
-            check = input("Type CONFIRM to confirm: ")
 
-           check = Validator.sanitize_input(check)
+
+           check = Validator.sanitize_input("Type CONFIRM to confirm: ")
            if check == 'CONFIRM':
             Databasefunctions.passwordchangeengineer(data, nieuwpassword, user)
 
@@ -230,9 +231,10 @@ def UpdatePasswordSysteemadmin(user):
 
     if check == "Y":
 
-        engineer = Validator.sanitize_input("Which System Admin: (username)")
+        engineer = Validator.sanitize_input("Which System Admin: (Id)")
         data = Databasefunctions.get_user(engineer)
         if data[1] == 1:
+           validatepassword = False
            while validatepassword == False:
             print(r"Password has to be 12-30 characters with:   [A-Z],[a-z] numbers [0-9] and special characters  ~!@#$%&_-+=`|\(){}[]:;'<>,.? ")
             print("The password has to be with a lower case, upper case,  cijfer and at least one speciaal character.")
@@ -241,7 +243,7 @@ def UpdatePasswordSysteemadmin(user):
             validatepassword = Validator.is_valid_password(nieuwpassword)
 
 
-
+           validatepasswordrepeat = False
            while validatepasswordrepeat == False:
             nieuwpasswordrepeat = Validator.sanitize_input("Repeat new password: ")
             validatepasswordrepeat = Validator.is_valid_password(nieuwpasswordrepeat)
