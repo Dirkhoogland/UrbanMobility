@@ -75,9 +75,9 @@ def Log_decrypt(log) -> tuple:
     return log
 def Usersname_decrypt(user):
     if user is not None:
-
-        user = decrypt_message(user) 
-
+        user = list(user)
+        user[2] = decrypt_message(user[2]) 
+        user = tuple(user)
         pass
 
     return user

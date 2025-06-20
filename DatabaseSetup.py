@@ -235,8 +235,8 @@ def CreateBackupKey():
             decrypted = Usersname_decrypt(data[2])
             print(f" You want to create a key for user : {decrypted} with Id {data[0]}")
   
-            checkuser = Validator.sanitize_input("Do you want to continue Y/N: ")
-            checkuser.upper();
+            checkuser = Validator.sanitize_input("Do you want to continue Y/N: ").upper();
+
 
 
             print("You have no password for your key. Create a password for your key with:")
@@ -262,15 +262,7 @@ def CreateBackupKey():
 
             backupname = Validator.sanitize_input("Backup name:")
             Databasefunctions.Createbackupkey(data[1], backupname, password);
-    
-    # path = "BackupKey.txt"
-    # path = os.path.join(script_dir, path)
-    # if not os.path.exists(path):
-    #     with open(path, "w") as secrets_file:
-    #         secrets_file.write(encrypt_message(password))
-    #     print("Backup key created and saved.")
-    # else:
-    #     print("BackupKey.txt already exists. Key not overwritten.")
+
 
 def AccessPassword():
     path = "BackupKey.txt"

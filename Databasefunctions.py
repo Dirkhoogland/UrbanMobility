@@ -8,7 +8,7 @@ import zipfile
 import Hasher
 import Validator, Menus
 from Encrypt import Profiles_encrypt, Usersname_encrypt, encrypt_message, Users_encrypt, key_encrypt, profilename_encrypt
-from Decrypt import Profiles_decrypt, Userdetailsdecrypt, decrypt_message
+from Decrypt import Profiles_decrypt, Userdetailsdecrypt, Usersname_decrypt, decrypt_message
 from logger import Decrypte_all_logs, Log_decrypt_many
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -674,6 +674,7 @@ def get_user(user_id):
     user = cursor.fetchone()
     conn.close()
     if user:
+        user = Usersname_decrypt(user)
         return user
     else:
         return
@@ -1006,11 +1007,11 @@ def copy_file(src, dst):
                 fdst.write(buf)
 
 def sqlite_safe_backup(source_path, backup_folder, name):
-    if not os.path.exists(backup_folder):
-        os.makedirs(backup_folder)
-
-    backup_file = os.path.join(backup_folder, f"{name}.db")
-    zip_path = os.path.join(backup_folder, f"{name}.zip")
+    base_dir = os.path.dirname(__file__)
+    backup_dir = os.path.join(base_dir, "Backups")
+    os.makedirs(backup_dir, exist_ok=True)
+    backup_file = os.path.join(backup_dir, f"{name}.db")
+    zip_path = os.path.join(backup_dir, f"{name}.zip")
 
     src_conn = sqlite3.connect(source_path)
     dest_conn = sqlite3.connect(backup_file)
@@ -1018,7 +1019,7 @@ def sqlite_safe_backup(source_path, backup_folder, name):
     try:
         with dest_conn:
             src_conn.backup(dest_conn)
-        print(f"Database backup gemaakt: {backup_file}")
+
     finally:
         src_conn.close()
         dest_conn.close()
@@ -1036,4 +1037,4 @@ def sqlite_safe_backup(source_path, backup_folder, name):
 
 
 
-        # Optioneel: Verwijder het losse .db bestand na het zippen
+

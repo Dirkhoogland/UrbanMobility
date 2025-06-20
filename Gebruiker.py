@@ -4,7 +4,7 @@ import Databasefunctions, Menus , Validator, UrbanMobility, Profiles
 def Addservice(user):
     print("New service Engineer.")
     
-    check = Validator.sanitize_input("Do you want to continue Y/N: ")
+    check = Validator.sanitize_input("Do you want to continue Y/N: ").upper();
     check.upper();
 
     if check == "Y":
@@ -39,7 +39,7 @@ def Addservice(user):
 def AddSysteemmedewerker(user):
     print("New service Engineer.")
     
-    check = Validator.sanitize_input("Do you want to continue Y/N: ")
+    check = Validator.sanitize_input("Do you want to continue Y/N: ").upper();
     check.upper();
 
     if check == "Y":
@@ -86,8 +86,8 @@ def changepassword(user):
 def changepasswordengineer(user):
     print("Change password for service Engineer.")
     
-    check = Validator.sanitize_input("Do you want to continue Y/N: ")
-    check.upper();
+    check = Validator.sanitize_input("Do you want to continue Y/N: ").upper();
+
     
     if check == "Y":
 
@@ -139,11 +139,11 @@ def Deleteuser(user):
 def Deleteother(user):
     print("Delete service Engineer.")
   
-    check = Validator.sanitize_input("Do you want to continue Y/N: ")
-    check.upper();
+    check = Validator.sanitize_input("Do you want to continue Y/N: ").upper();
+
     
     if check == "Y":
-        engineer = Validator.sanitize_input("Which engineer: (username)")
+        engineer = Validator.sanitize_input("Which engineer: (ID)")
         data = Databasefunctions.get_user(engineer)
         if data[1] == 2:
            print(f"Are you sure you want to delete account: {engineer}")
@@ -160,7 +160,7 @@ def Deleteother(user):
 def UpdateEngineer(user):
     print("Edit service Engineer.")
    
-    check = Validator.sanitize_input("Do you want to continue Y/N: ")
+    check = Validator.sanitize_input("Do you want to continue Y/N: ").upper();
     check.upper();
     
     if check == "Y":
@@ -184,7 +184,7 @@ def UpdateEngineer(user):
                checkforprofile = Validator.sanitize_input("Do you want to update their profile? Y/N")
                checkforprofile.upper();
                if checkforprofile == "Y":
-                   Profiles.Updateprofile(data)
+                   Profiles.Updateprofile(user, data[0])
                else:
                     return
         else:
@@ -194,8 +194,8 @@ def UpdateEngineer(user):
 
 def UpdateSysteemadmin(user):
     print("Edit System Admin.")
-    check = Validator.sanitize_input("Do you want to continue Y/N: ")
-    check.upper();
+    check = Validator.sanitize_input("Do you want to continue Y/N: ").upper();
+    
     
     if check == "Y":
         engineer = Validator.sanitize_input("Which System Admin: (id)")
@@ -229,9 +229,9 @@ def UpdateSysteemadmin(user):
 def UpdatePasswordSysteemadmin(user):
     print("Change password for System Admin.")
   
-    check = Validator.sanitize_input("Do you want to continue Y/N: ")
-    check.upper();
-    
+    check = Validator.sanitize_input("Do you want to continue Y/N: ").upper();
+
+
     if check == "Y":
 
         engineer = Validator.sanitize_input("Which System Admin: (username)")

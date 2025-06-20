@@ -42,8 +42,8 @@ def Updateprofile(user, id):
     profile = updateview(id)
 
  
-    checkuser = Validator.sanitize_input("Do you want to continue Y/N: ")
-    checkuser.upper();
+    checkuser = Validator.sanitize_input("Do you want to continue Y/N: ").upper();
+
     username = profile[2]
     Newlastname = profile[3]
     opties = ["Firstname", "Lastname", "Leave menu"]
@@ -66,15 +66,6 @@ def Updateprofile(user, id):
            menu = False
            return
 
-        # Newusername = Validator.sanitize_input("New Firstname:")
-
-        # Newlastname = Validator.sanitize_input("New Lastname: ")
-        # if Newusername:
-        #     username = Newusername
-        # if Newlastname:
-        #     lastname = Newlastname
-
-        # Databasefunctions.updateprofile(username, lastname, profile[0], user)
 
 
 

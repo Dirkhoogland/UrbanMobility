@@ -24,8 +24,6 @@ def ServiceEngineeredit(user):
             Gebruiker.Deleteother(user)
         if optie == 4:
             Gebruiker.changepasswordengineer(user)
-        if optie == 5:
-            Profiles.ViewProfile(user)
         else:
             menu = False
             SysMenu(user)
