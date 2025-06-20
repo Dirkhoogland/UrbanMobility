@@ -119,7 +119,7 @@ def login(Username, Password):
                 pogingen_dict[Username] = 0
 
         if pogingen_dict[Username] >= 5:
-                print(f"Gebruiker '{Username}' is tijdelijk geblokkeerd. Probeer het later opnieuw.")
+                print(f"user '{Username}' is temporary disabled try again later.")
                 log_actie("Login geblokkeerd", "...", f"Te veel pogingen voor '{Username}'", "VeryHigh", "Yes")
                 sleep(10000)
                 return False
@@ -171,7 +171,7 @@ def login(Username, Password):
                 print("Login successful!")
                 return found
         else:
-                log_actie("Login try", user, result="Wrong password")
+                log_actie("Login try", found, result="Wrong password")
                 print("invalid password.")
                 poging += 1
                 return False
