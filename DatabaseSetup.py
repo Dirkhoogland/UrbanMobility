@@ -160,7 +160,7 @@ def createdatabase(path = db_path):
             Key TEXT NOT NULL,
             UserID INTEGER,
             Backupname TEXT NOT NULL,
-            FOREIGN KEY(UserID) REFERENCES Users(ID)
+            FOREIGN KEY(UserID) REFERENCES Users(ID) ON DELETE CASCADE
         )
     ''')
     conn.commit()

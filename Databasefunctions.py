@@ -588,11 +588,12 @@ def setup_add_profile_for_user(user_id, firstname, lastname):
         
     finally:
         return
-def searchprofile(user_id):
+def searchprofile(user):
+   try:
     conn = sqlite3.connect(db_path)
     conn.execute("PRAGMA foreign_keys = ON") 
     cursor = conn.cursor()
-
+    user_id = user[0]
     cursor.execute("SELECT * FROM Profiles WHERE UserID = ?", (user_id,))
     profiel = cursor.fetchone()
 
@@ -600,10 +601,14 @@ def searchprofile(user_id):
 
     if profiel:
         profiel = Profiles_decrypt(profiel)
+        conn.close()
         return profiel
     else:
-        print("Geen profiel gevonden voor deze gebruiker.")
+        print("no profile found for this user.")
         return None
+   except sqlite3.Error as e:
+        print(f"finding user: {e}")
+
 
 def add_user(username, password, rank, user):
  try:

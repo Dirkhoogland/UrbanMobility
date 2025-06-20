@@ -5,7 +5,6 @@ def ViewProfile(user):
 
 
     profiel = Databasefunctions.searchprofile(user)
-    profiel = Profiles_decrypt(profiel)
     print(f"Firstname: {profiel[2]}")
     print(f"Lastname: {profiel[3]}")
     print(f"Registrationdate: {profiel[4]}")
@@ -32,7 +31,6 @@ def ViewProfile(user):
 def updateview(id):
 
     profiel = Databasefunctions.searchprofile(id)
-    profiel = Profiles_decrypt(profiel)
     print(f"Firstname: {profiel[2]}")
     print(f"Lastname: {profiel[3]}")
     print(f"Registrationdate: {profiel[4]}")
