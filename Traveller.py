@@ -226,7 +226,7 @@ def Update(Email, user):
             if option == 2:
                 Newlastname = ""
                 while Newlastname == "":
-                    Newlastname = str(("New Lastname: ")).capitalize().strip()
+                    Newlastname = str(sanitize_input("New Lastname: ")).capitalize().strip()
                 cursor.execute('''
                     UPDATE traveller SET Lastname = ? WHERE ID = ?
                 ''', (encrypt_message(Newlastname), Id))
@@ -273,13 +273,8 @@ def Update(Email, user):
             if option == 6:
                 Newhousenumber = -1
                 while Newhousenumber < 0:
-                    try:
-                        Newhousenumber = int(input("New Streetnumber: "))
-                    except ValueError:
-                        print("Only numbers allowed")
-                        continue
-                    if(Newhousenumber < 0): 
-                        print("No negative housenumbers allowed")
+                    Newhousenumber = int_input("New Streetnumber: ")
+
 
                 cursor.execute('''
                     UPDATE traveller SET HouseNumber = ? WHERE ID = ?
@@ -288,6 +283,7 @@ def Update(Email, user):
                 conn.commit()
                 print("Update on Housenumber succesfull")
                 log_actie(f"{user[2]} successfully updated a traveller ", user, 'sucess', 'normal')
+
             if option == 7:
                 NewzipCode = "-1"  # place holder
                 while is_valid_zipCode(NewzipCode) == False:
