@@ -2,4 +2,3 @@
 *.vsidx
 .vs/UrbanMobility/v17/.suo
 *.pyc
-Backups/*.zip

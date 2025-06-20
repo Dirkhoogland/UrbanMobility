@@ -16,8 +16,6 @@ def ServiceMenu(user):
             Scooter.Getattributes(user)
         if optie == 3:
             Gebruiker.changepassword(user)
-        if optie == 4:
-            Profiles.ViewProfile(user)
         if optie == 5:
             menu == False
             return
