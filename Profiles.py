@@ -13,11 +13,7 @@ def ViewProfile(user):
     while menu == True:
         opties = Menus.profiles()
         Menus.toon_dynamisch_menu(opties, "Profile menu")
-        try:
-                optie = int(input("Select option: "))
-        except ValueError:
-                print("invalid input, choose a number.")
-                continue
+        int_input("Select option: ")
         if optie == 1:
             Updateprofile(user, user[0])
         if optie == 2:
@@ -51,11 +47,7 @@ def Updateprofile(user, id):
      menu = True
      while menu == True:
         Menus.toon_dynamisch_menu(opties, "Profile menu")
-        try:
-                optie = int(input("Select option: "))
-        except ValueError:
-                print("invalid input, choose a number.")
-                continue
+        int_input("Select option: ")
         if optie == 1:
              Newusername = Validator.sanitize_input("New Firstname:")
              Databasefunctions.updateprofilfirstnamee(id, Newusername, user)

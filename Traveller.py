@@ -407,11 +407,7 @@ def TravellerMenu(user):
     while menu == True:
         optiesmenu = addmodifytravellers()
         toon_dynamisch_menu(optiesmenu, "Systeem Admin edit traveller")
-        try:
-                optie = int(input("Select option: "))
-        except ValueError:
-                print("invalid input, choose a number.")
-                continue
+        int_input("Select option: ")
         if optie == 1:
             AddTraveller(user)
         if optie == 2:

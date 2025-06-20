@@ -11,6 +11,8 @@ def sanitize_input(input_display=""):
         except KeyboardInterrupt:
             print("\n[INFO] input cancelled by user.")
             continue 
+        except:
+            print("Unknown input error")
 
         # Check for too-long input
         if is_string_too_long(string, 124):
@@ -27,9 +29,27 @@ def sanitize_input(input_display=""):
 
     return string.strip()
 
+def int_input(input_display=""):
+    while True:
+        try:
+            optie = int(input(input_display))
+            break
+        except ValueError:
+            print("invalid input, choose a number.")
+            continue
+        except EOFError:
+            print("\n[ERROR] No input (EOF).")
+            continue  
+        except KeyboardInterrupt:
+            print("\n[INFO] input cancelled by user.")
+            continue 
+        except:
+            print("Unknown input error")
+
 
 def is_string_too_long(s: str, max_length: int) -> bool:
     return len(s) > max_length
+
 def is_valid_latitude(lat: str) -> bool:
     pattern = r"^-?([0-8]?\d(\.\d{5})?|90\.00000)$"
     return re.match(pattern, lat) is not None
@@ -136,3 +156,4 @@ def is_valid_soc(value):
         return False
     soc_value = int(value.strip().rstrip('%'))
     return 0 <= soc_value <= 100
+

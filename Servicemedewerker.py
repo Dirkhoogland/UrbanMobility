@@ -5,11 +5,7 @@ def ServiceMenu(user):
     while menu == True:
         opties = Menus.service()
         Menus.toon_dynamisch_menu(opties, "Service medewerker")
-        try:
-                optie = int(input("Select option: "))
-        except ValueError:
-                print("invalid input, choose a number.")
-                continue
+        int_input("Select option: ")
         if optie == 1:
             Scooter.UpdateScooter(user)
         if optie == 2:
