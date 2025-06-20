@@ -45,6 +45,8 @@ def int_input(input_display=""):
             continue 
         except:
             print("Unknown input error")
+            
+    return optie
 
 
 def is_string_too_long(s: str, max_length: int) -> bool:
