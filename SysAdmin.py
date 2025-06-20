@@ -3,6 +3,7 @@ from pickle import FALSE
 import Traveller
 import Scooter, Gebruiker , Menus , Databasefunctions , Profiles, Servicemedewerker, Validator
 import Validator 
+import Superadmin
 
 def ServiceEngineeredit(user):
     menu = True
@@ -31,27 +32,28 @@ def ServiceEngineeredit(user):
 
 
 def TravellerMenu(user):
-    menu = True
-    while menu == True:
-        optiesmenu = Menus.addmodifytravellers()
-        Menus.toon_dynamisch_menu(optiesmenu, "Systeem Admin edit scooter ")
-        try:
-                optie = int(input("Select option: "))
-        except ValueError:
-                print("invalid input, choose a number.")
-                continue
-        if optie == 1:
-            Traveller.AddTraveller(user)
-        if optie == 2:
-            Traveller.Update(user)
-        if optie == 3:
-            Email = Validator.sanitize_input("Gebruiker Email:")
-            Traveller.View(Email, user)
-        if optie == 4:
-            Traveller.Delete(user)
-        else:
-            menu = False
-    return
+    Traveller.TravellerMenu(user)
+    # menu = True
+    # while menu == True:
+    #     optiesmenu = Menus.addmodifytravellers()
+    #     Menus.toon_dynamisch_menu(optiesmenu, "Systeem Admin edit scooter ")
+    #     try:
+    #             optie = int(input("Select option: "))
+    #     except ValueError:
+    #             print("invalid input, choose a number.")
+    #             continue
+    #     if optie == 1:
+    #         Traveller.AddTraveller(user)
+    #     if optie == 2:
+    #         Traveller.Update(user)
+    #     if optie == 3:
+    #         Email = Validator.sanitize_input("Gebruiker Email:")
+    #         Traveller.View(Email, user)
+    #     if optie == 4:
+    #         Traveller.Delete(user)
+    #     else:
+    #         menu = False
+    # return
 # ["Add new Traveller", "Update Traveller in system", "Delete a traveller", "Search Traveller"]
 def scootermenu(user):
     menu = True

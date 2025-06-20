@@ -2,7 +2,7 @@ import sqlite3
 import os
 from Databasefunctions import log_actie
 from Validator import is_valid_email, is_valid_phone, is_valid_DLN, is_valid_zipCode, sanitize_input
-from Menus import toon_dynamisch_menu, TravelerUpdateOptions, genderOption, cityOption
+from Menus import toon_dynamisch_menu, TravelerUpdateOptions, genderOption, cityOption, addmodifytravellers
 from Manager import BirthdayManager, GenderManager, cityManager
 from DatabaseSetup import CreateBackup
 from Encrypt import Traveller_encrypt,  encrypt_message
@@ -401,3 +401,42 @@ def Delete(Email, user):
     finally:
         if conn:
             conn.close()
+
+def TravellerMenu(user):
+    menu = True
+    while menu == True:
+        optiesmenu = addmodifytravellers()
+        toon_dynamisch_menu(optiesmenu, "Systeem Admin edit traveller")
+        try:
+                optie = int(input("Select option: "))
+        except ValueError:
+                print("invalid input, choose a number.")
+                continue
+        if optie == 1:
+            AddTraveller(user)
+        if optie == 2:
+            Email = sanitize_input("user by Email: ")
+            Update(Email, user)
+        if optie == 3:
+            Email = sanitize_input("user by Email: ")
+            if(View(Email) != None):
+                while True:
+                    choice = sanitize_input(f"are you sure you want to delete this user\n{View(Email)}\nY/N:").upper()[0]
+                    if choice == 'Y':
+                        Delete(Email, user)
+                        break
+                    if choice == 'N':
+                        print("Canceled delete user")
+                        break
+                    print("invalid input choose Y for Delete, N for cancel Delete")
+        if optie == 4:
+            Email = sanitize_input("user by Email: ")
+            traveller = View(Email, user)
+            if(traveller != None):
+                print(traveller)
+            else:
+                print("Traveller not found")
+        
+        else:
+            menu = False
+    return

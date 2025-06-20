@@ -110,43 +110,44 @@ def BackupMenu(user):
     return
 
 def TravellerMenu(user):
-    menu = True
-    while menu == True:
-        optiesmenu = Menus.addmodifytravellers()
-        Menus.toon_dynamisch_menu(optiesmenu, "Systeem Admin edit scooter ")
-        try:
-                optie = int(input("Select option: "))
-        except ValueError:
-                print("invalid input, choose a number.")
-                continue
-        if optie == 1:
-            Traveller.AddTraveller(user)
-        if optie == 2:
-            Email = Validator.sanitize_input("user by Email: ")
-            Traveller.Update(Email, user)
-        if optie == 3:
-            Email = Validator.sanitize_input("user by Email: ")
-            if(Traveller.View(Email) != None):
-                while True:
-                    choice = Validator.sanitize_input(f"are you sure you want to delete this user\n{Traveller.View(Email)}\nY/N:").upper()[0]
-                    if choice == 'Y':
-                        Traveller.Delete(Email, user)
-                        break
-                    if choice == 'N':
-                        print("Canceled delete user")
-                        break
-                    print("invalid input choose Y for Delete, N for cancel Delete")
-        if optie == 4:
-            Email = Validator.sanitize_input("user by Email: ")
-            traveller = Traveller.View(Email, user)
-            if(traveller != None):
-                print(traveller)
-            else:
-                print("Traveller not found")
+    Traveller.TravellerMenu(user)
+    # menu = True
+    # while menu == True:
+    #     optiesmenu = Menus.addmodifytravellers()
+    #     Menus.toon_dynamisch_menu(optiesmenu, "Systeem Admin edit traveller")
+    #     try:
+    #             optie = int(input("Select option: "))
+    #     except ValueError:
+    #             print("invalid input, choose a number.")
+    #             continue
+    #     if optie == 1:
+    #         Traveller.AddTraveller(user)
+    #     if optie == 2:
+    #         Email = Validator.sanitize_input("user by Email: ")
+    #         Traveller.Update(Email, user)
+    #     if optie == 3:
+    #         Email = Validator.sanitize_input("user by Email: ")
+    #         if(Traveller.View(Email) != None):
+    #             while True:
+    #                 choice = Validator.sanitize_input(f"are you sure you want to delete this user\n{Traveller.View(Email)}\nY/N:").upper()[0]
+    #                 if choice == 'Y':
+    #                     Traveller.Delete(Email, user)
+    #                     break
+    #                 if choice == 'N':
+    #                     print("Canceled delete user")
+    #                     break
+    #                 print("invalid input choose Y for Delete, N for cancel Delete")
+    #     if optie == 4:
+    #         Email = Validator.sanitize_input("user by Email: ")
+    #         traveller = Traveller.View(Email, user)
+    #         if(traveller != None):
+    #             print(traveller)
+    #         else:
+    #             print("Traveller not found")
         
-        else:
-            menu = False
-    return
+    #     else:
+    #         menu = False
+    # return
 def SuperMenu(user):
     menu = True
     while menu == True:
