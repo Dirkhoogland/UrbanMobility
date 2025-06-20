@@ -8,7 +8,7 @@ def ServiceEngineeredit(user):
     while menu == True:
         optiesmenu = Menus.Servicemedewerkeropties()
         Menus.toon_dynamisch_menu(optiesmenu, "super Admin edit engineer")
-        int_input("Select option: ")
+        optie = Validator.int_input("Select option: ")
         if optie == 1:
             Gebruiker.Addservice(user)
         if optie == 2:
@@ -28,7 +28,7 @@ def SysteemadminEdit(user):
     while menu == True:
         optiesmenu = Menus.Servicemedewerkeropties()
         Menus.toon_dynamisch_menu(optiesmenu, "super Admin edit System Admin")
-        int_input("Select option: ")
+        optie = Validator.int_input("Select option: ")
         if optie == 1:
             Gebruiker.AddSysteemmedewerker(user)
         if optie == 2:
@@ -48,7 +48,7 @@ def scootermenu(user):
     while menu == True:
         optiesmenu = Menus.scooterinfo(user[1])
         Menus.toon_dynamisch_menu(optiesmenu, "super Admin edit scooter ")
-        int_input("Select option: ")
+        optie = Validator.int_input("Select option: ")
         if optie == 1:
             Scooter.UpdateScooteradmin(user)
         if optie == 2:
@@ -80,7 +80,7 @@ def BackupMenu(user):
     while menu == True:
         optiesmenu = Menus.backups()
         Menus.toon_dynamisch_menu(optiesmenu, "super Admin backupmenu ")
-        int_input("Select option: ")
+        optie = Validator.int_input("Select option: ")
         if optie == 1: 
             Databasefunctions.Createbackupkey(1, "Superadmin", "Superadmin") # doneuser_id, backup_namen, key_value
         if optie == 2:
@@ -102,7 +102,7 @@ def SuperMenu(user):
         opties = Menus.super()
         Menus.toon_dynamisch_menu(opties, "Super Admin")
 
-        int_input("Select option: ")
+        optie = Validator.int_input("Select option: ")
 
         if optie == 1:
             Gebruiker.ViewUserlist(user)

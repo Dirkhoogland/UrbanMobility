@@ -11,7 +11,7 @@ def ServiceEngineeredit(user):
         optiesmenu = Menus.Servicemedewerkeropties()
         Menus.toon_dynamisch_menu(optiesmenu, "Sys Admin edit engineer")
 
-        int_input("Select option: ")
+        optie = Validator.int_input("Select option: ")
         if optie == 1:
             Gebruiker.Addservice(user)
         if optie == 2:
@@ -33,7 +33,7 @@ def scootermenu(user):
     while menu == True:
         optiesmenu = Menus.TravelerUpdateOptions(user[1])
         Menus.toon_dynamisch_menu(optiesmenu, "Systeem Admin edit Traveller ")
-        int_input("Select option: ")
+        optie = Validator.int_input("Select option: ")
         if optie == 1:
             Scooter.UpdateScooteradmin(user)
         if optie == 2:
@@ -52,7 +52,7 @@ def SysMenu(user):
         Menus.toon_dynamisch_menu(opties, "Systeem Administrator")
 
 
-        int_input("Select option: ")
+        optie = Validator.int_input("Select option: ")
         if optie == 1:
             Gebruiker.ViewUserlist(user)
         if optie == 2:

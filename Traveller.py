@@ -1,7 +1,7 @@
 import sqlite3
 import os
 from Databasefunctions import log_actie
-from Validator import is_valid_email, is_valid_phone, is_valid_DLN, is_valid_zipCode, sanitize_input
+from Validator import is_valid_email, is_valid_phone, is_valid_DLN, is_valid_zipCode, sanitize_input, int_input
 from Menus import toon_dynamisch_menu, TravelerUpdateOptions, genderOption, cityOption, addmodifytravellers
 from Manager import BirthdayManager, GenderManager, cityManager
 from DatabaseSetup import CreateBackup
@@ -217,11 +217,8 @@ def Update(Email, user):
             print("what do you want to update?")
             print(traveller)
             toon_dynamisch_menu(TravelerUpdateOptions(), "Traveller Update Menu")
-            try:
-                option = int(input("Select option: "))
-            except ValueError:
-                print("invalid input, choose a number.")
-                continue
+
+            option = int_input("Select option: ")
             if option == 1:
                 Newfirstname = ""
                 while Newfirstname == "":
